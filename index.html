@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jahrestagung 2027 – Hildesheim | Altstipendiaten der Konrad-Adenauer-Stiftung</title>
+<meta name="description" content="Programm, Anmeldung und Informationen zur Altstipendiatentagung 2027 der Altstipendiaten der Konrad-Adenauer-Stiftung in Hildesheim.">
+<meta name="theme-color" content="#004684">
+
+<!-- Favicons / App-Icons (erzeugt aus dem Vereinslogo, siehe /assets) -->
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+
+<style>
+  :root{
+    /* ====== Farben aus dem Vereinslogo (ASEV) übernommen; Pink/Teal/Violett/Rot sind
+       passend dazu ausgesuchte Ergänzungsfarben ohne Vorlage im Logo. ====== */
+    --kas-blue:      #004684;
+    --kas-blue-dark: #002C54;
+    --kas-blue-light:#3E7CB4;
+    --accent-pink:   #E6007E;
+    --accent-pink-dark:#B30062;
+    --accent-green:  #7CB342;
+    --accent-green-dark:#558B2F;
+    --accent-orange: #FF9C00;
+    --accent-orange-dark:#D97F00;
+    --accent-teal:   #0097A7;
+    --accent-teal-dark:#00707C;
+    --accent-purple: #7A5AF8;
+    --accent-purple-dark:#5A3AD1;
+    --accent-red:    #E4483C;
+    --accent-red-dark:#B93226;
+    --ink:           #1B2430;
+    --ink-soft:      #4A5568;
+    --paper:         #F7F8FA;
+    --card:          #FFFFFF;
+    --line:          #E3E7ED;
+    --radius:        18px;
+    --shadow:        0 6px 20px rgba(16,30,54,0.08);
+    --shadow-lg:      0 14px 34px rgba(16,30,54,0.16);
+    font-size:16px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--kas-blue);}
+  img{max-width:100%;display:block;}
+  button{font-family:inherit;}
+
+  /* ===== Top bar ===== */
+  .topbar{
+    position:sticky; top:0; z-index:50;
+    background:var(--kas-blue);
+    color:#fff;
+    padding:14px 18px;
+    display:flex; align-items:center; gap:12px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.15);
+  }
+  .topbar .brand{
+    display:flex; align-items:center; gap:10px; cursor:pointer; flex:1; min-width:0;
+  }
+  .brand-badge{
+    width:38px;height:38px;border-radius:10px;background:#fff;color:var(--kas-blue);
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex:none;
+    letter-spacing:-0.5px; padding:4px; overflow:hidden;
+  }
+  .brand-badge img{width:100%;height:100%;object-fit:contain;display:block;}
+  .hero-logo{max-width:280px; width:60%; margin:0 auto 18px;}
+  .hero-logo img{width:100%; height:auto; display:block; margin:0 auto;}
+  .brand-text{min-width:0;}
+  .brand-text .t1{font-weight:700;font-size:15px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .brand-text .t2{font-size:12px;opacity:0.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .back-btn{
+    background:rgba(255,255,255,0.14); border:none; color:#fff; padding:9px 14px;
+    border-radius:999px; font-size:14px; font-weight:600; cursor:pointer; display:none;
+    align-items:center; gap:6px; flex:none;
+  }
+  .back-btn.show{display:inline-flex;}
+  .back-btn:hover{background:rgba(255,255,255,0.24);}
+
+  /* ===== Layout ===== */
+  .wrap{max-width:960px; margin:0 auto; padding:22px 18px 70px;}
+  .view{display:none; animation:fadeIn .25s ease;}
+  .view.active{display:block;}
+  @keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+  .hero{
+    text-align:center; padding:8px 4px 26px;
+  }
+  .hero h1{font-size:1.6rem; margin:6px 0 4px; color:var(--kas-blue-dark);}
+  .hero p{margin:0; color:var(--ink-soft); font-size:0.98rem;}
+  .hero .dates{
+    display:inline-block; margin-top:12px; background:#fff; border:1px solid var(--line);
+    padding:8px 16px; border-radius:999px; font-weight:600; font-size:0.9rem; color:var(--kas-blue);
+    box-shadow:var(--shadow);
+  }
+
+  /* ===== Tiles ===== */
+  .tiles{
+    display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-top:8px;
+  }
+  @media(min-width:640px){ .tiles{grid-template-columns:repeat(3,1fr);} }
+  .tile{
+    border:none; cursor:pointer; border-radius:var(--radius); padding:22px 16px;
+    color:#fff; text-align:left; position:relative; overflow:hidden;
+    min-height:150px; display:flex; flex-direction:column; justify-content:space-between;
+    box-shadow:var(--shadow); transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .tile:hover{transform:translateY(-3px); box-shadow:var(--shadow-lg);}
+  .tile:active{transform:translateY(0);}
+  .tile .icon{font-size:1.9rem; line-height:1;}
+  .tile .label{font-weight:700; font-size:1.05rem; margin-top:14px;}
+  .tile .sub{font-size:0.8rem; opacity:0.9; margin-top:2px;}
+  .tile::after{
+    content:""; position:absolute; right:-30px; bottom:-30px; width:120px; height:120px;
+    background:rgba(255,255,255,0.12); border-radius:50%;
+  }
+  .tile.blue{background:linear-gradient(135deg,var(--kas-blue),var(--kas-blue-light));}
+  .tile.pink{background:linear-gradient(135deg,var(--accent-pink-dark),var(--accent-pink));}
+  .tile.green{background:linear-gradient(135deg,var(--accent-green-dark),var(--accent-green));}
+  .tile.orange{background:linear-gradient(135deg,var(--accent-orange-dark),var(--accent-orange));}
+  .tile.teal{background:linear-gradient(135deg,var(--accent-teal-dark),var(--accent-teal));}
+  .tile.purple{background:linear-gradient(135deg,var(--accent-purple-dark),var(--accent-purple));}
+  .tile.red{background:linear-gradient(135deg,var(--accent-red-dark),var(--accent-red));}
+
+  /* ===== Section header ===== */
+  .section-head{margin-bottom:18px;}
+  .section-head h2{margin:0 0 4px; font-size:1.4rem; color:var(--kas-blue-dark);}
+  .section-head p{margin:0; color:var(--ink-soft); font-size:0.95rem;}
+  .pill-row{display:flex; gap:8px; flex-wrap:wrap; margin:16px 0 20px;}
+  .pill{
+    border:1px solid var(--line); background:#fff; padding:8px 14px; border-radius:999px;
+    font-size:0.85rem; font-weight:600; cursor:pointer; color:var(--ink-soft);
+  }
+  .pill.active{background:var(--kas-blue); border-color:var(--kas-blue); color:#fff;}
+
+  /* ===== Program timeline ===== */
+  .day-block{display:none;}
+  .day-block.active{display:block;}
+  .timeline{position:relative; padding-left:2px;}
+  .item{
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:14px 16px; margin-bottom:12px; box-shadow:var(--shadow); cursor:pointer;
+    display:flex; gap:14px; align-items:flex-start;
+  }
+  .item:hover{border-color:var(--kas-blue-light);}
+  .item .time{
+    flex:none; width:92px; font-weight:700; color:var(--kas-blue); font-size:0.85rem; padding-top:2px;
+  }
+  .item .body{flex:1; min-width:0;}
+  .item .title{font-weight:700; font-size:0.98rem; margin:0 0 4px;}
+  .item .meta{font-size:0.82rem; color:var(--ink-soft); display:flex; flex-wrap:wrap; gap:10px;}
+  .item .meta span{display:inline-flex; align-items:center; gap:4px;}
+  .badge{
+    display:inline-block; font-size:0.7rem; font-weight:700; padding:2px 8px; border-radius:999px;
+    margin-left:8px; vertical-align:middle;
+  }
+  .badge.excursion{background:#FCE4F0; color:var(--accent-pink-dark);}
+  .badge.tbd{background:#FFF1DA; color:var(--accent-orange-dark);}
+  .badge.confirmed{background:#E4F5E9; color:var(--accent-green-dark);}
+
+  .excursion-list{margin-top:6px; display:grid; gap:10px;}
+  .excursion-card{
+    background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 16px;
+    box-shadow:var(--shadow);
+  }
+  .excursion-card h4{margin:0 0 6px; font-size:0.95rem;}
+  .cap-bar{height:8px; border-radius:999px; background:#EDEFF3; overflow:hidden; margin-top:8px;}
+  .cap-bar > div{height:100%; background:var(--accent-green); border-radius:999px; transition:width .3s;}
+  .cap-bar.full > div{background:#D6455D;}
+  .cap-label{font-size:0.78rem; color:var(--ink-soft); margin-top:4px; display:flex; justify-content:space-between;}
+
+  .sg-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:10px;}
+  @media(max-width:700px){ .sg-grid{grid-template-columns:repeat(2,1fr);} }
+  .sg-cell{
+    background:#fff; border:1px dashed var(--line); border-radius:10px; padding:10px; font-size:0.78rem;
+    color:var(--ink-soft); text-align:center;
+  }
+  .sg-cell b{display:block; color:var(--ink); font-size:0.8rem; margin-bottom:2px;}
+
+  /* ===== Cards / content blocks ===== */
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    padding:20px; box-shadow:var(--shadow); margin-bottom:16px;
+  }
+  .card h3{margin-top:0; color:var(--kas-blue-dark); font-size:1.1rem;}
+  .placeholder-note{
+    background:#FFF7E6; border:1px solid #F6D48A; color:#6B4E00; font-size:0.82rem;
+    padding:10px 14px; border-radius:10px; margin:10px 0;
+  }
+  .grid-2{display:grid; gap:16px; grid-template-columns:1fr;}
+  @media(min-width:700px){ .grid-2{grid-template-columns:1fr 1fr;} }
+
+  /* ===== Forms ===== */
+  form .field{margin-bottom:16px;}
+  form label{display:block; font-weight:600; font-size:0.88rem; margin-bottom:6px;}
+  form input[type=text], form input[type=email], form input[type=tel], form select, form textarea{
+    width:100%; padding:11px 12px; border:1px solid var(--line); border-radius:10px; font-size:0.95rem;
+    background:#fff; font-family:inherit;
+  }
+  form input:focus, form select:focus, form textarea:focus{outline:2px solid var(--kas-blue-light); outline-offset:1px;}
+  .req{color:var(--accent-pink);}
+  .checkbox-row{display:flex; align-items:flex-start; gap:10px; font-size:0.85rem; color:var(--ink-soft);}
+  .checkbox-row input{margin-top:3px;}
+  fieldset{border:1px solid var(--line); border-radius:14px; padding:14px; margin:0 0 16px;}
+  legend{font-weight:700; font-size:0.9rem; padding:0 6px;}
+  .exc-option{
+    display:flex; align-items:flex-start; gap:10px; padding:10px; border-radius:10px; margin-bottom:6px;
+    border:1px solid transparent; cursor:pointer;
+  }
+  .exc-option:hover{background:#F3F6FA;}
+  .exc-option.disabled{opacity:0.5; cursor:not-allowed;}
+  .exc-option input{margin-top:3px;}
+  .exc-option .txt{flex:1;}
+  .exc-option .txt .name{font-weight:600; font-size:0.9rem;}
+  .exc-option .txt .avail{font-size:0.78rem; color:var(--ink-soft);}
+
+  .btn{
+    display:inline-flex; align-items:center; gap:8px; background:var(--kas-blue); color:#fff; border:none;
+    padding:13px 22px; border-radius:999px; font-weight:700; font-size:0.95rem; cursor:pointer;
+    box-shadow:var(--shadow);
+  }
+  .btn:hover{background:var(--kas-blue-dark);}
+  .btn.pink{background:var(--accent-pink);} .btn.pink:hover{background:var(--accent-pink-dark);}
+  .btn.ghost{background:#fff; color:var(--kas-blue); border:1px solid var(--line);}
+  .btn.ghost:hover{background:#F3F6FA;}
+  .btn:disabled{opacity:0.5; cursor:not-allowed;}
+
+  .success-box{
+    background:linear-gradient(135deg,var(--accent-green-dark),var(--accent-green)); color:#fff;
+    border-radius:var(--radius); padding:26px; text-align:center; box-shadow:var(--shadow-lg);
+  }
+  .success-box h3{margin-top:0;}
+
+  .contact-card{display:flex; gap:14px; align-items:flex-start;}
+
+  /* ===== Lodging ===== */
+  .hotel-table{width:100%; border-collapse:collapse; margin-top:10px; font-size:0.88rem;}
+  .hotel-table th, .hotel-table td{text-align:left; padding:9px 8px; border-bottom:1px solid var(--line);}
+  .hotel-table th{color:var(--ink-soft); font-weight:600; font-size:0.78rem; text-transform:uppercase; letter-spacing:.03em;}
+  .keyword-box{
+    background:#F1EDFF; border:1px solid #D9CDFF; color:var(--accent-purple-dark);
+    border-radius:10px; padding:10px 14px; font-size:0.88rem; margin-top:12px;
+  }
+  .keyword-box b{font-family:monospace; font-size:0.95rem;}
+
+  /* ===== Announcements ===== */
+  .announcement{
+    background:var(--card); border:1px solid var(--line); border-left:5px solid var(--accent-red);
+    border-radius:12px; padding:14px 16px; margin-bottom:12px; box-shadow:var(--shadow);
+  }
+  .announcement.info{border-left-color:var(--kas-blue-light);}
+  .announcement .a-head{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:4px;}
+  .announcement .a-date{font-size:0.76rem; color:var(--ink-soft); font-weight:600;}
+  .announcement .a-title{font-weight:700; font-size:0.95rem; margin:0;}
+  .announcement .a-text{font-size:0.88rem; color:var(--ink-soft); margin:4px 0 0;}
+  .badge.new{background:#FDE3E1; color:var(--accent-red-dark);}
+  .contact-avatar{
+    width:52px;height:52px;border-radius:50%;background:var(--kas-blue);color:#fff;flex:none;
+    display:flex;align-items:center;justify-content:center;font-weight:700;
+  }
+
+  footer{
+    text-align:center; padding:26px 18px 40px; color:var(--ink-soft); font-size:0.8rem;
+  }
+  footer a{color:var(--ink-soft); text-decoration:underline; cursor:pointer;}
+
+  .modal-backdrop{
+    position:fixed; inset:0; background:rgba(10,15,25,0.55); display:none; align-items:center; justify-content:center;
+    padding:20px; z-index:100;
+  }
+  .modal-backdrop.show{display:flex;}
+  .modal{
+    background:#fff; border-radius:16px; max-width:560px; width:100%; max-height:80vh; overflow:auto;
+    padding:24px; box-shadow:var(--shadow-lg);
+  }
+  .modal h3{margin-top:0; color:var(--kas-blue-dark);}
+  .modal .close{
+    float:right; background:none; border:none; font-size:1.3rem; cursor:pointer; color:var(--ink-soft);
+  }
+
+  .detail-modal .k{font-size:0.75rem; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft); margin-top:14px;}
+  .detail-modal .v{font-size:0.98rem; font-weight:600;}
+
+  .toast{
+    position:fixed; bottom:22px; left:50%; transform:translateX(-50%); background:var(--ink);
+    color:#fff; padding:12px 20px; border-radius:999px; font-size:0.85rem; box-shadow:var(--shadow-lg);
+    opacity:0; pointer-events:none; transition:opacity .25s, transform .25s; z-index:200;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(-6px);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <button class="back-btn" id="backBtn" onclick="showHome()">← Übersicht</button>
+  <div class="brand" onclick="showHome()">
+    <div class="brand-badge"><img src="assets/logo-icon-192.png" alt="Logo Altstipendiaten der Konrad-Adenauer-Stiftung"></div>
+    <div class="brand-text">
+      <div class="t1">Jahrestagung 2027</div>
+      <div class="t2">Hildesheim · 5.–9. Mai 2027</div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- ================= HOME ================= -->
+  <div class="view active" id="view-home">
+    <div class="hero">
+      <div class="hero-logo"><img src="assets/logo-full.png" alt="Altstipendiaten der Konrad-Adenauer-Stiftung"></div>
+      <h1>Altstipendiatentagung 2027 „Demokratie leben – Europa gestalten“</h1>
+      <p>Willkommen! Hier findet ihr das gesamte Programm, könnt euch anmelden und alles Wichtige rund um Hildesheim entdecken.</p>
+      <div class="dates">📅 5.–9. Mai 2027 · Hildesheim</div>
+    </div>
+
+    <div class="tiles">
+      <button class="tile red" onclick="showView('announcements')">
+        <div class="icon">📢</div>
+        <div>
+          <div class="label">Ankündigungen <span id="homeNewBadge"></span></div>
+          <div class="sub">Kurzfristige News &amp; Änderungen</div>
+        </div>
+      </button>
+
+      <button class="tile blue" onclick="showView('program')">
+        <div class="icon">📋</div>
+        <div>
+          <div class="label">Programm</div>
+          <div class="sub">Alle Programmpunkte im Überblick</div>
+        </div>
+      </button>
+
+      <button class="tile pink" onclick="showView('registration')">
+        <div class="icon">📝</div>
+        <div>
+          <div class="label">Anmeldung</div>
+          <div class="sub">Zur Tagung &amp; Exkursion anmelden</div>
+        </div>
+      </button>
+
+      <button class="tile purple" onclick="showView('lodging')">
+        <div class="icon">🛏️</div>
+        <div>
+          <div class="label">Unterbringung</div>
+          <div class="sub">Hotelkontingente &amp; Buchung</div>
+        </div>
+      </button>
+
+      <button class="tile green" onclick="showView('welcome')">
+        <div class="icon">👋</div>
+        <div>
+          <div class="label">Begrüßungsworte</div>
+          <div class="sub">Grußwort zur Tagung</div>
+        </div>
+      </button>
+
+      <button class="tile orange" onclick="showView('city')">
+        <div class="icon">🏰</div>
+        <div>
+          <div class="label">Hildesheim &amp; Umgebung</div>
+          <div class="sub">Sightseeing, Essen &amp; Geschichte</div>
+        </div>
+      </button>
+
+      <button class="tile teal" onclick="showView('contact')">
+        <div class="icon">✉️</div>
+        <div>
+          <div class="label">Kontakt &amp; Orga-Team</div>
+          <div class="sub">Ansprechpersonen &amp; Fragen</div>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= PROGRAM ================= -->
+  <div class="view" id="view-program">
+    <div class="section-head">
+      <h2>📋 Programm</h2>
+      <p>Tippt auf einen Programmpunkt für weitere Details.</p>
+    </div>
+    <div class="pill-row" id="dayPills"></div>
+    <div id="dayBlocks"></div>
+  </div>
+
+  <!-- ================= REGISTRATION ================= -->
+  <div class="view" id="view-registration">
+    <div class="section-head">
+      <h2>📝 Anmeldung zur Jahrestagung</h2>
+      <p>Meldet euch verbindlich zur Jahrestagung an und wählt eure Exkursion am Freitagnachmittag. Die Plätze pro Exkursion sind begrenzt – es gilt „first come, first served“.</p>
+    </div>
+
+    <div class="placeholder-note">
+      ⚠️ <b>Hinweis für die Umsetzung:</b> Dieser Entwurf zeigt die Anmeldung inkl. Kontingent-Logik funktionsfähig im Browser (Testmodus, Speicherung nur im Arbeitsspeicher der aktuellen Sitzung). Für den echten Betrieb mit vielen gleichzeitigen Nutzer:innen wird ein Backend/eine Datenbank benötigt, damit die Kontingente korrekt geräteübergreifend gezählt werden (siehe Hinweise am Ende der Seite / im Begleittext).
+    </div>
+
+    <div id="regFormWrap">
+      <form id="regForm" onsubmit="submitRegistration(event)">
+        <div class="card">
+          <h3>Persönliche Daten</h3>
+          <div class="grid-2">
+            <div class="field">
+              <label>Vorname <span class="req">*</span></label>
+              <input type="text" id="f_vorname" required>
+            </div>
+            <div class="field">
+              <label>Nachname <span class="req">*</span></label>
+              <input type="text" id="f_nachname" required>
+            </div>
+          </div>
+          <div class="grid-2">
+            <div class="field">
+              <label>E-Mail-Adresse <span class="req">*</span></label>
+              <input type="email" id="f_email" required>
+            </div>
+            <div class="field">
+              <label>Telefon (optional)</label>
+              <input type="tel" id="f_telefon">
+            </div>
+          </div>
+          <div class="field">
+            <label>Regionalgruppe / Landesverband (optional)</label>
+            <input type="text" id="f_gruppe" placeholder="z. B. Regionalgruppe Niedersachsen">
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Teilnahme</h3>
+          <div class="checkbox-row" style="margin-bottom:10px;">
+            <input type="checkbox" id="f_mi"> <label for="f_mi" style="margin:0;font-weight:500;">Ich nehme bereits am Get Together am Mittwochabend (5. Mai) teil</label>
+          </div>
+          <div class="checkbox-row" style="margin-bottom:10px;">
+            <input type="checkbox" id="f_sa_abend"> <label for="f_sa_abend" style="margin:0;font-weight:500;">Ich nehme am Festabend (Samstag) teil</label>
+          </div>
+          <div class="checkbox-row">
+            <input type="checkbox" id="f_so"> <label for="f_so" style="margin:0;font-weight:500;">Ich nehme am ökumenischen Gottesdienst (Sonntag) teil</label>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Exkursion am Freitag, 7. Mai (12:30–17:00 Uhr) <span class="req">*</span></h3>
+          <p style="margin-top:0;color:var(--ink-soft);font-size:0.85rem;">Bitte wählt eine Exkursion. Ausgebuchte Exkursionen sind deaktiviert.</p>
+          <div id="excursionOptions"></div>
+        </div>
+
+        <div class="card">
+          <h3>Sonstiges</h3>
+          <div class="field">
+            <label>Ernährungswünsche / Allergien (optional)</label>
+            <input type="text" id="f_ernaehrung" placeholder="z. B. vegetarisch, glutenfrei">
+          </div>
+          <div class="field">
+            <label>Anmerkungen (optional)</label>
+            <textarea id="f_anmerkung" rows="3"></textarea>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="checkbox-row">
+            <input type="checkbox" id="f_datenschutz" required>
+            <label for="f_datenschutz" style="margin:0;font-weight:500;">
+              Ich habe die <a onclick="openModal('privacyModal'); return false;" href="#">Datenschutzhinweise</a> zur Kenntnis genommen und bin mit der Verarbeitung meiner Daten zur Durchführung der Tagung einverstanden. <span class="req">*</span>
+            </label>
+          </div>
+        </div>
+
+        <button type="submit" class="btn pink">Verbindlich anmelden →</button>
+      </form>
+    </div>
+
+    <div id="regSuccess" style="display:none;"></div>
+  </div>
+
+  <!-- ================= WELCOME ================= -->
+  <div class="view" id="view-welcome">
+    <div class="section-head">
+      <h2>👋 Begrüßungsworte</h2>
+      <p>Ein herzliches Willkommen zur Jahrestagung 2027.</p>
+    </div>
+    <div class="placeholder-note">✏️ Platzhaltertext – bitte vor Veröffentlichung durch das finale, autorisierte Grußwort ersetzen.</div>
+    <div class="card">
+      <h3>Liebe Altstipendiatinnen und Altstipendiaten, liebe Gäste,</h3>
+      <p>herzlich willkommen zur Jahrestagung 2027 der Konrad-Adenauer-Stiftung unter dem Motto <b>„Demokratie leben – Europa gestalten“</b> in der wunderschönen UNESCO-Welterbestadt Hildesheim.</p>
+      <p>Europa steht vor großen Herausforderungen – und gerade deshalb ist es so wichtig, dass wir als Gemeinschaft von Altstipendiatinnen und Altstipendiaten zusammenkommen, um zu diskutieren, Ideen auszutauschen und gemeinsam nach vorne zu blicken. In den kommenden Tagen erwarten euch spannende Vorträge, Exkursionen in die Region, Zeit für Begegnung und nicht zuletzt ein stimmungsvoller Festabend.</p>
+      <p>Ich freue mich sehr auf inspirierende Gespräche und eine bereichernde gemeinsame Zeit mit euch in Hildesheim.</p>
+      <p style="margin-bottom:0;"><b>Herzlichst,<br>Annegret Kramp-Karrenbauer</b><br><span style="color:var(--ink-soft); font-size:0.85rem;">(gemäß Programmplanung – Begrüßung Donnerstag, 13:30–14:00 Uhr)</span></p>
+    </div>
+  </div>
+
+  <!-- ================= CITY / SIGHTSEEING ================= -->
+  <div class="view" id="view-city">
+    <div class="section-head">
+      <h2>🏰 Hildesheim &amp; Umgebung</h2>
+      <p>Ein paar Tipps für die Zeit neben dem Programm.</p>
+    </div>
+
+    <div class="card">
+      <h3>📜 Zur Geschichte Hildesheims</h3>
+      <p>Hildesheim zählt zu den ältesten Städten Norddeutschlands: Die Bischofsstadt geht auf eine Gründung Kaiser Ludwigs des Frommen im Jahr 815 zurück. Unter Bischof Bernward (993–1022) erlebte die Stadt eine erste kulturelle Blütezeit – Zeugnisse wie die Bernwardstür und die Bernwardssäule zählen bis heute zu den bedeutendsten Kunstwerken der Ottonik.</p>
+      <p>Der Hildesheimer Dom St. Mariae und die Michaeliskirche gehören seit 1985 zum UNESCO-Weltkulturerbe. Am Dom rankt zudem der legendäre „Tausendjährige Rosenstock“, der Zerstörung und Wiederaufbau der Stadt überstanden hat und als Symbol für die Widerstandskraft Hildesheims gilt.</p>
+      <p>Am 22. März 1945 wurde die historische Altstadt bei einem Luftangriff fast vollständig zerstört. Der originalgetreue Wiederaufbau von Wahrzeichen wie dem Marktplatz mit dem Knochenhaueramtshaus in den folgenden Jahrzehnten macht Hildesheim heute zu einem eindrucksvollen Beispiel für Wiederaufbau und europäische Erinnerungskultur.</p>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>👀 Sightseeing-Tipps</h3>
+        <ul style="padding-left:18px; margin:0;">
+          <li>Dom St. Mariae &amp; Domschatz (UNESCO-Welterbe)</li>
+          <li>St. Michaeliskirche (UNESCO-Welterbe)</li>
+          <li>Marktplatz mit Knochenhaueramtshaus</li>
+          <li>St. Godehard-Basilika</li>
+          <li>Roemer- und Pelizaeus-Museum</li>
+          <li>Historische Altstadt / Wallanlagen</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>🍽️ Restaurant-Tipps</h3>
+        <ul style="padding-left:18px; margin:0;">
+          <li>Zur Scharfen Ecke – deutsche Küche</li>
+          <li>Gasthof Kupferschmiede – deutsche Küche</li>
+          <li>Schlegel's Weinstube – regionale Küche</li>
+          <li>Amadeus Café &amp; Restaurant</li>
+          <li>India Haus Hildesheim – indische Küche</li>
+        </ul>
+        <p style="font-size:0.78rem;color:var(--ink-soft); margin-bottom:0;">Auswahl auf Basis öffentlicher Bewertungsportale (Stand: Recherche 2026) – bitte vor der Tagung aktuell prüfen.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>☕ Café-Tipps</h3>
+      <p style="margin:0;">Café Bar Tasca Arcada, Amadeus Café &amp; Restaurant sowie zahlreiche kleine Cafés rund um den Marktplatz und die Almstraße laden zur Pause zwischen den Programmpunkten ein.</p>
+    </div>
+
+    <div class="placeholder-note">✏️ Diese Liste ist ein erster Entwurf. Bitte durch aktuelle, vom Orga-Team kuratierte Tipps ergänzen bzw. ersetzen.</div>
+  </div>
+
+  <!-- ================= CONTACT ================= -->
+  <div class="view" id="view-contact">
+    <div class="section-head">
+      <h2>✉️ Kontakt &amp; Orga-Team</h2>
+      <p>Bei Fragen rund um die Jahrestagung sind wir gerne für euch da.</p>
+    </div>
+    <div class="placeholder-note">✏️ Platzhalter – bitte mit den echten Ansprechpersonen des Orga-Teams befüllen.</div>
+
+    <div class="card contact-card">
+      <div class="contact-avatar">OT</div>
+      <div>
+        <div style="font-weight:700;">[Name Ansprechpartner:in], Orga-Team</div>
+        <div style="color:var(--ink-soft); font-size:0.88rem; margin:4px 0;">Altstipendiaten der Konrad-Adenauer-Stiftung e. V.</div>
+        <div style="font-size:0.9rem;">📧 <a href="mailto:tagung2027@kas-platzhalter.de">tagung2027@kas-platzhalter.de</a></div>
+        <div style="font-size:0.9rem;">📞 [Telefonnummer einfügen]</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Tagungsort</h3>
+      <p style="margin:0;">Novotel Hildesheim (Bestätigung ausstehend)<br>[Adresse einfügen]</p>
+    </div>
+
+    <div class="card">
+      <h3>Häufige Fragen</h3>
+      <p style="margin:0 0 8px;"><b>Wie melde ich mich an?</b> Über die Kachel „Anmeldung“ auf der Startseite.</p>
+      <p style="margin:0 0 8px;"><b>Kann ich meine Exkursion nachträglich ändern?</b> Bitte wendet euch dafür an das Orga-Team.</p>
+      <p style="margin:0;"><b>Gibt es eine Übernachtungsmöglichkeit?</b> Ja, siehe Kachel „Unterbringung“ auf der Startseite.</p>
+    </div>
+  </div>
+
+  <!-- ================= LODGING ================= -->
+  <div class="view" id="view-lodging">
+    <div class="section-head">
+      <h2>🛏️ Unterbringungsmöglichkeiten</h2>
+      <p>Für die Jahrestagung sind Zimmerkontingente reserviert. Bitte frühzeitig buchen – die Kontingente sind begrenzt und werden von den Hotels selbst nach dem Prinzip „first come, first served“ vergeben.</p>
+    </div>
+    <div class="placeholder-note">✏️ Aktuell ist ein Hotelkontingent hinterlegt (Hey Lou Hotel Hildesheim). Weitere Hotels/Kontingente können hier im gleichen Format ergänzt werden.</div>
+
+    <div class="card" id="hotelList"></div>
+  </div>
+
+  <!-- ================= ANNOUNCEMENTS ================= -->
+  <div class="view" id="view-announcements">
+    <div class="section-head">
+      <h2>📢 Ankündigungen</h2>
+      <p>Hier informieren wir kurzfristig über Neuigkeiten und Änderungen rund um die Jahrestagung.</p>
+    </div>
+    <div class="placeholder-note">✏️ Die unten stehenden Einträge sind Beispiele zur Veranschaulichung. Das Orga-Team kann im Datenbereich der Datei (Abschnitt „ANNOUNCEMENTS“) jederzeit eigene Meldungen ergänzen, ändern oder entfernen.</div>
+    <div id="announcementList"></div>
+  </div>
+
+</div>
+
+<footer>
+  © Altstipendiaten der Konrad-Adenauer-Stiftung e. V. · Jahrestagung 2027 · <a onclick="openModal('privacyModal'); return false;" href="#">Datenschutz</a> · <a onclick="openModal('imprintModal'); return false;" href="#">Impressum</a>
+  <div style="margin-top:6px;">Website-Entwurf – vor Veröffentlichung bitte Inhalte, Kontingente und Rechtstexte final prüfen.</div>
+</footer>
+
+<!-- Program item detail modal -->
+<div class="modal-backdrop" id="detailModal">
+  <div class="modal detail-modal">
+    <button class="close" onclick="closeModal('detailModal')">✕</button>
+    <h3 id="dm_title">Titel</h3>
+    <div id="dm_badge"></div>
+    <div class="k">Uhrzeit</div><div class="v" id="dm_time">–</div>
+    <div class="k">Ort</div><div class="v" id="dm_ort">–</div>
+    <div class="k">Vortragsredner:in</div><div class="v" id="dm_speaker">–</div>
+    <div class="k">Hinweis</div><div class="v" id="dm_note" style="font-weight:400;">–</div>
+  </div>
+</div>
+
+<!-- Privacy modal -->
+<div class="modal-backdrop" id="privacyModal">
+  <div class="modal">
+    <button class="close" onclick="closeModal('privacyModal')">✕</button>
+    <h3>Datenschutzhinweise (Platzhalter)</h3>
+    <p style="font-size:0.88rem;">Dies ist ein Platzhaltertext. Vor Veröffentlichung der Website muss hier eine vollständige, rechtsgeprüfte Datenschutzerklärung gemäß DSGVO eingefügt werden – u. a. mit Angaben zu: verantwortlicher Stelle, Zweck der Datenverarbeitung (Durchführung der Anmeldung/Tagung), Speicherdauer, Rechtsgrundlage, Empfänger:innen der Daten (z. B. Hotel, Cateringpartner), sowie den Rechten der Betroffenen (Auskunft, Löschung, Widerspruch etc.).</p>
+  </div>
+</div>
+
+<!-- Imprint modal -->
+<div class="modal-backdrop" id="imprintModal">
+  <div class="modal">
+    <button class="close" onclick="closeModal('imprintModal')">✕</button>
+    <h3>Impressum (Platzhalter)</h3>
+    <p style="font-size:0.88rem;">Dies ist ein Platzhaltertext. Nach § 5 TMG ist für diese Website ein vollständiges Impressum erforderlich, u. a. mit: Name und Anschrift der Altstipendiaten der Konrad-Adenauer-Stiftung e. V., Vertretungsberechtigte Personen, Kontaktdaten, Registereintrag, ggf. Umsatzsteuer-ID, sowie einer inhaltlich verantwortlichen Person gemäß § 18 Abs. 2 MStV.</p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =====================================================================
+   DATENGRUNDLAGE
+   Programm gemäß Excel-Tabelle "Mappe3.xlsx" (Stand der Übermittlung).
+   Alles hier unten kann leicht angepasst werden, ohne den Rest des Codes
+   zu verändern – auch von Personen ohne Programmiererfahrung.
+   ===================================================================== */
+
+const DAYS = [
+  {
+    id: "mi", label: "Mi, 5. Mai", full: "Mittwoch, 5. Mai 2027",
+    items: [
+      { time: "ab 19:00 Uhr", title: "Get Together & Ankunft am Vorabend", speaker: "", ort: "TBD", note: "Ort wird noch bekannt gegeben." }
+    ]
+  },
+  {
+    id: "do", label: "Do, 6. Mai", full: "Donnerstag, 6. Mai 2027",
+    items: [
+      { time: "12:00–13:30", title: "Anmeldung / Check-in vor Ort", speaker: "", ort: "Novotel", confirmed: true },
+      { time: "13:30–14:00", title: "Begrüßung zur Jahrestagung 2027", speaker: "Annegret Kramp-Karrenbauer", ort: "Novotel", confirmed: true },
+      { time: "14:00–14:45", title: "Keynote: Einführung in das Thema „Demokratie leben – Europa gestalten“", speaker: "", ort: "Novotel", confirmed: true },
+      { time: "15:00–17:30", title: "Programm inkl. Mitgliederversammlung", speaker: "", ort: "Novotel", confirmed: true },
+      { time: "ab 19:00", title: "Niedersächsischer Abend", speaker: "", ort: "Novotel", confirmed: true }
+    ]
+  },
+  {
+    id: "fr", label: "Fr, 7. Mai", full: "Freitag, 7. Mai 2027",
+    items: [
+      { time: "10:00–11:30", title: "Panel-Diskussion / Keynote", speaker: "Tilman Kuban, Dr. Israng", ort: "Novotel", confirmed: true, note: "Sprecherangaben gemäß Programmplanung, ggf. noch zu bestätigen." },
+      { time: "11:30–12:30", title: "Stehimbiss / Selbstverpflegung", speaker: "", ort: "Novotel", confirmed: true },
+      { time: "12:30–17:00", title: "Exkursionen (Auswahl bei der Anmeldung, siehe Kachel „Anmeldung“)", speaker: "", ort: "verschiedene Orte", isExcursionBlock: true },
+      { time: "ab 21:00", title: "Optional: Weinfest", speaker: "", ort: "Historic Market Place", confirmed: true }
+    ]
+  },
+  {
+    id: "sa", label: "Sa, 8. Mai", full: "Samstag, 8. Mai 2027",
+    items: [
+      { time: "09:00–12:00", title: "Studium Generale (4 Zeitslots à 30–40 Min. in 4 Räumen)", speaker: "", ort: "Novotel", confirmed: true, isStudiumGenerale: true },
+      { time: "11:45–13:00", title: "Mittagsimbiss", speaker: "", ort: "Novotel", confirmed: true },
+      { time: "13:00–14:30", title: "Panel-Diskussion / Keynote", speaker: "Norbert Lammert (unbestätigt)", ort: "Novotel", confirmed: true, note: "Sprecherangabe gemäß Programmplanung – noch nicht final bestätigt." },
+      { time: "15:30–17:00", title: "Chor- / Orchesterkonzert", speaker: "", ort: "St. Godehard-Basilika", confirmed: true },
+      { time: "17:00–19:00", title: "Zeit zum Umziehen", speaker: "", ort: "" },
+      { time: "19:00–02:00", title: "Festabend", speaker: "", ort: "Novotel", confirmed: true }
+    ]
+  },
+  {
+    id: "so", label: "So, 9. Mai", full: "Sonntag, 9. Mai 2027",
+    items: [
+      { time: "11:00–12:30", title: "Ökumenischer Gottesdienst", speaker: "Christian Wulff", ort: "St. Godehard-Basilika", confirmed: true }
+    ]
+  }
+];
+
+/* Exkursionen Freitag 12:30–17:00 Uhr.
+   Hinweis: Die Excel-Tabelle listet aktuell 9 Exkursionsplätze (4 bereits benannt,
+   5 als Platzhalter "Exkursion 5–9"). Im Anschreiben war von 8 Exkursionen die Rede –
+   bitte final abgleichen und "capacity" je Exkursion an die tatsächliche Planung anpassen. */
+const EXCURSIONS = [
+  { id: 1, title: "Dom St. Mariae & St. Michaeliskirche – Werte, Religion & europäische Identität", capacity: 50 },
+  { id: 2, title: "Europäische Landwirtschaftspolitik beim Hof Riepl-Bauer", capacity: 50 },
+  { id: 3, title: "Eine Vielfalt an Stadtführungen in Hildesheim", capacity: 50 },
+  { id: 4, title: "NDR Landesfunkhaus Hannover", capacity: 50 },
+  { id: 5, title: "Exkursion 5 – Thema wird noch bekannt gegeben", capacity: 50 },
+  { id: 6, title: "Exkursion 6 – Thema wird noch bekannt gegeben", capacity: 50 },
+  { id: 7, title: "Exkursion 7 – Thema wird noch bekannt gegeben", capacity: 50 },
+  { id: 8, title: "Exkursion 8 – Thema wird noch bekannt gegeben", capacity: 50 },
+  { id: 9, title: "Exkursion 9 – Thema wird noch bekannt gegeben", capacity: 50 }
+];
+
+/* Hotelkontingente. Weitere Hotels können als zusätzliche Objekte in diesem
+   Array ergänzt werden – Aufbau einfach kopieren und Werte anpassen. */
+const HOTELS = [
+  {
+    name: "Hey Lou Hotel Hildesheim",
+    zeitraum: "05.05.2027 – 09.05.2027",
+    rooms: [
+      { typ: "Einzelzimmer", kontingent: 20, preis: "89,00 € / Nacht" },
+      { typ: "Doppelzimmer", kontingent: 40, preis: "103,00 € / Nacht" }
+    ],
+    stichwort: "KAS - Holstein",
+    adresse: "Zingel 26, 31134 Hildesheim",
+    telefon: "+49 (0) 5121 912 870 0",
+    email: "info.hil@heylouhotels.com",
+    web: "https://hil.heylouhotels.com/de/"
+  }
+];
+
+/* Ankündigungen: neueste zuerst oder in beliebiger Reihenfolge – die Anzeige
+   sortiert automatisch nach Datum (neueste zuerst). priority: "important" (rot)
+   oder "info" (blau). Die untenstehenden Einträge sind Beispiele. */
+const ANNOUNCEMENTS = [
+  {
+    date: "2026-08-20",
+    title: "Website-Entwurf online",
+    text: "Dies ist ein Beispieleintrag. Über diese Kachel könnt ihr künftig kurzfristig über Änderungen am Programm, den Exkursionen oder der Anmeldung informieren.",
+    priority: "info"
+  },
+  {
+    date: "2026-08-20",
+    title: "Hotelkontingent Hey Lou Hildesheim freigeschaltet",
+    text: "Beispiel-Ankündigung: Das Zimmerkontingent ist ab sofort unter dem Stichwort „KAS - Holstein“ buchbar (siehe Kachel „Unterbringung“).",
+    priority: "info"
+  }
+];
+
+/* =====================================================================
+   LAUFZEIT-ZUSTAND (nur im Arbeitsspeicher der aktuellen Sitzung –
+   bewusst KEIN localStorage, siehe Hinweis-Box in der Anmeldung).
+   Für den echten Betrieb: registrations[] durch echte Server-Anfragen
+   (fetch → eigenes Backend) ersetzen. Siehe Kommentar bei submitRegistration().
+   ===================================================================== */
+let registrations = [];
+let regCounter = 1000;
+
+function excursionRemaining(id){
+  const exc = EXCURSIONS.find(e => e.id === id);
+  const taken = registrations.filter(r => r.excursion === id).length;
+  return Math.max(0, exc.capacity - taken);
+}
+
+/* ================= Navigation ================= */
+function showView(name){
+  document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+  document.getElementById("view-" + name).classList.add("active");
+  document.getElementById("backBtn").classList.add("show");
+  window.scrollTo({top:0, behavior:"smooth"});
+  if(name === "registration") renderExcursionOptions();
+  if(name === "lodging") renderHotels();
+  if(name === "announcements") renderAnnouncements();
+}
+function showHome(){
+  document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+  document.getElementById("view-home").classList.add("active");
+  document.getElementById("backBtn").classList.remove("show");
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+/* ================= Program rendering ================= */
+function renderProgram(){
+  const pillRow = document.getElementById("dayPills");
+  const blocks = document.getElementById("dayBlocks");
+  pillRow.innerHTML = "";
+  blocks.innerHTML = "";
+
+  DAYS.forEach((day, idx) => {
+    const pill = document.createElement("button");
+    pill.className = "pill" + (idx === 0 ? " active" : "");
+    pill.textContent = day.label;
+    pill.onclick = () => selectDay(day.id);
+    pill.id = "pill-" + day.id;
+    pillRow.appendChild(pill);
+
+    const block = document.createElement("div");
+    block.className = "day-block" + (idx === 0 ? " active" : "");
+    block.id = "block-" + day.id;
+
+    const h = document.createElement("div");
+    h.style.cssText = "font-weight:700;color:var(--kas-blue-dark);margin:6px 0 12px;";
+    h.textContent = day.full;
+    block.appendChild(h);
+
+    const tl = document.createElement("div");
+    tl.className = "timeline";
+
+    day.items.forEach(item => {
+      const el = document.createElement("div");
+      el.className = "item";
+      el.onclick = () => openDetail(item);
+
+      let badges = "";
+      if(item.isExcursionBlock) badges += '<span class="badge excursion">Exkursion – Auswahl bei Anmeldung</span>';
+      if(item.confirmed) badges += '<span class="badge confirmed">Ort bestätigt</span>';
+      if(!item.ort) badges += '<span class="badge tbd">Ort offen</span>';
+
+      el.innerHTML = `
+        <div class="time">${item.time}</div>
+        <div class="body">
+          <p class="title">${item.title}${badges}</p>
+          <div class="meta">
+            ${item.ort ? `<span>📍 ${item.ort}</span>` : ""}
+            ${item.speaker ? `<span>🎤 ${item.speaker}</span>` : ""}
+          </div>
+        </div>`;
+      tl.appendChild(el);
+
+      if(item.isExcursionBlock){
+        const list = document.createElement("div");
+        list.className = "excursion-list";
+        EXCURSIONS.forEach(exc => {
+          const rem = excursionRemaining(exc.id);
+          const pct = Math.round(((exc.capacity - rem) / exc.capacity) * 100);
+          const card = document.createElement("div");
+          card.className = "excursion-card";
+          card.innerHTML = `
+            <h4>${exc.title}</h4>
+            <div class="cap-bar ${rem === 0 ? "full" : ""}"><div style="width:${pct}%;"></div></div>
+            <div class="cap-label"><span>${rem} von ${exc.capacity} Plätzen frei</span><span>${rem === 0 ? "AUSGEBUCHT" : ""}</span></div>`;
+          list.appendChild(card);
+        });
+        tl.appendChild(list);
+      }
+
+      if(item.isStudiumGenerale){
+        const grid = document.createElement("div");
+        grid.className = "sg-grid";
+        for(let slot = 1; slot <= 4; slot++){
+          for(let raum = 1; raum <= 4; raum++){
+            const cell = document.createElement("div");
+            cell.className = "sg-cell";
+            cell.innerHTML = `<b>Slot ${slot} · Raum ${raum}</b>Thema wird noch bekannt gegeben`;
+            grid.appendChild(cell);
+          }
+        }
+        tl.appendChild(grid);
+      }
+    });
+
+    block.appendChild(tl);
+    blocks.appendChild(block);
+  });
+}
+function selectDay(id){
+  document.querySelectorAll(".pill").forEach(p => p.classList.remove("active"));
+  document.querySelectorAll(".day-block").forEach(b => b.classList.remove("active"));
+  document.getElementById("pill-" + id).classList.add("active");
+  document.getElementById("block-" + id).classList.add("active");
+}
+
+/* ================= Detail modal ================= */
+function openDetail(item){
+  document.getElementById("dm_title").textContent = item.title;
+  document.getElementById("dm_time").textContent = item.time;
+  document.getElementById("dm_ort").textContent = item.ort || "wird noch bekannt gegeben";
+  document.getElementById("dm_speaker").textContent = item.speaker || "–";
+  document.getElementById("dm_note").textContent = item.note || "–";
+  let badge = "";
+  if(item.isExcursionBlock) badge = '<span class="badge excursion">Exkursion – Auswahl bei Anmeldung</span>';
+  document.getElementById("dm_badge").innerHTML = badge;
+  openModal("detailModal");
+}
+function openModal(id){ document.getElementById(id).classList.add("show"); }
+function closeModal(id){ document.getElementById(id).classList.remove("show"); }
+
+/* ================= Registration ================= */
+function renderExcursionOptions(){
+  const wrap = document.getElementById("excursionOptions");
+  wrap.innerHTML = "";
+  EXCURSIONS.forEach(exc => {
+    const rem = excursionRemaining(exc.id);
+    const full = rem === 0;
+    const row = document.createElement("label");
+    row.className = "exc-option" + (full ? " disabled" : "");
+    row.innerHTML = `
+      <input type="radio" name="exc" value="${exc.id}" ${full ? "disabled" : ""} required>
+      <div class="txt">
+        <div class="name">${exc.title}</div>
+        <div class="avail">${full ? "Ausgebucht" : rem + " von " + exc.capacity + " Plätzen frei"}</div>
+      </div>`;
+    wrap.appendChild(row);
+  });
+}
+
+function submitRegistration(e){
+  e.preventDefault();
+  const vorname = document.getElementById("f_vorname").value.trim();
+  const nachname = document.getElementById("f_nachname").value.trim();
+  const email = document.getElementById("f_email").value.trim();
+  const excInput = document.querySelector('input[name="exc"]:checked');
+
+  if(!vorname || !nachname || !email){
+    showToast("Bitte alle Pflichtfelder ausfüllen.");
+    return;
+  }
+  if(!excInput){
+    showToast("Bitte eine Exkursion auswählen.");
+    return;
+  }
+  const excId = parseInt(excInput.value, 10);
+  if(excursionRemaining(excId) <= 0){
+    showToast("Diese Exkursion ist inzwischen ausgebucht – bitte eine andere wählen.");
+    renderExcursionOptions();
+    return;
+  }
+
+  /* ---------------------------------------------------------------
+     PRODUKTIV-HINWEIS: An dieser Stelle müsste die Anmeldung an ein
+     echtes Backend gesendet werden, z. B.:
+
+     fetch("https://IHRE-API-DOMAIN/anmeldung", {
+       method: "POST",
+       headers: {"Content-Type":"application/json"},
+       body: JSON.stringify({ vorname, nachname, email, excursion: excId, ... })
+     });
+
+     Nur ein Server (mit Datenbank) kann Kontingente korrekt und sicher
+     über alle Teilnehmenden hinweg zählen. Diese Demo simuliert das
+     Verhalten lokal im Browser, damit UI/UX schon jetzt getestet werden
+     können. Optionen für eine schnelle, echte Umsetzung: ein Formular-
+     Backend wie Google Forms + Apps Script (Zähler je Exkursion),
+     Airtable/Tally mit Automatisierung, oder ein kleines eigenes
+     Serverless-Backend (z. B. Cloudflare Workers + KV/D1, Supabase).
+     --------------------------------------------------------------- */
+  regCounter++;
+  registrations.push({
+    id: regCounter, vorname, nachname, email, excursion: excId,
+    telefon: document.getElementById("f_telefon").value.trim(),
+    gruppe: document.getElementById("f_gruppe").value.trim(),
+    ernaehrung: document.getElementById("f_ernaehrung").value.trim(),
+    anmerkung: document.getElementById("f_anmerkung").value.trim(),
+    mi: document.getElementById("f_mi").checked,
+    sa_abend: document.getElementById("f_sa_abend").checked,
+    so: document.getElementById("f_so").checked
+  });
+
+  const excTitle = EXCURSIONS.find(e => e.id === excId).title;
+  document.getElementById("regFormWrap").style.display = "none";
+  const successEl = document.getElementById("regSuccess");
+  successEl.style.display = "block";
+  successEl.innerHTML = `
+    <div class="success-box">
+      <h3>✅ Anmeldung erfolgreich!</h3>
+      <p>Vielen Dank, ${vorname} ${nachname}! Eure Anmeldung (Nr. ${regCounter}) für die Jahrestagung 2027 ist eingegangen.</p>
+      <p><b>Exkursion:</b> ${excTitle}</p>
+      <p style="font-size:0.85rem;opacity:0.9;">Eine Bestätigung würde im echten Betrieb zusätzlich per E-Mail an ${email} versendet.</p>
+      <button class="btn ghost" style="margin-top:10px;background:#fff;" onclick="resetRegistration()">Weitere Anmeldung erfassen</button>
+    </div>`;
+  showToast("Anmeldung gespeichert (Testmodus).");
+}
+function resetRegistration(){
+  document.getElementById("regForm").reset();
+  document.getElementById("regFormWrap").style.display = "block";
+  document.getElementById("regSuccess").style.display = "none";
+  renderExcursionOptions();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+/* ================= Toast ================= */
+let toastTimer;
+function showToast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 3200);
+}
+
+/* ================= Lodging ================= */
+function renderHotels(){
+  const wrap = document.getElementById("hotelList");
+  wrap.innerHTML = HOTELS.map(h => `
+    <div style="padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid var(--line);">
+      <h3 style="margin-bottom:2px;">${h.name}</h3>
+      <div style="color:var(--ink-soft);font-size:0.85rem;">Zeitraum: ${h.zeitraum}</div>
+      <table class="hotel-table">
+        <thead><tr><th>Zimmertyp</th><th>Kontingent</th><th>Preis</th></tr></thead>
+        <tbody>
+          ${h.rooms.map(r => `<tr><td>${r.typ}</td><td>${r.kontingent} Zimmer</td><td>${r.preis}</td></tr>`).join("")}
+        </tbody>
+      </table>
+      <div class="keyword-box">🔑 Buchungsstichwort: <b>${h.stichwort}</b><br>Bitte bei der Reservierung angeben, damit das Kontingent korrekt zugeordnet wird.</div>
+      <div style="margin-top:14px;font-size:0.9rem;line-height:1.7;">
+        📍 ${h.adresse}<br>
+        📞 <a href="tel:${h.telefon.replace(/[^+\d]/g,'')}">${h.telefon}</a><br>
+        📧 <a href="mailto:${h.email}">${h.email}</a><br>
+        🌐 <a href="${h.web}" target="_blank" rel="noopener">${h.web.replace(/^https?:\/\//,'')}</a>
+      </div>
+    </div>`).join("") + `<p style="margin:0;font-size:0.8rem;color:var(--ink-soft);">Angaben gemäß Kontingentvereinbarung – bitte Verfügbarkeit direkt beim Hotel bestätigen, da Kontingente auch dort first come, first served vergeben werden.</p>`;
+}
+
+/* ================= Announcements ================= */
+function renderAnnouncements(){
+  const wrap = document.getElementById("announcementList");
+  const sorted = [...ANNOUNCEMENTS].sort((a,b) => b.date.localeCompare(a.date));
+  const now = new Date();
+  wrap.innerHTML = sorted.map(a => {
+    const days = Math.floor((now - new Date(a.date)) / 86400000);
+    const isNew = days >= 0 && days <= 14;
+    const d = new Date(a.date);
+    const dateStr = d.toLocaleDateString("de-DE", {day:"2-digit", month:"2-digit", year:"numeric"});
+    return `
+      <div class="announcement ${a.priority === "important" ? "" : "info"}">
+        <div class="a-head">
+          <span class="a-date">${dateStr}</span>
+          ${isNew ? '<span class="badge new">NEU</span>' : ""}
+          ${a.priority === "important" ? '<span class="badge excursion">Wichtig</span>' : ""}
+        </div>
+        <p class="a-title">${a.title}</p>
+        <p class="a-text">${a.text}</p>
+      </div>`;
+  }).join("");
+}
+function updateHomeNewBadge(){
+  const now = new Date();
+  const count = ANNOUNCEMENTS.filter(a => {
+    const days = Math.floor((now - new Date(a.date)) / 86400000);
+    return days >= 0 && days <= 14;
+  }).length;
+  const el = document.getElementById("homeNewBadge");
+  if(el) el.innerHTML = count > 0 ? `<span class="badge new">${count} neu</span>` : "";
+}
+
+/* ================= Init ================= */
+renderProgram();
+updateHomeNewBadge();
+</script>
+</body>
+</html>
