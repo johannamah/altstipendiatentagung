@@ -57,6 +57,17 @@ Jede Ansicht hat eine eigene Adresse. Damit funktionieren der Zurück-Button des
 
 Eine unbekannte Adresse führt automatisch zurück auf die Startseite. Die Zuordnung steht im `<script>`-Bereich im Abschnitt `ROUTES` und kann dort angepasst werden.
 
+## 3b. Helle und dunkle Darstellung
+
+Oben rechts in der Kopfleiste schaltet ein Knopf die Darstellung um – im Wechsel **Automatisch → Hell → Dunkel → Automatisch**. „Automatisch" folgt der Systemeinstellung des jeweiligen Geräts (Hell-/Dunkelmodus von Windows, macOS, iOS, Android). Die Auswahl wird lokal im Browser gespeichert und gilt nur für dieses Gerät.
+
+Die Farben liegen als CSS-Variablen im `<style>`-Bereich:
+
+- **Helle Darstellung**: Block `:root` ganz oben.
+- **Dunkle Darstellung**: Block „Dunkle Palette" direkt darunter, alle Werte mit dem Präfix `--d-`. **Nur dort ändern** – die beiden Regelblöcke weiter unten weisen die Werte lediglich zu, damit Automatik und Handschalter nicht auseinanderlaufen können.
+
+Wer Farben anpasst, sollte den Kontrast prüfen (Text zu Hintergrund mindestens 4,5:1). Aus demselben Grund ist die Schriftfarbe der „TBD"-Markierung bewusst ein dunkleres Orange als die übrige Akzentfarbe.
+
 ## 4. Logo & Icons austauschen
 
 Alle Icon-Dateien (`favicon.ico`, `apple-touch-icon.png`, `assets/favicon-*.png`, `assets/logo-icon-*.png`) wurden automatisch aus dem hochgeladenen Vereinslogo zugeschnitten. Soll ein anderes/aktualisiertes Logo verwendet werden, genügt es, ein neues Logo bereitzustellen – wir erzeugen daraus dieselben Dateien neu.

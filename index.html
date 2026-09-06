@@ -46,8 +46,96 @@
     --radius:        18px;
     --shadow:        0 6px 20px rgba(16,30,54,0.08);
     --shadow-lg:      0 14px 34px rgba(16,30,54,0.16);
+
+    /* ---- Rollenbezogene Farben ----
+       Nicht "welcher Blauton", sondern "wofuer": nur diese Tokens wechseln im
+       Dunkelmodus. --kas-blue & Co. bleiben unveraendert, weil sie Flaechen
+       einfaerben (Kopfleiste, Kacheln, Knoepfe), auf denen immer weisser Text
+       steht - die duerfen in beiden Darstellungen gleich bleiben. */
+    --paper-rgb:     247,248,250;   /* fuer rgba() im Hintergrundverlauf */
+    --field:         #FFFFFF;       /* Eingabefelder */
+    --hover:         #F3F6FA;       /* Flaeche unter dem Mauszeiger */
+    --topbar:        var(--kas-blue);
+    --accent-ink:    var(--kas-blue);       /* Blau als TEXT/Symbol */
+    --heading-ink:   var(--kas-blue-dark);  /* Blau in Ueberschriften */
+    --toast-bg:      var(--ink);
+    --toast-ink:     #FFFFFF;
+    --tint-pink-bg:  #FCE4F0;  --tint-pink-ink:  var(--accent-pink-dark);
+    --tint-orange-bg:#FFF1DA;
+    /* Nicht --accent-orange-dark (#D97F00): das ergibt auf #FFF1DA nur 2,7:1
+       Kontrast und ist damit unter der Lesbarkeitsgrenze. #9C5A00 = 4,9:1. */
+    --tint-orange-ink:#9C5A00;
+    --tint-red-bg:   #FDE3E1;  --tint-red-ink:   var(--accent-red-dark);
+    --note-bg:       #FFF7E6;  --note-line:#F6D48A;  --note-ink:#6B4E00;
+    --keyword-bg:    #F1EDFF;  --keyword-line:#D9CDFF; --keyword-ink:var(--accent-purple-dark);
+
+    color-scheme: light;   /* faerbt Bildlaufleisten und native Bedienelemente mit */
     font-size:16px;
   }
+
+  /* ====== Dunkle Palette ======
+     Die dunklen Werte werden hier EINMAL gepflegt. Die beiden Regelbloecke
+     darunter weisen sie nur noch zu - so koennen die Automatik-Variante
+     (Systemeinstellung) und der Handschalter nicht auseinanderlaufen.
+     Anpassen also immer hier, nicht unten. */
+  :root{
+    --d-ink:#E6EAF2;        --d-ink-soft:#A2AEC1;
+    --d-paper:#0E1621;      --d-paper-rgb:14,22,33;
+    --d-card:#17202D;       --d-field:#111A25;
+    --d-line:#2A3646;       --d-hover:#1E2937;
+    --d-topbar:#002C54;
+    --d-accent-ink:#79B0E8; --d-heading-ink:#9BC6F0;
+    --d-toast-bg:#2E3B4E;   --d-toast-ink:#E6EAF2;
+    --d-shadow:0 6px 20px rgba(0,0,0,0.45);
+    --d-shadow-lg:0 14px 34px rgba(0,0,0,0.60);
+    --d-tint-pink-bg:rgba(230,0,126,0.20);   --d-tint-pink-ink:#F58FC2;
+    --d-tint-orange-bg:rgba(255,156,0,0.18); --d-tint-orange-ink:#F5BE63;
+    --d-tint-red-bg:rgba(228,72,60,0.22);    --d-tint-red-ink:#F2938A;
+    --d-note-bg:rgba(242,183,5,0.12);    --d-note-line:rgba(242,183,5,0.35);    --d-note-ink:#EFCE84;
+    --d-keyword-bg:rgba(122,90,248,0.18); --d-keyword-line:rgba(122,90,248,0.40); --d-keyword-ink:#BCA8FF;
+    --d-skyline: url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%201600%20320%27%3E%20%3Cg%20fill%3D%27%236E9AC6%27%20fill-opacity%3D%270.55%27%3E%20%3Crect%20x%3D%270%27%20y%3D%27260%27%20width%3D%2760%27%20height%3D%2760%27/%3E%20%3Cpath%20d%3D%27M60%2C260%20L60%2C210%20L110%2C210%20L110%2C180%20L140%2C180%20L140%2C210%20L190%2C210%20L190%2C260%20Z%27/%3E%20%3Crect%20x%3D%27190%27%20y%3D%27230%27%20width%3D%2770%27%20height%3D%2790%27/%3E%20%3Crect%20x%3D%27320%27%20y%3D%27150%27%20width%3D%2746%27%20height%3D%27170%27/%3E%20%3Cpolygon%20points%3D%27320%2C150%20343%2C95%20366%2C150%27/%3E%20%3Crect%20x%3D%27384%27%20y%3D%27160%27%20width%3D%2746%27%20height%3D%27160%27/%3E%20%3Cpolygon%20points%3D%27384%2C160%20407%2C105%20430%2C160%27/%3E%20%3Crect%20x%3D%27452%27%20y%3D%27240%27%20width%3D%2760%27%20height%3D%2780%27/%3E%20%3Crect%20x%3D%27530%27%20y%3D%27210%27%20width%3D%2740%27%20height%3D%27110%27/%3E%20%3Cpolygon%20points%3D%27530%2C210%20550%2C175%20570%2C210%27/%3E%20%3Crect%20x%3D%27590%27%20y%3D%27250%27%20width%3D%2790%27%20height%3D%2770%27/%3E%20%3Crect%20x%3D%27700%27%20y%3D%27150%27%20width%3D%2724%27%20height%3D%27170%27/%3E%20%3Cpolygon%20points%3D%27700%2C150%20712%2C105%20724%2C150%27/%3E%20%3Ccircle%20cx%3D%27712%27%20cy%3D%2798%27%20r%3D%277%27/%3E%20%3Crect%20x%3D%27744%27%20y%3D%27235%27%20width%3D%2770%27%20height%3D%2785%27/%3E%20%3Cpath%20d%3D%27M830%2C320%20L830%2C225%20L880%2C225%20L880%2C195%20L910%2C195%20L910%2C225%20L960%2C225%20L960%2C320%20Z%27/%3E%20%3Crect%20x%3D%27980%27%20y%3D%27245%27%20width%3D%2780%27%20height%3D%2775%27/%3E%20%3Crect%20x%3D%271080%27%20y%3D%27150%27%20width%3D%2746%27%20height%3D%27170%27/%3E%20%3Cpolygon%20points%3D%271080%2C150%201103%2C95%201126%2C150%27/%3E%20%3Crect%20x%3D%271144%27%20y%3D%27160%27%20width%3D%2746%27%20height%3D%27160%27/%3E%20%3Cpolygon%20points%3D%271144%2C160%201167%2C105%201190%2C160%27/%3E%20%3Crect%20x%3D%271210%27%20y%3D%27260%27%20width%3D%2760%27%20height%3D%2760%27/%3E%20%3Crect%20x%3D%271290%27%20y%3D%27210%27%20width%3D%2740%27%20height%3D%27110%27/%3E%20%3Cpolygon%20points%3D%271290%2C210%201310%2C175%201330%2C210%27/%3E%20%3Crect%20x%3D%271350%27%20y%3D%27240%27%20width%3D%2790%27%20height%3D%2780%27/%3E%20%3Crect%20x%3D%271460%27%20y%3D%27150%27%20width%3D%2724%27%20height%3D%27170%27/%3E%20%3Cpolygon%20points%3D%271460%2C150%201472%2C105%201484%2C150%27/%3E%20%3Ccircle%20cx%3D%271472%27%20cy%3D%2798%27%20r%3D%277%27/%3E%20%3Crect%20x%3D%271520%27%20y%3D%27250%27%20width%3D%2780%27%20height%3D%2770%27/%3E%20%3C/g%3E%20%3C/svg%3E");
+  }
+
+  /* Automatik: folgt der Systemeinstellung - ausser es wurde ausdruecklich
+     "hell" gewaehlt (dann gewinnt die Auswahl gegen das Betriebssystem). */
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="hell"]){
+    color-scheme: dark;
+    --ink:var(--d-ink);               --ink-soft:var(--d-ink-soft);
+    --paper:var(--d-paper);           --paper-rgb:var(--d-paper-rgb);
+    --card:var(--d-card);             --field:var(--d-field);
+    --line:var(--d-line);             --hover:var(--d-hover);
+    --topbar:var(--d-topbar);
+    --accent-ink:var(--d-accent-ink); --heading-ink:var(--d-heading-ink);
+    --toast-bg:var(--d-toast-bg);     --toast-ink:var(--d-toast-ink);
+    --shadow:var(--d-shadow);         --shadow-lg:var(--d-shadow-lg);
+    --tint-pink-bg:var(--d-tint-pink-bg);     --tint-pink-ink:var(--d-tint-pink-ink);
+    --tint-orange-bg:var(--d-tint-orange-bg); --tint-orange-ink:var(--d-tint-orange-ink);
+    --tint-red-bg:var(--d-tint-red-bg);       --tint-red-ink:var(--d-tint-red-ink);
+    --note-bg:var(--d-note-bg);       --note-line:var(--d-note-line);       --note-ink:var(--d-note-ink);
+    --keyword-bg:var(--d-keyword-bg); --keyword-line:var(--d-keyword-line); --keyword-ink:var(--d-keyword-ink);
+    --skyline-svg:var(--d-skyline);
+    }
+  }
+  /* Handschalter "dunkel": gewinnt immer, unabhaengig vom Betriebssystem. */
+  :root[data-theme="dunkel"]{
+    color-scheme: dark;
+    --ink:var(--d-ink);               --ink-soft:var(--d-ink-soft);
+    --paper:var(--d-paper);           --paper-rgb:var(--d-paper-rgb);
+    --card:var(--d-card);             --field:var(--d-field);
+    --line:var(--d-line);             --hover:var(--d-hover);
+    --topbar:var(--d-topbar);
+    --accent-ink:var(--d-accent-ink); --heading-ink:var(--d-heading-ink);
+    --toast-bg:var(--d-toast-bg);     --toast-ink:var(--d-toast-ink);
+    --shadow:var(--d-shadow);         --shadow-lg:var(--d-shadow-lg);
+    --tint-pink-bg:var(--d-tint-pink-bg);     --tint-pink-ink:var(--d-tint-pink-ink);
+    --tint-orange-bg:var(--d-tint-orange-bg); --tint-orange-ink:var(--d-tint-orange-ink);
+    --tint-red-bg:var(--d-tint-red-bg);       --tint-red-ink:var(--d-tint-red-ink);
+    --note-bg:var(--d-note-bg);       --note-line:var(--d-note-line);       --note-ink:var(--d-note-ink);
+    --keyword-bg:var(--d-keyword-bg); --keyword-line:var(--d-keyword-line); --keyword-ink:var(--d-keyword-ink);
+    --skyline-svg:var(--d-skyline);
+  }
+
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
@@ -57,14 +145,14 @@
     line-height:1.55;
     -webkit-font-smoothing:antialiased;
   }
-  a{color:var(--kas-blue);}
+  a{color:var(--accent-ink);}
   img{max-width:100%;display:block;}
   button{font-family:inherit;}
 
   /* ===== Top bar ===== */
   .topbar{
     position:sticky; top:0; z-index:50;
-    background:var(--kas-blue);
+    background:var(--topbar);
     color:#fff;
     padding:14px 18px;
     display:flex; align-items:center; gap:12px;
@@ -90,6 +178,13 @@
     align-items:center; gap:6px; flex:none;
   }
   .back-btn.show{display:inline-flex;}
+  /* Umschalter fuer die Darstellung - sitzt rechts in der Kopfleiste. */
+  .theme-btn{
+    background:rgba(255,255,255,0.14); border:none; color:#fff; flex:none;
+    width:38px; height:38px; border-radius:999px; cursor:pointer; font-size:1.15rem;
+    display:inline-flex; align-items:center; justify-content:center;
+  }
+  .theme-btn:hover{background:rgba(255,255,255,0.24);}
   .back-btn:hover{background:rgba(255,255,255,0.24);}
 
   /* ===== Layout ===== */
@@ -101,11 +196,11 @@
   .hero{
     text-align:center; padding:8px 4px 26px;
   }
-  .hero h1{font-size:1.6rem; margin:6px 0 4px; color:var(--kas-blue-dark);}
+  .hero h1{font-size:1.6rem; margin:6px 0 4px; color:var(--heading-ink);}
   .hero p{margin:0; color:var(--ink-soft); font-size:0.98rem;}
   .hero .dates{
-    display:inline-block; margin-top:12px; background:#fff; border:1px solid var(--line);
-    padding:8px 16px; border-radius:999px; font-weight:600; font-size:0.9rem; color:var(--kas-blue);
+    display:inline-block; margin-top:12px; background:var(--card); border:1px solid var(--line);
+    padding:8px 16px; border-radius:999px; font-weight:600; font-size:0.9rem; color:var(--accent-ink);
     box-shadow:var(--shadow);
   }
 
@@ -144,11 +239,11 @@
 
   /* ===== Section header ===== */
   .section-head{margin-bottom:18px;}
-  .section-head h2{margin:0 0 4px; font-size:1.4rem; color:var(--kas-blue-dark);}
+  .section-head h2{margin:0 0 4px; font-size:1.4rem; color:var(--heading-ink);}
   .section-head p{margin:0; color:var(--ink-soft); font-size:0.95rem;}
   .pill-row{display:flex; gap:8px; flex-wrap:wrap; margin:16px 0 20px;}
   .pill{
-    border:1px solid var(--line); background:#fff; padding:8px 14px; border-radius:999px;
+    border:1px solid var(--line); background:var(--card); padding:8px 14px; border-radius:999px;
     font-size:0.85rem; font-weight:600; cursor:pointer; color:var(--ink-soft);
   }
   .pill.active{background:var(--kas-blue); border-color:var(--kas-blue); color:#fff;}
@@ -164,7 +259,7 @@
   }
   .item:hover{border-color:var(--kas-blue-light);}
   .item .time{
-    flex:none; width:92px; font-weight:700; color:var(--kas-blue); font-size:0.85rem; padding-top:2px;
+    flex:none; width:92px; font-weight:700; color:var(--accent-ink); font-size:0.85rem; padding-top:2px;
   }
   .item .body{flex:1; min-width:0;}
   .item .title{font-weight:700; font-size:0.98rem; margin:0 0 4px;}
@@ -174,8 +269,8 @@
     display:inline-block; font-size:0.7rem; font-weight:700; padding:2px 8px; border-radius:999px;
     margin-left:8px; vertical-align:middle;
   }
-  .badge.excursion{background:#FCE4F0; color:var(--accent-pink-dark);}
-  .badge.tbd{background:#FFF1DA; color:var(--accent-orange-dark);}
+  .badge.excursion{background:var(--tint-pink-bg); color:var(--tint-pink-ink);}
+  .badge.tbd{background:var(--tint-orange-bg); color:var(--tint-orange-ink);}
 
   .excursion-list{margin-top:6px; display:grid; gap:8px;}
   .excursion-row{
@@ -189,7 +284,7 @@
   .sg-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:10px;}
   @media(max-width:700px){ .sg-grid{grid-template-columns:repeat(2,1fr);} }
   .sg-cell{
-    background:#fff; border:1px dashed var(--line); border-radius:10px; padding:10px; font-size:0.78rem;
+    background:var(--card); border:1px dashed var(--line); border-radius:10px; padding:10px; font-size:0.78rem;
     color:var(--ink-soft); text-align:center;
   }
   .sg-cell b{display:block; color:var(--ink); font-size:0.8rem; margin-bottom:2px;}
@@ -199,9 +294,9 @@
     background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
     padding:20px; box-shadow:var(--shadow); margin-bottom:16px;
   }
-  .card h3{margin-top:0; color:var(--kas-blue-dark); font-size:1.1rem;}
+  .card h3{margin-top:0; color:var(--heading-ink); font-size:1.1rem;}
   .placeholder-note{
-    background:#FFF7E6; border:1px solid #F6D48A; color:#6B4E00; font-size:0.82rem;
+    background:var(--note-bg); border:1px solid var(--note-line); color:var(--note-ink); font-size:0.82rem;
     padding:10px 14px; border-radius:10px; margin:10px 0;
   }
   .grid-2{display:grid; gap:16px; grid-template-columns:1fr;}
@@ -212,7 +307,7 @@
   form label{display:block; font-weight:600; font-size:0.88rem; margin-bottom:6px;}
   form input[type=text], form input[type=email], form input[type=tel], form select, form textarea{
     width:100%; padding:11px 12px; border:1px solid var(--line); border-radius:10px; font-size:0.95rem;
-    background:#fff; font-family:inherit;
+    background:var(--field); font-family:inherit;
   }
   form input:focus, form select:focus, form textarea:focus{outline:2px solid var(--kas-blue-light); outline-offset:1px;}
   .req{color:var(--accent-pink);}
@@ -224,7 +319,7 @@
     display:flex; align-items:flex-start; gap:10px; padding:10px; border-radius:10px; margin-bottom:6px;
     border:1px solid transparent; cursor:pointer;
   }
-  .exc-option:hover{background:#F3F6FA;}
+  .exc-option:hover{background:var(--hover);}
   .exc-option.disabled{opacity:0.5; cursor:not-allowed;}
   .exc-option input{margin-top:3px;}
   .exc-option .txt{flex:1;}
@@ -238,8 +333,8 @@
   }
   .btn:hover{background:var(--kas-blue-dark);}
   .btn.pink{background:var(--accent-pink);} .btn.pink:hover{background:var(--accent-pink-dark);}
-  .btn.ghost{background:#fff; color:var(--kas-blue); border:1px solid var(--line);}
-  .btn.ghost:hover{background:#F3F6FA;}
+  .btn.ghost{background:var(--card); color:var(--accent-ink); border:1px solid var(--line);}
+  .btn.ghost:hover{background:var(--hover);}
   .btn:disabled{opacity:0.5; cursor:not-allowed;}
 
   .success-box{
@@ -255,7 +350,7 @@
   .hotel-table th, .hotel-table td{text-align:left; padding:9px 8px; border-bottom:1px solid var(--line);}
   .hotel-table th{color:var(--ink-soft); font-weight:600; font-size:0.78rem; text-transform:uppercase; letter-spacing:.03em;}
   .keyword-box{
-    background:#F1EDFF; border:1px solid #D9CDFF; color:var(--accent-purple-dark);
+    background:var(--keyword-bg); border:1px solid var(--keyword-line); color:var(--keyword-ink);
     border-radius:10px; padding:10px 14px; font-size:0.88rem; margin-top:12px;
   }
   .keyword-box b{font-family:monospace; font-size:0.95rem;}
@@ -270,7 +365,7 @@
   .announcement .a-date{font-size:0.76rem; color:var(--ink-soft); font-weight:600;}
   .announcement .a-title{font-weight:700; font-size:0.95rem; margin:0;}
   .announcement .a-text{font-size:0.88rem; color:var(--ink-soft); margin:4px 0 0;}
-  .badge.new{background:#FDE3E1; color:var(--accent-red-dark);}
+  .badge.new{background:var(--tint-red-bg); color:var(--tint-red-ink);}
   .contact-avatar{
     width:52px;height:52px;border-radius:50%;background:var(--kas-blue);color:#fff;flex:none;
     display:flex;align-items:center;justify-content:center;font-weight:700;
@@ -296,12 +391,12 @@
   dialog.modal::backdrop{background:rgba(10,15,25,0.55);}
   dialog.modal[open]{animation:modalIn .18s ease;}
   @keyframes modalIn{from{opacity:0; transform:translateY(10px) scale(.98);} to{opacity:1; transform:none;}}
-  .modal h3{margin-top:0; color:var(--kas-blue-dark); padding-right:34px;}
+  .modal h3{margin-top:0; color:var(--heading-ink); padding-right:34px;}
   .modal .close{
     float:right; background:none; border:none; font-size:1.25rem; cursor:pointer;
     color:var(--ink-soft); line-height:1; padding:5px; margin:-4px -4px 0 0; border-radius:9px;
   }
-  .modal .close:hover{background:var(--paper); color:var(--ink);}
+  .modal .close:hover{background:var(--hover); color:var(--ink);}
 
   /* Bewegungsreduktion respektieren (Systemeinstellung "Bewegung reduzieren"). */
   @media (prefers-reduced-motion: reduce){
@@ -312,8 +407,8 @@
   .detail-modal .v{font-size:0.98rem; font-weight:600;}
 
   .toast{
-    position:fixed; bottom:22px; left:50%; transform:translateX(-50%); background:var(--ink);
-    color:#fff; padding:12px 20px; border-radius:999px; font-size:0.85rem; box-shadow:var(--shadow-lg);
+    position:fixed; bottom:22px; left:50%; transform:translateX(-50%); background:var(--toast-bg);
+    color:var(--toast-ink); padding:12px 20px; border-radius:999px; font-size:0.85rem; box-shadow:var(--shadow-lg);
     opacity:0; pointer-events:none; transition:opacity .25s, transform .25s; z-index:200;
   }
   .toast.show{opacity:1; transform:translateX(-50%) translateY(-6px);}
@@ -323,7 +418,7 @@
     position:fixed; inset:0; z-index:-1; pointer-events:none;
     background-color:var(--paper);
     background-image:
-      linear-gradient(180deg, rgba(247,248,250,0.94) 0%, rgba(247,248,250,0.80) 55%, rgba(247,248,250,0.94) 100%),
+      linear-gradient(180deg, rgba(var(--paper-rgb),0.94) 0%, rgba(var(--paper-rgb),0.80) 55%, rgba(var(--paper-rgb),0.94) 100%),
       var(--skyline-svg);
     background-repeat:no-repeat; background-position:center bottom, center bottom;
     background-size:cover, cover;
@@ -334,7 +429,7 @@
   .contact-grid{display:grid; gap:14px; grid-template-columns:1fr;}
   @media(min-width:700px){ .contact-grid{grid-template-columns:1fr 1fr;} }
   .contact-card .c-name{font-weight:700;}
-  .contact-card .c-role{color:var(--kas-blue); font-size:0.82rem; font-weight:600; margin:2px 0 6px;}
+  .contact-card .c-role{color:var(--accent-ink); font-size:0.82rem; font-weight:600; margin:2px 0 6px;}
   .contact-card .c-line{font-size:0.86rem; color:var(--ink-soft); line-height:1.6;}
 
   /* ===== FAQ accordion ===== */
@@ -346,7 +441,7 @@
     padding:14px 16px; font-weight:700; font-size:0.92rem; cursor:pointer;
     display:flex; justify-content:space-between; align-items:center; gap:10px;
   }
-  .faq-q .plus{color:var(--kas-blue); font-size:1.1rem; flex:none; transition:transform .2s;}
+  .faq-q .plus{color:var(--accent-ink); font-size:1.1rem; flex:none; transition:transform .2s;}
   .faq-item.open .faq-q .plus{transform:rotate(45deg);}
   .faq-a{max-height:0; overflow:hidden; transition:max-height .25s ease;}
   .faq-a-inner{padding:0 16px 16px; color:var(--ink-soft); font-size:0.88rem;}
@@ -373,10 +468,23 @@
     stroke-linecap:round; stroke-linejoin:round;
     overflow:visible;
   }
-  h2 .ico, h3 .ico{vertical-align:-0.1em; margin-right:.35em; color:var(--kas-blue);}
+  h2 .ico, h3 .ico{vertical-align:-0.1em; margin-right:.35em; color:var(--accent-ink);}
   .meta .ico{font-size:0.95em; opacity:.85;}
 
 </style>
+
+<script>
+/* Laeuft bewusst HIER im <head> und nicht unten beim uebrigen Skript: die
+   gespeicherte Auswahl muss vor dem ersten Bildaufbau stehen, sonst blitzt die
+   helle Darstellung kurz auf, bevor auf dunkel umgeschaltet wird. Ohne
+   Auswahl bleibt das Attribut weg - dann entscheidet die Systemeinstellung. */
+(function(){
+  try{
+    var wahl = localStorage.getItem("darstellung");
+    if(wahl === "hell" || wahl === "dunkel") document.documentElement.dataset.theme = wahl;
+  }catch(e){}   /* privates Fenster / gesperrter Speicher: einfach Automatik */
+})();
+</script>
 </head>
 <body>
 
@@ -412,6 +520,9 @@
   <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.8-7 10-7 10 7 10 7-3.8 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></symbol>
   <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 7.5v13"/><path d="M3 4.5h5a4 4 0 0 1 4 3 4 4 0 0 1 4-3h5v13h-5.5a3.5 3.5 0 0 0-3.5 3 3.5 3.5 0 0 0-3.5-3H3z"/></symbol>
   <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7.5 7.5 4.5-4.5 4.5 4.5"/><path d="M12 3v12.5"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.3"/><path d="M12 1.8v2.4"/><path d="M12 19.8v2.4"/><path d="m4.6 4.6 1.7 1.7"/><path d="m17.7 17.7 1.7 1.7"/><path d="M1.8 12h2.4"/><path d="M19.8 12h2.4"/><path d="m4.6 19.4 1.7-1.7"/><path d="m17.7 6.3 1.7-1.7"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.5 14.6A8.6 8.6 0 1 1 9.4 3.5a6.9 6.9 0 0 0 11.1 11.1z"/></symbol>
+  <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="2" y="3.5" width="20" height="13" rx="2.5"/><path d="M8 21h8"/><path d="M12 16.5V21"/></symbol>
   <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
   <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></symbol>
   <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
@@ -428,6 +539,9 @@
       <div class="t2">Hildesheim · 5.–9. Mai 2027</div>
     </div>
   </div>
+  <button class="theme-btn" id="themeBtn" type="button" onclick="darstellungWeiterschalten()">
+    <svg class="ico" aria-hidden="true"><use href="#i-monitor"></use></svg>
+  </button>
 </div>
 
 <div class="wrap">
@@ -1112,7 +1226,7 @@ function renderProgram(){
     block.id = "block-" + day.id;
 
     const h = document.createElement("div");
-    h.style.cssText = "font-weight:700;color:var(--kas-blue-dark);margin:6px 0 12px;";
+    h.style.cssText = "font-weight:700;color:var(--heading-ink);margin:6px 0 12px;";
     h.textContent = day.full;
     block.appendChild(h);
 
@@ -1305,7 +1419,7 @@ function submitRegistration(e){
       <p>Vielen Dank, ${vorname} ${nachname}! Eure Anmeldung (Nr. ${regCounter}) für die Jahrestagung 2027 ist eingegangen.</p>
       <p><b>Exkursion:</b> ${excTitle}</p>
       <p style="font-size:0.85rem;opacity:0.9;">Eine Bestätigung würde im echten Betrieb zusätzlich per E-Mail an ${email} versendet.</p>
-      <button class="btn ghost" style="margin-top:10px;background:#fff;" onclick="resetRegistration()">Weitere Anmeldung erfassen</button>
+      <button class="btn ghost" style="margin-top:10px;background:#fff;color:var(--kas-blue);" onclick="resetRegistration()">Weitere Anmeldung erfassen</button>
     </div>`;
   showToast("Anmeldung gespeichert (Testmodus).");
 }
@@ -1316,6 +1430,61 @@ function resetRegistration(){
   renderExcursionOptions();
   window.scrollTo({top:0, behavior:"smooth"});
 }
+
+/* =====================================================================
+   DARSTELLUNG (hell / dunkel)
+
+   Drei Zustaende im Wechsel: Automatik (folgt dem Betriebssystem) -> Hell ->
+   Dunkel -> Automatik. Die Auswahl liegt in localStorage und gilt nur fuer
+   das jeweilige Geraet. Die Farben selbst stehen als CSS-Variablen im
+   <style>-Bereich (Abschnitt "Dunkle Palette").
+   ===================================================================== */
+const DARSTELLUNGEN = [
+  { wert:"auto",   icon:"monitor", name:"Automatisch" },
+  { wert:"hell",   icon:"sun",     name:"Hell" },
+  { wert:"dunkel", icon:"moon",    name:"Dunkel" }
+];
+const SYSTEM_DUNKEL = window.matchMedia("(prefers-color-scheme: dark)");
+
+function darstellungLesen(){
+  try{
+    const wahl = localStorage.getItem("darstellung");
+    if(DARSTELLUNGEN.some(d => d.wert === wahl)) return wahl;
+  }catch(e){}
+  return "auto";
+}
+
+function darstellungSetzen(wert, speichern){
+  if(wert === "auto") delete document.documentElement.dataset.theme;
+  else document.documentElement.dataset.theme = wert;
+  if(speichern){ try{ localStorage.setItem("darstellung", wert); }catch(e){} }
+  darstellungAnzeigen(wert);
+}
+
+function darstellungAnzeigen(wert){
+  const i        = DARSTELLUNGEN.findIndex(d => d.wert === wert);
+  const jetzt    = DARSTELLUNGEN[i];
+  const naechste = DARSTELLUNGEN[(i + 1) % DARSTELLUNGEN.length];
+  const btn = document.getElementById("themeBtn");
+  btn.querySelector("use").setAttribute("href", "#i-" + jetzt.icon);
+  const text = "Darstellung: " + jetzt.name + " – umschalten auf " + naechste.name;
+  btn.setAttribute("aria-label", text);
+  btn.title = text;
+
+  /* Adressleiste mobiler Browser mitfaerben (entspricht der Kopfleiste). */
+  const dunkel = wert === "dunkel" || (wert === "auto" && SYSTEM_DUNKEL.matches);
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if(meta) meta.setAttribute("content", dunkel ? "#002C54" : "#004684");
+}
+
+function darstellungWeiterschalten(){
+  const i = DARSTELLUNGEN.findIndex(d => d.wert === darstellungLesen());
+  darstellungSetzen(DARSTELLUNGEN[(i + 1) % DARSTELLUNGEN.length].wert, true);
+}
+
+/* Aendert sich die Systemeinstellung bei geoeffneter Seite, zieht die
+   Automatik-Einstellung mit (CSS von selbst, Beschriftung und Meta hier). */
+SYSTEM_DUNKEL.addEventListener("change", () => darstellungAnzeigen(darstellungLesen()));
 
 /* ================= Toast ================= */
 let toastTimer;
@@ -1528,6 +1697,7 @@ function generateProgramPDF(){
 }
 
 /* ================= Init ================= */
+darstellungSetzen(darstellungLesen(), false);   /* Umschalter beschriften */
 renderProgram();
 updateHomeNewBadge();
 applyRoute();   /* Ansicht aus der Adresse herstellen (Deep Link / Neuladen) */
