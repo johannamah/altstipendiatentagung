@@ -38,6 +38,25 @@ Alle Programm-/Exkursions-/Hotel-/Ankündigungsinhalte befinden sich gut sichtba
 
 Farben sind als CSS-Variablen ganz oben im `<style>`-Bereich hinterlegt (`--kas-blue` usw.). Blau, Orange und Grün wurden direkt aus dem mitgelieferten Vereinslogo übernommen; Pink, Türkis, Violett, Rot, Gold und Braun sind dazu passend ausgesuchte Ergänzungsfarben ohne Vorlage im Logo und können bei Bedarf angepasst werden.
 
+## 3a. Direktlinks auf einzelne Ansichten
+
+Jede Ansicht hat eine eigene Adresse. Damit funktionieren der Zurück-Button des Browsers und die Wischgeste zurück, und einzelne Seiten lassen sich gezielt verlinken (z. B. in einer Rundmail „hier geht es direkt zur Anmeldung"):
+
+| Ansicht | Adresse |
+|---|---|
+| Startseite | `.../index.html` |
+| Ankündigungen | `.../index.html#/ankuendigungen` |
+| Begrüßungsworte | `.../index.html#/begruessung` |
+| Programm | `.../index.html#/programm` |
+| Anmeldung | `.../index.html#/anmeldung` |
+| Unterbringung | `.../index.html#/unterbringung` |
+| Fotos | `.../index.html#/fotos` |
+| Hildesheim & Umgebung | `.../index.html#/hildesheim` |
+| FAQ | `.../index.html#/faq` |
+| Kontakt & Orga-Team | `.../index.html#/kontakt` |
+
+Eine unbekannte Adresse führt automatisch zurück auf die Startseite. Die Zuordnung steht im `<script>`-Bereich im Abschnitt `ROUTES` und kann dort angepasst werden.
+
 ## 4. Logo & Icons austauschen
 
 Alle Icon-Dateien (`favicon.ico`, `apple-touch-icon.png`, `assets/favicon-*.png`, `assets/logo-icon-*.png`) wurden automatisch aus dem hochgeladenen Vereinslogo zugeschnitten. Soll ein anderes/aktualisiertes Logo verwendet werden, genügt es, ein neues Logo bereitzustellen – wir erzeugen daraus dieselben Dateien neu.
