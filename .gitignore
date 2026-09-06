@@ -1,0 +1,12 @@
+# Abhaengigkeiten (im Dev-Container ein eigenes Docker-Volume unter /workspace/node_modules)
+node_modules/
+
+# Betriebssystem-Artefakte
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor-/Werkzeugverzeichnisse
+.vscode/
+.idea/
+*.swp
