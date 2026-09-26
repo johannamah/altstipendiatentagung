@@ -262,22 +262,32 @@ test.describe("Zeitachse", () => {
         return "keiner";
       };
 
-      const taeter = [...document.querySelectorAll("body *")]
-        .map((element) => ({ element, rechts: element.getBoundingClientRect().right }))
-        .filter((eintrag) => eintrag.rechts > breite + 1)
-        .sort((a, b) => b.rechts - a.rechts)
-        .slice(0, 4)
-        .map(
-          (eintrag) =>
-            `${beschreibe(eintrag.element)} bis ${Math.round(eintrag.rechts)}px, beschnitten von: ${scrollVorfahr(eintrag.element)}`,
-        );
+      /* Entscheidend ist NICHT, welches Element am weitesten rechts liegt -
+         innerhalb eines Scrollbereichs ist das voellig in Ordnung. Entscheidend
+         ist, welches Element ueber den Rand ragt, OHNE dass ein Vorfahr es
+         beschneidet. Nur die spannen die Seite auf. */
+      const ueberRand = [...document.querySelectorAll("body *")]
+        .map((element) => ({
+          element,
+          rechts: element.getBoundingClientRect().right,
+          beschnittenVon: scrollVorfahr(element),
+        }))
+        .filter((eintrag) => eintrag.rechts > breite + 1);
 
-      return { ueberbreite: document.documentElement.scrollWidth - breite, taeter };
+      const taeter = ueberRand
+        .filter((eintrag) => eintrag.beschnittenVon === "keiner")
+        .sort((a, b) => b.rechts - a.rechts)
+        .slice(0, 5)
+        .map((eintrag) => `${beschreibe(eintrag.element)} bis ${Math.round(eintrag.rechts)}px`);
+
+      const beschnitten = ueberRand.length - taeter.length;
+
+      return { ueberbreite: document.documentElement.scrollWidth - breite, taeter, beschnitten };
     });
 
     expect(
       befund.ueberbreite,
-      `Die Seite ist ${befund.ueberbreite}px zu breit.\n  ${befund.taeter.join("\n  ") || "kein Element ragt über den Rand"}`,
+      `Die Seite ist ${befund.ueberbreite}px zu breit.\n  Unbeschnitten über den Rand:\n  ${befund.taeter.join("\n  ") || "KEINS — die Ursache liegt woanders"}\n  (${befund.beschnitten} weitere ragen hinaus, werden aber beschnitten)`,
     ).toBeLessThanOrEqual(0);
 
     const bereichScrollt = await page.evaluate(() => {
