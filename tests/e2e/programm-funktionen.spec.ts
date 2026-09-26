@@ -240,28 +240,44 @@ test.describe("Zeitachse", () => {
     await page.setViewportSize({ width: 320, height: 800 });
     await page.getByRole("button", { name: "Als Zeitachse" }).click();
 
-    /* Nicht nur "die Seite ist zu breit" melden, sondern WELCHES Element sie
-       aufspannt. Ohne das ist ein roter Lauf in der CI eine Sackgasse - man
-       sieht die Zahl, aber nicht die Ursache. */
+    /* Nicht nur "die Seite ist zu breit" melden, sondern das breiteste Element
+       UND ob ein Vorfahr es eigentlich beschneiden muesste. Ohne diese beiden
+       Angaben ist ein roter Lauf in der CI eine Sackgasse, solange sich lokal
+       kein Browser starten laesst. */
     const befund = await page.evaluate(() => {
       const breite = document.documentElement.clientWidth;
-      const taeter = [...document.querySelectorAll<HTMLElement>("body *")]
-        .filter((element) => element.getBoundingClientRect().right > breite + 1)
-        .map((element) => {
-          const rechteck = element.getBoundingClientRect();
-          return `${element.tagName.toLowerCase()}.${element.className || "(ohne Klasse)"} bis ${Math.round(rechteck.right)}px`;
-        })
-        .slice(0, 6);
 
-      return {
-        ueberbreite: document.documentElement.scrollWidth - breite,
-        taeter,
+      const beschreibe = (element: Element) => {
+        const klasse = element.className?.toString().split(" ")[0] || "(ohne Klasse)";
+        return `${element.tagName.toLowerCase()}.${klasse}`;
       };
+
+      const scrollVorfahr = (element: Element) => {
+        for (let eltern = element.parentElement; eltern; eltern = eltern.parentElement) {
+          const stil = getComputedStyle(eltern);
+          if (stil.overflowX !== "visible") {
+            return `${beschreibe(eltern)} (overflow-x: ${stil.overflowX})`;
+          }
+        }
+        return "keiner";
+      };
+
+      const taeter = [...document.querySelectorAll("body *")]
+        .map((element) => ({ element, rechts: element.getBoundingClientRect().right }))
+        .filter((eintrag) => eintrag.rechts > breite + 1)
+        .sort((a, b) => b.rechts - a.rechts)
+        .slice(0, 4)
+        .map(
+          (eintrag) =>
+            `${beschreibe(eintrag.element)} bis ${Math.round(eintrag.rechts)}px, beschnitten von: ${scrollVorfahr(eintrag.element)}`,
+        );
+
+      return { ueberbreite: document.documentElement.scrollWidth - breite, taeter };
     });
 
     expect(
       befund.ueberbreite,
-      `Die Seite ist ${befund.ueberbreite}px zu breit. Verursacher: ${befund.taeter.join(" | ") || "keiner gefunden"}`,
+      `Die Seite ist ${befund.ueberbreite}px zu breit.\n  ${befund.taeter.join("\n  ") || "kein Element ragt über den Rand"}`,
     ).toBeLessThanOrEqual(0);
 
     const bereichScrollt = await page.evaluate(() => {

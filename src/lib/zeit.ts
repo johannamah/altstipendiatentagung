@@ -108,9 +108,12 @@ export function laufendUm(punkte: readonly Programmpunkt[], jetzt: string): Zeit
     return { laufend: [], naechster: null };
   }
 
-  const laufend = mitZeit.filter(
-    (p) => p.ende !== undefined && p.beginn! <= jetzt && jetzt < p.ende,
-  );
+  /* Sortiert wie die Ansicht: nach Beginn, bei Gleichstand nach Titel.
+     Ohne das ist laufend[0] der erste Punkt in DATEI-Reihenfolge - und die
+     Ansicht scrollt zu einem anderen Punkt als dem, den man oben sieht. */
+  const laufend = mitZeit
+    .filter((p) => p.ende !== undefined && p.beginn! <= jetzt && jetzt < p.ende)
+    .sort((a, b) => a.beginn!.localeCompare(b.beginn!) || a.titel.localeCompare(b.titel, "de"));
 
   const kommende = mitZeit
     .filter((p) => p.beginn! > jetzt)
