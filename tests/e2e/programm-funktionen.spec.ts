@@ -243,34 +243,46 @@ test.describe("Zeitachse", () => {
     /* Geprueft wird, was Regel 10 wirklich meint: Laesst sich die SEITE
        seitwaerts schieben?
 
-       Reihenfolge beachten: erst messen, dann schieben. Wird nach dem Schieben
-       gemessen, rutschen genau die Elemente wieder in den sichtbaren Bereich,
-       die man sucht - die Diagnose meldete deshalb im letzten Lauf "keiner
-       gefunden", obwohl die Seite sich um 1174px schieben liess. */
-    const taeter = await page.evaluate(() => {
-      const breite = document.documentElement.clientWidth;
+       Die Ursache wird eingegrenzt, statt geraten: Ein Teilbaum nach dem
+       anderen wird versuchsweise ausgeblendet; verschwindet die Ueberbreite
+       dabei, liegt die Ursache darin, und es geht eine Ebene tiefer weiter.
+       Das benennt den Verursacher auch dann, wenn kein einzelnes Rechteck
+       ueber den Rand ragt - etwa bei Pseudo-Elementen oder bei Inhalten, die
+       ihren Container von innen aufspannen. */
+    const pfad = await page.evaluate(() => {
+      const ueberbreite = () =>
+        document.documentElement.scrollWidth - document.documentElement.clientWidth;
+
+      if (ueberbreite() <= 0) return ["keine Ueberbreite messbar"];
 
       const beschreibe = (element: Element) => {
-        const klasse = element.className?.toString().split(" ")[0] || "(ohne Klasse)";
-        return `${element.tagName.toLowerCase()}.${klasse}`;
+        const klasse = element.className?.toString().trim().split(/\s+/)[0];
+        const kennung = element.id ? `#${element.id}` : klasse ? `.${klasse}` : "";
+        return `${element.tagName.toLowerCase()}${kennung}`;
       };
 
-      const beschneidenderVorfahr = (element: Element) => {
-        for (let eltern = element.parentElement; eltern; eltern = eltern.parentElement) {
-          if (getComputedStyle(eltern).overflowX !== "visible") return beschreibe(eltern);
+      const spur: string[] = [];
+      let knoten: Element = document.body;
+
+      suche: for (let tiefe = 0; tiefe < 12; tiefe += 1) {
+        for (const kind of [...knoten.children]) {
+          if (!(kind instanceof HTMLElement)) continue;
+
+          const vorher = kind.style.display;
+          kind.style.display = "none";
+          const behoben = ueberbreite() <= 0;
+          kind.style.display = vorher;
+
+          if (behoben) {
+            spur.push(beschreibe(kind));
+            knoten = kind;
+            continue suche;
+          }
         }
-        return null;
-      };
+        break;
+      }
 
-      return [...document.querySelectorAll("body *")]
-        .map((element) => ({ element, rechts: element.getBoundingClientRect().right }))
-        .filter(
-          (eintrag) =>
-            eintrag.rechts > breite + 1 && beschneidenderVorfahr(eintrag.element) === null,
-        )
-        .sort((a, b) => b.rechts - a.rechts)
-        .slice(0, 5)
-        .map((eintrag) => `${beschreibe(eintrag.element)} bis ${Math.round(eintrag.rechts)}px`);
+      return spur.length > 0 ? spur : ["kein einzelner Teilbaum verantwortlich"];
     });
 
     // behavior "instant": basis.css schaltet weiches Scrollen ein, sonst misst
@@ -280,7 +292,7 @@ test.describe("Zeitachse", () => {
 
     expect(
       verschoben,
-      `Die Seite liess sich um ${verschoben}px seitwaerts schieben. Verursacher: ${taeter.join(" | ") || "keiner gefunden"}`,
+      `Die Seite liess sich um ${verschoben}px seitwaerts schieben. Spur: ${pfad.join(" > ")}`,
     ).toBe(0);
 
     const bereichScrollt = await page.evaluate(() => {
