@@ -91,6 +91,30 @@ h3 {
   text-wrap: balance;
 }
 
+/* Deutsche Komposita sprengen schmale Bildschirme.
+   "Übernachtungsempfehlungen" hat 25 Zeichen und ist als Ueberschrift breiter
+   als ein 320px-Display - das war ein echter Ueberlauf auf der Seite
+   "Unterbringung", gefunden erst von der CI.
+
+   hyphens greift, weil <html lang="de"> gesetzt ist: Der Browser trennt dann
+   nach deutschen Regeln. overflow-wrap ist der Notnagel fuer den Fall, dass
+   kein Trennwoerterbuch vorliegt - dann bricht das Wort hart, was haesslich
+   ist, aber immer noch besser als eine waagerecht scrollende Seite.
+
+   Gilt fuer den ganzen Textfluss, nicht nur fuer Ueberschriften: In diesem
+   Projekt sind lange Zusammensetzungen die Regel, nicht die Ausnahme. */
+h1,
+h2,
+h3,
+p,
+li,
+dd,
+th,
+td {
+  hyphens: auto;
+  overflow-wrap: break-word;
+}
+
 h1 {
   font-size: var(--schrift-h1);
 }
