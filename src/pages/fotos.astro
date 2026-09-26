@@ -1,0 +1,83 @@
+---
+import Basis from "../layouts/Basis.astro";
+import Seitenkopf from "../components/Seitenkopf.astro";
+import Platzhalterhinweis from "../components/Platzhalterhinweis.astro";
+import Ikone from "../components/Ikone.astro";
+
+/**
+ * Der Link ist ein Platzhalter. Er wird bewusst NICHT als Knopf dargestellt,
+ * solange er ins Leere fuehrt - ein Knopf, der nichts tut, ist schlimmer als
+ * keiner (dieselbe Regel wie bei den Bedienelementen im Programm).
+ */
+const FOTOALBUM_URL: string | null = null;
+---
+
+<Basis
+  titel="Fotos – Jahrestagung 2027"
+  beschreibung="Gemeinsames Fotoalbum der Altstipendiatentagung 2027 in Hildesheim."
+>
+  <Seitenkopf
+    ikone="camera"
+    titel="Fotos"
+    einleitung="Teilt eure schönsten Momente der Tagung und schaut euch die Fotos der anderen Teilnehmenden an."
+  />
+
+  <Platzhalterhinweis>
+    Es ist noch kein Fotoalbum verknüpft. Das Orga-Team hinterlegt den Link in
+    <code>src/pages/fotos.astro</code> – etwa ein geteiltes Album, eine Nextcloud-Freigabe oder ein
+    vergleichbarer Dienst, bei dem ohne eigenes Konto hochgeladen werden kann.
+  </Platzhalterhinweis>
+
+  <section class="karte">
+    <h2>
+      <Ikone name="camera" /> Gemeinsames Fotoalbum
+    </h2>
+
+    {FOTOALBUM_URL ? (
+      <>
+        <p>
+          Über den Link könnt ihr eigene Fotos hochladen und die Fotos aller Teilnehmenden ansehen.
+        </p>
+        <a class="knopf" href={FOTOALBUM_URL} target="_blank" rel="noopener">
+          <Ikone name="upload" />
+          <span>Fotos ansehen & hochladen</span>
+        </a>
+      </>
+    ) : (
+      <p>
+        Sobald das Album eingerichtet ist, steht der Link an dieser Stelle. Bis dahin sammelt das
+        Orga-Team Fotos über die bekannten Wege.
+      </p>
+    )}
+  </section>
+
+  <section class="karte">
+    <h2>
+      <Ikone name="alert" /> Vor dem Hochladen
+    </h2>
+    <p>
+      Auf Fotos sind Menschen zu erkennen – das sind personenbezogene Daten. Wie Einwilligung,
+      Widerruf und Löschung geregelt werden, ist noch nicht geklärt. Diese Frage wird vor der Tagung
+      beantwortet und hier verständlich beschrieben.
+    </p>
+  </section>
+</Basis>
+
+<style>
+  h2 {
+    font-size: var(--schrift-h3);
+  }
+
+  .knopf {
+    display: inline-flex;
+    gap: var(--raum-2);
+    align-items: center;
+    min-height: 44px;
+    padding: var(--raum-3) var(--raum-6);
+    font-weight: 700;
+    color: var(--kachel-blau-text);
+    text-decoration: none;
+    background: var(--kachel-blau-von);
+    border-radius: 999px;
+  }
+</style>

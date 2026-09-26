@@ -1,0 +1,118 @@
+---
+import Basis from "../layouts/Basis.astro";
+import Seitenkopf from "../components/Seitenkopf.astro";
+import Platzhalterhinweis from "../components/Platzhalterhinweis.astro";
+import Ikone from "../components/Ikone.astro";
+
+const sehenswuerdigkeiten = [
+  "Dom St. Mariae & Domschatz (UNESCO-Welterbe)",
+  "St. Michaeliskirche (UNESCO-Welterbe)",
+  "Marktplatz mit Knochenhaueramtshaus",
+  "St. Godehard-Basilika",
+  "Roemer- und Pelizaeus-Museum",
+  "Historische Altstadt und Wallanlagen",
+];
+
+const restaurants = [
+  "Zur Scharfen Ecke – deutsche Küche",
+  "Gasthof Kupferschmiede – deutsche Küche",
+  "Schlegel's Weinstube – regionale Küche",
+  "Amadeus Café & Restaurant",
+  "India Haus Hildesheim – indische Küche",
+];
+---
+
+<Basis
+  titel="Hildesheim & Umgebung – Jahrestagung 2027"
+  beschreibung="Geschichte, Sehenswürdigkeiten und Tipps für die Zeit neben dem Programm der Jahrestagung 2027."
+>
+  <Seitenkopf
+    ikone="landmark"
+    titel="Hildesheim & Umgebung"
+    einleitung="Ein paar Tipps für die Zeit neben dem Programm."
+  />
+
+  <article class="karte">
+    <h2>
+      <Ikone name="book" /> Zur Geschichte Hildesheims
+    </h2>
+
+    <p>
+      Hildesheim zählt zu den ältesten Städten Norddeutschlands: Die Bischofsstadt geht auf eine
+      Gründung Kaiser Ludwigs des Frommen im Jahr 815 zurück. Unter Bischof Bernward (993–1022)
+      erlebte die Stadt eine erste kulturelle Blüte.
+    </p>
+
+    <p>
+      Der Hildesheimer Dom St. Mariae und die Michaeliskirche gehören seit 1985 zum
+      UNESCO-Weltkulturerbe. Am Dom rankt zudem der legendäre „Tausendjährige Rosenstock“, der
+      Zerstörung und Wiederaufbau der Stadt überstanden hat.
+    </p>
+
+    <p>
+      Am 22. März 1945 wurde die historische Altstadt bei einem Luftangriff fast vollständig
+      zerstört. Der originalgetreue Wiederaufbau von Wahrzeichen wie dem Marktplatz mit dem
+      Knochenhaueramtshaus prägt das Stadtbild bis heute.
+    </p>
+  </article>
+
+  <div class="zweispaltig">
+    <div class="spalten">
+      <section class="karte">
+        <h2>
+          <Ikone name="eye" /> Sehenswürdigkeiten
+        </h2>
+        <ul>
+          {sehenswuerdigkeiten.map((eintrag) => (
+            <li>{eintrag}</li>
+          ))}
+        </ul>
+      </section>
+
+      <section class="karte">
+        <h2>
+          <Ikone name="utensils" /> Restaurants
+        </h2>
+        <ul>
+          {restaurants.map((eintrag) => (
+            <li>{eintrag}</li>
+          ))}
+        </ul>
+        <p class="quelle">
+          Auswahl auf Basis öffentlicher Bewertungsportale (Stand: Recherche 2026) – bitte vor der
+          Tagung auf Aktualität prüfen.
+        </p>
+      </section>
+    </div>
+  </div>
+
+  <section class="karte">
+    <h2>
+      <Ikone name="coffee" /> Cafés
+    </h2>
+    <p>
+      Café Bar Tasca Arcada, Amadeus Café & Restaurant sowie zahlreiche kleine Cafés rund um den
+      Marktplatz und die Almstraße laden zur Pause zwischen den Programmpunkten ein.
+    </p>
+  </section>
+
+  <Platzhalterhinweis>
+    Diese Liste ist ein erster Entwurf. Bitte durch aktuelle, vom Orga-Team kuratierte Tipps
+    ergänzen oder ersetzen.
+  </Platzhalterhinweis>
+</Basis>
+
+<style>
+  h2 {
+    font-size: var(--schrift-h3);
+  }
+
+  .zweispaltig {
+    margin-bottom: var(--raum-4);
+  }
+
+  .quelle {
+    font-size: var(--schrift-klein);
+    color: var(--text-leise);
+  }
+</style>

@@ -162,3 +162,50 @@ a {
   stroke-linejoin: round;
   flex: none;
 }
+
+/* ===== Karte =====
+   Die wiederkehrende Flaeche fuer abgegrenzte Inhalte. Als Klasse in den
+   Grundstilen und nicht als Komponente: Sie traegt kein Verhalten, und eine
+   Komponente je Umrandung macht das Markup nur schwerer lesbar. */
+.karte {
+  padding: var(--raum-4);
+  margin-bottom: var(--raum-4);
+  background: var(--karte);
+  border: 1px solid var(--rand);
+  border-radius: var(--radius);
+  box-shadow: var(--schatten);
+}
+
+.karte > :last-child {
+  margin-bottom: 0;
+}
+
+.karte h2,
+.karte h3 {
+  display: flex;
+  gap: var(--raum-2);
+  align-items: center;
+}
+
+/* Zwei Spalten, sobald Platz ist - darunter untereinander. Container Query,
+   weil die Entscheidung von der Breite des Inhaltsbereichs abhaengt und nicht
+   von der des Fensters (Regel 9). */
+.zweispaltig {
+  container-type: inline-size;
+}
+
+.zweispaltig > .spalten {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: var(--raum-4);
+}
+
+/* Aufzaehlungen in Karten: Einzug statt haengender Punkte am Rand. */
+.karte ul {
+  padding-left: var(--raum-6);
+  margin: 0 0 var(--raum-4);
+}
+
+.karte li + li {
+  margin-top: var(--raum-1);
+}

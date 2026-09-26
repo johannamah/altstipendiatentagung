@@ -13,6 +13,12 @@ interface Props {
 }
 
 const { titel, beschreibung } = Astro.props;
+
+/* Auf jeder Unterseite fuehrt ein Weg zurueck zur Uebersicht. Bewusst ein
+   echter Link und kein history.back(): Wer die Seite ueber einen geteilten
+   Link oder ein Lesezeichen geoeffnet hat, hat keine Vorgeschichte - ein
+   Zurueck-Knopf, der dann nichts tut, ist schlimmer als keiner. */
+const istStartseite = Astro.url.pathname.replace(/\/+$/, "") === "";
 ---
 
 <!doctype html>
@@ -56,6 +62,13 @@ const { titel, beschreibung } = Astro.props;
     </a>
 
     <header class="kopfleiste">
+      {!istStartseite && (
+        <a class="zurueck" href="/">
+          <Ikone name="arrow-left" />
+          <span>Übersicht</span>
+        </a>
+      )}
+
       <a class="marke" href="/">
         <img class="marke-bild" src="/logo-icon-192.png" alt="" width="38" height="38" />
         <span class="marke-text">
@@ -147,6 +160,31 @@ const { titel, beschreibung } = Astro.props;
         box-shadow: 0 2px 10px rgb(0 0 0 / 15%);
       }
 
+      .zurueck {
+        display: inline-flex;
+        flex: none;
+        gap: var(--raum-1);
+        align-items: center;
+        /* Mindestgroesse fuer Beruehrung (Regel 7). */
+        min-height: 44px;
+        padding: var(--raum-2) var(--raum-3);
+        font-size: var(--schrift-klein);
+        font-weight: 600;
+        color: #fff;
+        text-decoration: none;
+        background: rgb(255 255 255 / 14%);
+        border-radius: 999px;
+      }
+
+      .zurueck:hover {
+        background: rgb(255 255 255 / 24%);
+      }
+
+      .zurueck:focus-visible {
+        outline: 3px solid #fff;
+        outline-offset: 2px;
+      }
+
       .marke {
         display: flex;
         flex: 1;
@@ -182,6 +220,19 @@ const { titel, beschreibung } = Astro.props;
         font-size: 0.95rem;
         font-weight: 700;
         line-height: var(--zeilenhoehe-eng);
+      }
+
+      /* Neben dem Zurueck-Knopf wird es auf schmalen Geraeten eng - dort
+         traegt die Kopfleiste den Termin nicht mehr mit. */
+      @media (max-width: 24rem) {
+        .zurueck span {
+          position: absolute;
+          width: 1px;
+          height: 1px;
+          overflow: hidden;
+          clip-path: inset(50%);
+          white-space: nowrap;
+        }
       }
 
       .marke-unterzeile {

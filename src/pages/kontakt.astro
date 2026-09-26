@@ -1,0 +1,104 @@
+---
+import { getCollection } from "astro:content";
+
+import Basis from "../layouts/Basis.astro";
+import Seitenkopf from "../components/Seitenkopf.astro";
+import Platzhalterhinweis from "../components/Platzhalterhinweis.astro";
+import Ikone from "../components/Ikone.astro";
+
+const kontakte = await getCollection("kontakte");
+
+/** Platzhalter erkennen, damit sie nicht wie eine echte Angabe aussehen. */
+const istPlatzhalter = (wert?: string) => wert === undefined || wert.startsWith("[");
+---
+
+<Basis
+  titel="Kontakt & Orga-Team – Jahrestagung 2027"
+  beschreibung="Ansprechpersonen des Orga-Teams der Altstipendiatentagung 2027 in Hildesheim."
+>
+  <Seitenkopf
+    ikone="mail"
+    titel="Kontakt & Orga-Team"
+    einleitung="Bei Fragen rund um die Jahrestagung sind wir gerne für euch da."
+  />
+
+  <Platzhalterhinweis>
+    Zuständigkeitsbereiche, Telefonnummern und E-Mail-Adressen sind noch nicht eingetragen. Bis
+    dahin erreicht ihr uns über die bekannten Wege des Vereins.
+  </Platzhalterhinweis>
+
+  <ul class="personen">
+    {kontakte.map(({ data: person }) => (
+      <li class="karte">
+        <h2>{person.name}</h2>
+        <p class="bereich">
+          {istPlatzhalter(person.bereich) ? "Zuständigkeit noch offen" : person.bereich}
+        </p>
+
+        <p class="zeile">
+          <Ikone name="phone" />
+          <span>{istPlatzhalter(person.telefon) ? "noch nicht hinterlegt" : person.telefon}</span>
+        </p>
+        <p class="zeile">
+          <Ikone name="mail" />
+          <span>
+            {istPlatzhalter(person.email) ? (
+              "noch nicht hinterlegt"
+            ) : (
+              <a href={`mailto:${person.email}`}>{person.email}</a>
+            )}
+          </span>
+        </p>
+      </li>
+    ))}
+  </ul>
+
+  <section class="karte">
+    <h2>
+      <Ikone name="pin" /> Tagungsort
+    </h2>
+    <p>
+      Novotel Hildesheim
+      <br />
+      Bahnhofsallee 38, 31134 Hildesheim
+    </p>
+  </section>
+
+  <p class="karte">
+    Antworten auf häufige Fragen findet ihr unter <a href="/faq">Häufig gestellte Fragen</a>.
+  </p>
+</Basis>
+
+<style>
+  .personen {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: var(--raum-4);
+    padding: 0;
+    margin: 0 0 var(--raum-6);
+    list-style: none;
+  }
+
+  .personen .karte {
+    margin-bottom: 0;
+  }
+
+  h2 {
+    font-size: var(--schrift-h3);
+  }
+
+  .bereich {
+    margin-bottom: var(--raum-3);
+    font-size: var(--schrift-klein);
+    color: var(--text-leise);
+  }
+
+  .zeile {
+    display: flex;
+    gap: var(--raum-2);
+    align-items: center;
+    margin-bottom: var(--raum-1);
+    font-size: var(--schrift-klein);
+    color: var(--text-leise);
+  }
+</style>

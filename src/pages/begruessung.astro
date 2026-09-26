@@ -1,0 +1,63 @@
+---
+import Basis from "../layouts/Basis.astro";
+import Seitenkopf from "../components/Seitenkopf.astro";
+import Platzhalterhinweis from "../components/Platzhalterhinweis.astro";
+---
+
+<Basis
+  titel="Begrüßungsworte – Jahrestagung 2027"
+  beschreibung="Grußwort zur Altstipendiatentagung 2027 in Hildesheim."
+>
+  <Seitenkopf
+    ikone="message"
+    titel="Begrüßungsworte"
+    einleitung="Ein herzliches Willkommen zur Jahrestagung 2027."
+  />
+
+  <Platzhalterhinweis>
+    Platzhaltertext – bitte vor Veröffentlichung durch das finale, autorisierte Grußwort ersetzen.
+    Auch die Unterschrift ist bis dahin nicht bestätigt.
+  </Platzhalterhinweis>
+
+  <article class="karte">
+    <h2>Liebe Altstipendiatinnen und Altstipendiaten, liebe Gäste,</h2>
+
+    <p>
+      herzlich willkommen zur Jahrestagung 2027 der Konrad-Adenauer-Stiftung unter dem Motto
+      <b>„Demokratie leben – Europa gestalten“</b> in der wunderschönen UNESCO-Welterbestadt
+      Hildesheim.
+    </p>
+
+    <p>
+      Europa steht vor großen Herausforderungen – und gerade deshalb ist es so wichtig, dass wir als
+      Gemeinschaft von Altstipendiatinnen und Altstipendiaten zusammenkommen, um zu diskutieren,
+      Ideen auszutauschen und gemeinsam Antworten zu suchen.
+    </p>
+
+    <p>
+      Ich freue mich sehr auf inspirierende Gespräche und eine bereichernde gemeinsame Zeit mit euch
+      in Hildesheim.
+    </p>
+
+    <p class="signatur">
+      <b>
+        Herzlichst,
+        <br />
+        [Name der/des Vortragenden – noch nicht freigegeben]
+      </b>
+      <br />
+      <span>Begrüßung am Donnerstag, 6. Mai 2027</span>
+    </p>
+  </article>
+</Basis>
+
+<style>
+  h2 {
+    font-size: var(--schrift-h3);
+  }
+
+  .signatur span {
+    font-size: var(--schrift-klein);
+    color: var(--text-leise);
+  }
+</style>

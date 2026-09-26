@@ -1,0 +1,37 @@
+[
+  {
+    "id": "anmeldung",
+    "frage": "Wie melde ich mich an?",
+    "antwort": "Über den Bereich „Anmeldung“. Dort werden auch die Angaben zur Exkursion am Freitagnachmittag abgefragt. Die Anmeldung ist derzeit noch nicht freigeschaltet."
+  },
+  {
+    "id": "exkursion-waehlen",
+    "frage": "Wie wähle ich meine Exkursion?",
+    "antwort": "Die Exkursion wird direkt im Anmeldeformular ausgewählt – nach dem Prinzip „first come, first served“. Ist eine Exkursion ausgebucht, lässt sie sich nicht mehr auswählen."
+  },
+  {
+    "id": "exkursion-aendern",
+    "frage": "Kann ich meine Exkursion nachträglich ändern?",
+    "antwort": "Bitte wendet euch dafür direkt an das Orga-Team (siehe „Kontakt & Orga-Team“)."
+  },
+  {
+    "id": "uebernachtung",
+    "frage": "Gibt es eine Übernachtungsmöglichkeit?",
+    "antwort": "Ja, siehe „Unterbringung“ – dort findet ihr das Hotelkontingent sowie weitere Übernachtungsempfehlungen."
+  },
+  {
+    "id": "programm-als-pdf",
+    "frage": "Kann ich das Programm ausdrucken oder in meinen Kalender übernehmen?",
+    "antwort": "Im Programm könnt ihr einzelne Punkte merken und als Kalendereintrag herunterladen. Ein Druck-PDF ist in Vorbereitung; bis dahin lässt sich die Programmseite über die Druckfunktion des Browsers ausgeben."
+  },
+  {
+    "id": "fotos",
+    "frage": "Wo kann ich Fotos der Tagung ansehen oder hochladen?",
+    "antwort": "Über den Bereich „Fotos“ gelangt ihr zum gemeinsamen Fotoalbum."
+  },
+  {
+    "id": "fragen-vor-ort",
+    "frage": "An wen wende ich mich bei kurzfristigen Fragen vor Ort?",
+    "antwort": "An die jeweils zuständige Person aus dem Orga-Team, siehe „Kontakt & Orga-Team“."
+  }
+]

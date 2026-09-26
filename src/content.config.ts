@@ -76,4 +76,80 @@ const programm = defineCollection({
     }),
 });
 
-export const collections = { programm };
+/**
+ * Exkursionen am Freitagnachmittag. Uebernommen aus dem Einzeldatei-Entwurf;
+ * die eckigen Klammern in Treffpunkt und Anreise sind bewusst erhalten - sie
+ * sind Platzhalter des Orga-Teams und werden in der Ansicht als solche
+ * gekennzeichnet, statt still zu verschwinden.
+ */
+const exkursionen = defineCollection({
+  loader: file("src/content/exkursionen.json"),
+  schema: z.object({
+    titel: z.string().min(1),
+    /** Plaetze insgesamt. Die Vergabe braucht einen Server (ADR-0004). */
+    plaetze: z.number().int().positive(),
+    zeitrahmen: z.string().min(1),
+    treffpunkt: z.string().optional(),
+    anreise: z.string().optional(),
+    verantwortlich: z.string().optional(),
+    telefon: z.string().optional(),
+    info: z.string().optional(),
+  }),
+});
+
+/** Hotels mit eigenem Zimmerkontingent und Empfehlungen ohne Kontingent. */
+const unterkuenfte = defineCollection({
+  loader: file("src/content/unterkuenfte.json"),
+  schema: z.object({
+    name: z.string().min(1),
+    /** true = eigenes Kontingent fuer die Tagung, false = blosse Empfehlung. */
+    kontingent: z.boolean().default(false),
+    zeitraum: z.string().optional(),
+    stichwort: z.string().optional(),
+    zimmer: z
+      .array(z.object({ typ: z.string(), anzahl: z.number().int(), preis: z.string() }))
+      .default([]),
+    adresse: z.string().optional(),
+    telefon: z.string().optional(),
+    email: z.string().optional(),
+    web: z.string().url().optional(),
+  }),
+});
+
+const ankuendigungen = defineCollection({
+  loader: file("src/content/ankuendigungen.json"),
+  schema: z.object({
+    datum: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Erwartet wird JJJJ-MM-TT"),
+    titel: z.string().min(1),
+    text: z.string().min(1),
+    /** "wichtig" hebt hervor; sparsam einsetzen, sonst nutzt es sich ab. */
+    gewicht: z.enum(["wichtig", "info"]).default("info"),
+  }),
+});
+
+/**
+ * Ansprechpersonen des Orga-Teams.
+ *
+ * Anders als beim Programm sind Namen hier erwuenscht: Das ist der Zweck der
+ * Seite. Telefon und E-Mail stehen als Platzhalter, bis das Orga-Team sie
+ * freigibt - eine erfundene Adresse waere schlimmer als eine fehlende.
+ */
+const kontakte = defineCollection({
+  loader: file("src/content/kontakte.json"),
+  schema: z.object({
+    name: z.string().min(1),
+    bereich: z.string().optional(),
+    telefon: z.string().optional(),
+    email: z.string().optional(),
+  }),
+});
+
+const faq = defineCollection({
+  loader: file("src/content/faq.json"),
+  schema: z.object({
+    frage: z.string().min(1),
+    antwort: z.string().min(1),
+  }),
+});
+
+export const collections = { programm, exkursionen, unterkuenfte, ankuendigungen, kontakte, faq };

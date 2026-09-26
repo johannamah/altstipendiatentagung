@@ -1,0 +1,84 @@
+---
+import { getCollection } from "astro:content";
+
+import Basis from "../layouts/Basis.astro";
+import Seitenkopf from "../components/Seitenkopf.astro";
+import Platzhalterhinweis from "../components/Platzhalterhinweis.astro";
+import { formatiereDatum } from "../lib/programm.ts";
+
+const eintraege = await getCollection("ankuendigungen");
+// Neueste zuerst - bei Aenderungen am Programm zaehlt, was zuletzt kam.
+const ankuendigungen = eintraege
+  .map((eintrag) => eintrag.data)
+  .sort((a, b) => b.datum.localeCompare(a.datum));
+---
+
+<Basis
+  titel="Ankündigungen – Jahrestagung 2027"
+  beschreibung="Kurzfristige Neuigkeiten und Änderungen rund um die Jahrestagung 2027 in Hildesheim."
+>
+  <Seitenkopf
+    ikone="megaphone"
+    titel="Ankündigungen"
+    einleitung="Hier informieren wir kurzfristig über Neuigkeiten und Änderungen rund um die Jahrestagung."
+  />
+
+  <Platzhalterhinweis>
+    Die folgenden Einträge sind Beispiele. Das Orga-Team pflegt sie in
+    <code>src/content/ankuendigungen.json</code>.
+  </Platzhalterhinweis>
+
+  {ankuendigungen.length === 0 ? (
+    <p class="karte">
+      Derzeit gibt es keine Ankündigungen. Sobald sich kurzfristig etwas ändert, steht es hier.
+    </p>
+  ) : (
+    <ol class="liste">
+      {ankuendigungen.map((eintrag) => (
+        <li class="karte" data-gewicht={eintrag.gewicht}>
+          <p class="datum">
+            {formatiereDatum(eintrag.datum)}
+            {eintrag.gewicht === "wichtig" && <span class="marke">Wichtig</span>}
+          </p>
+          <h2>{eintrag.titel}</h2>
+          <p>{eintrag.text}</p>
+        </li>
+      ))}
+    </ol>
+  )}
+</Basis>
+
+<style>
+  .liste {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  /* Der Balken ist die Zugabe, die Marke "Wichtig" traegt die Information -
+     Farbe allein sagt nichts (Regel 19). */
+  .karte[data-gewicht="wichtig"] {
+    border-left: 4px solid var(--kachel-rot-von);
+  }
+
+  .datum {
+    display: flex;
+    gap: var(--raum-2);
+    align-items: center;
+    margin-bottom: var(--raum-1);
+    font-size: var(--schrift-klein);
+    color: var(--text-leise);
+  }
+
+  .marke {
+    padding: 2px var(--raum-2);
+    font-weight: 700;
+    color: var(--kachel-rot-text);
+    background: var(--kachel-rot-von);
+    border-radius: 999px;
+  }
+
+  h2 {
+    font-size: var(--schrift-h3);
+  }
+</style>

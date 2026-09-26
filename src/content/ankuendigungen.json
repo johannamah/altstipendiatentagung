@@ -1,0 +1,16 @@
+[
+  {
+    "id": "website-entwurf-online",
+    "datum": "2026-08-20",
+    "titel": "Website-Entwurf online",
+    "text": "Dies ist ein Beispieleintrag. Über diesen Bereich könnt ihr künftig kurzfristig über Änderungen am Programm, den Exkursionen oder der Anmeldung informieren.",
+    "gewicht": "info"
+  },
+  {
+    "id": "hotelkontingent-freigeschaltet",
+    "datum": "2026-08-20",
+    "titel": "Hotelkontingent Novotel Hildesheim freigeschaltet",
+    "text": "Beispiel-Ankündigung: Das Zimmerkontingent ist ab sofort unter dem Stichwort „KAS - Holstein“ buchbar (siehe „Unterbringung“).",
+    "gewicht": "info"
+  }
+]
