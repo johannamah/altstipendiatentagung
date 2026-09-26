@@ -23,6 +23,8 @@ Frage beantwortet ist.
 | **F11** | Unter welcher Domain läuft die App, und wer verwaltet sie? | Deployment | Vorstand |
 | **F12** | Greift das Barrierefreiheitsstärkungsgesetz (BFSG) für dieses Angebot? Unabhängig davon gilt für uns WCAG 2.2 AA als Eigenanspruch — die Frage betrifft die rechtliche Verbindlichkeit und Dokumentationspflicht. | Erklärung zur Barrierefreiheit | Vorstand, ggf. rechtliche Beratung |
 | **F13** | Sollen Daten aus früheren Tagungen oder dem Mitgliederverzeichnis übernommen werden? | Datenmodell | Vorstand |
+| **F14** | **Welche Personennamen dürfen im Programm veröffentlicht werden, und ab welchem Bestätigungsgrad?** Das Repository ist öffentlich. Die Programmvorlage führt Referierende teils mit Vermerken wie „angefragt" oder „unverbindlich zugesagt" — zu veröffentlichen, dass jemand angefragt ist und nicht zugesagt hat, ist weder unsere Entscheidung noch über die Git-Historie zurückzunehmen. Bis zur Klärung bleibt das Feld `personen` leer, abgesichert durch einen Test. | Nennung von Referierenden im Programm | Orga-Team, bei Bedarf Rücksprache mit den Betroffenen |
+| **F15** | Unter welcher Lizenz steht der Quellcode? Das Repository ist öffentlich und hat keine `LICENSE` — ohne sie gilt keine Nutzungserlaubnis. | Weitergabe, Beiträge von außen | Vorstand |
 
 ## Getroffene Annahmen
 
