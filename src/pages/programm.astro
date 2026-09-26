@@ -1,0 +1,202 @@
+---
+import { getCollection } from "astro:content";
+
+import Basis from "../layouts/Basis.astro";
+import Programmpunkt from "../components/Programmpunkt.astro";
+import Ikone from "../components/Ikone.astro";
+import {
+  formatiereDatum,
+  formatiereTagKurz,
+  nachTagenGruppieren,
+  SPUR_TEXT,
+  type Programmpunkt as Punkt,
+  type Spur,
+} from "../lib/programm.ts";
+
+const eintraege = await getCollection("programm");
+const punkte: Punkt[] = eintraege.map((eintrag) => ({ id: eintrag.id, ...eintrag.data }));
+const { tage, ohneZeit } = nachTagenGruppieren(punkte);
+
+/**
+ * Fasst gleichzeitige Punkte derselben Spur zusammen. Die sieben Exkursionen am
+ * Freitag sind Alternativen zueinander, keine Abfolge - eine schlichte Liste
+ * wuerde das verschweigen. Die proportionale Zeitachse (Issue #5) ersetzt das
+ * spaeter; bis dahin ist die Gruppierung das ehrlichere Minimum.
+ */
+type Gruppe = { schluessel: string; spur: Spur; punkte: Punkt[] };
+
+function gruppiere(punkteDesTages: Punkt[]): Gruppe[] {
+  const gruppen: Gruppe[] = [];
+
+  for (const punkt of punkteDesTages) {
+    const schluessel = `${punkt.spur}|${punkt.beginn ?? ""}|${punkt.ende ?? ""}`;
+    const letzte = gruppen.at(-1);
+
+    if (letzte?.schluessel === schluessel && punkt.spur !== "haupt" && punkt.spur !== "rahmen") {
+      letzte.punkte.push(punkt);
+    } else {
+      gruppen.push({ schluessel, spur: punkt.spur, punkte: [punkt] });
+    }
+  }
+
+  return gruppen;
+}
+
+const tageMitGruppen = tage.map((tag) => ({ ...tag, gruppen: gruppiere(tag.punkte) }));
+---
+
+<Basis
+  titel="Programm – Jahrestagung 2027 | Altstipendiaten der Konrad-Adenauer-Stiftung"
+  beschreibung="Das Programm der Altstipendiatentagung 2027 vom 5. bis 9. Mai in Hildesheim, Tag für Tag."
+>
+  <div class="kopf">
+    <h1>
+      <Ikone name="clipboard" /> Programm
+    </h1>
+    <p>
+      Hier findet ihr alle Programmpunkte, Tag für Tag. Der Stand ist noch nicht vollständig —
+      einzelne Punkte sind als <strong>noch nicht bestätigt</strong> oder als{" "}
+      <strong>Platzhalter</strong> gekennzeichnet.
+    </p>
+  </div>
+
+  <nav class="tagesauswahl" aria-label="Tage der Tagung">
+    <ul>
+      {tageMitGruppen.map((tag) => (
+        <li>
+          <a href={`#tag-${tag.datum}`}>{formatiereTagKurz(tag.datum)}</a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+
+  {tageMitGruppen.map((tag) => (
+    <section class="tag" id={`tag-${tag.datum}`} aria-labelledby={`ueberschrift-${tag.datum}`}>
+      <h2 id={`ueberschrift-${tag.datum}`}>{formatiereDatum(tag.datum)}</h2>
+
+      {tag.gruppen.map((gruppe) =>
+        gruppe.punkte.length > 1 ? (
+          <div class="parallel">
+            <p class="parallel-kopf">
+              {SPUR_TEXT[gruppe.spur] ?? "Gleichzeitig"} · {gruppe.punkte.length} zur Wahl
+            </p>
+            <ul class="parallel-liste">
+              {gruppe.punkte.map((punkt) => (
+                <li>
+                  <Programmpunkt punkt={punkt} />
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <Programmpunkt punkt={gruppe.punkte[0]!} />
+        ),
+      )}
+    </section>
+  ))}
+
+  {ohneZeit.length > 0 && (
+    <section class="tag" aria-labelledby="ueberschrift-ohne-zeit">
+      <h2 id="ueberschrift-ohne-zeit">Noch ohne Termin</h2>
+      <p class="einleitung">Diese Punkte sind geplant, stehen aber noch nicht fest im Ablauf.</p>
+      {ohneZeit.map((punkt) => (
+        <Programmpunkt punkt={punkt} />
+      ))}
+    </section>
+  )}
+</Basis>
+
+<style>
+  .kopf {
+    margin-bottom: var(--raum-6);
+  }
+
+  .kopf h1 {
+    display: flex;
+    gap: var(--raum-2);
+    align-items: center;
+  }
+
+  .kopf p,
+  .einleitung {
+    color: var(--text-leise);
+  }
+
+  /* Sticky, damit der Tageswechsel beim Durchscrollen erreichbar bleibt.
+     Der Versatz entspricht der Hoehe der Kopfleiste. */
+  .tagesauswahl {
+    position: sticky;
+    top: 66px;
+    z-index: 10;
+    padding: var(--raum-2) 0;
+    margin-bottom: var(--raum-6);
+    background: var(--flaeche);
+  }
+
+  .tagesauswahl ul {
+    display: flex;
+    gap: var(--raum-2);
+    padding: 0;
+    margin: 0;
+    overflow-x: auto;
+    list-style: none;
+  }
+
+  .tagesauswahl a {
+    display: block;
+    /* Mindestgroesse fuer Beruehrung (Regel 7). */
+    min-height: 44px;
+    padding: var(--raum-2) var(--raum-4);
+    font-size: var(--schrift-klein);
+    font-weight: 600;
+    color: var(--text-leise);
+    white-space: nowrap;
+    text-decoration: none;
+    background: var(--karte);
+    border: 1px solid var(--rand);
+    border-radius: 999px;
+  }
+
+  .tagesauswahl a:hover {
+    background: var(--hover);
+  }
+
+  .tag {
+    margin-bottom: var(--raum-12);
+    /* Sprungmarke nicht unter der Kopfleiste verstecken. */
+    scroll-margin-top: 120px;
+  }
+
+  .tag h2 {
+    padding-bottom: var(--raum-2);
+    border-bottom: 2px solid var(--rand);
+  }
+
+  .tag > :global(.punkt) {
+    margin-bottom: var(--raum-3);
+  }
+
+  .parallel {
+    padding: var(--raum-3);
+    margin-bottom: var(--raum-3);
+    background: var(--hover);
+    border: 1px dashed var(--rand);
+    border-radius: var(--radius);
+  }
+
+  .parallel-kopf {
+    margin: 0 0 var(--raum-3);
+    font-size: var(--schrift-klein);
+    font-weight: 700;
+    color: var(--text-leise);
+  }
+
+  .parallel-liste {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: var(--raum-3);
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+</style>
