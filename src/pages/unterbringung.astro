@@ -34,24 +34,34 @@ const empfehlungen = alle.filter((eintrag) => !eintrag.data.kontingent);
       )}
 
       {haus.zimmer.length > 0 && (
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Zimmerart</th>
-              <th scope="col">Reserviert</th>
-              <th scope="col">Preis</th>
-            </tr>
-          </thead>
-          <tbody>
-            {haus.zimmer.map((zimmer) => (
+        /* Die Tabelle darf breiter sein als ein schmales Display und scrollt dann
+           in ihrem eigenen Bereich - die Seite nie (Regel 10). tabindex macht den
+           Bereich mit der Tastatur scrollbar. */
+        <div
+          class="tabellenbereich"
+          tabindex="0"
+          role="group"
+          aria-label={`Zimmerkontingent ${haus.name}`}
+        >
+          <table>
+            <thead>
               <tr>
-                <th scope="row">{zimmer.typ}</th>
-                <td>{zimmer.anzahl}</td>
-                <td>{zimmer.preis}</td>
+                <th scope="col">Zimmerart</th>
+                <th scope="col">Reserviert</th>
+                <th scope="col">Preis</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {haus.zimmer.map((zimmer) => (
+                <tr>
+                  <th scope="row">{zimmer.typ}</th>
+                  <td>{zimmer.anzahl}</td>
+                  <td>{zimmer.preis}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
 
       <p class="zeile">
@@ -131,9 +141,25 @@ const empfehlungen = alle.filter((eintrag) => !eintrag.data.kontingent);
     border-radius: var(--radius-klein);
   }
 
+  /* position: relative ist Voraussetzung dafuer, dass der Bereich wirklich alles
+     beschneidet: Ein Scrollcontainer beschneidet absolut positionierte Nachfahren
+     nur, wenn er selbst ihr umschliessender Block ist. Genau daran ist die
+     Zeitachse zuvor gescheitert. */
+  .tabellenbereich {
+    position: relative;
+    margin-bottom: var(--raum-4);
+    overflow-x: auto;
+  }
+
+  .tabellenbereich:focus-visible {
+    outline: 3px solid var(--fokus);
+    outline-offset: 2px;
+  }
+
   table {
     width: 100%;
-    margin-bottom: var(--raum-4);
+    /* Nicht unter die Mindestbreite quetschen - dann lieber scrollen. */
+    min-width: 18rem;
     border-collapse: collapse;
   }
 

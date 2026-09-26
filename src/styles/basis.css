@@ -115,6 +115,15 @@ a {
   text-underline-offset: 0.2em;
 }
 
+/* Dateipfade, Adressen und Kennungen haben keine Trennstellen und sprengen
+   sonst schmale Bildschirme. Ein 1px-Ueberlauf auf der Ankuendigungsseite kam
+   genau daher - der Pfad in einem <code> war laenger als 288px. */
+code,
+kbd,
+samp {
+  overflow-wrap: anywhere;
+}
+
 /* ===== Hilfsklassen ===== */
 
 /* Nur fuer Screenreader: sichtbar fuer Hilfstechnik, unsichtbar am Bildschirm.
