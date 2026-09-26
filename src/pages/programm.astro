@@ -60,6 +60,24 @@ const tageMitGruppen = tage.map((tag) => ({ ...tag, gruppen: gruppiere(tag.punkt
     </p>
   </div>
 
+  {/* Braucht JavaScript und wird erst davon eingeblendet. */}
+  <div class="werkzeuge" id="werkzeuge" hidden>
+    <button class="werkzeug" type="button" id="nurMeine" aria-pressed="false">
+      <Ikone name="check" />
+      <span id="nurMeineText">Nur mein Programm</span>
+    </button>
+
+    <button class="werkzeug" type="button" id="alleExportieren" disabled>
+      <Ikone name="calendar" />
+      <span>Mein Programm in den Kalender</span>
+    </button>
+
+    <p class="werkzeug-hinweis">Eure Auswahl liegt nur auf diesem Gerät und in diesem Browser.</p>
+  </div>
+
+  {/* Meldungen fuer Screenreader und Bildschirm zugleich (Regel 43). */}
+  <p class="meldung" id="meldung" role="status" aria-live="polite"></p>
+
   <nav class="tagesauswahl" aria-label="Tage der Tagung">
     <ul>
       {tageMitGruppen.map((tag) => (
@@ -104,7 +122,180 @@ const tageMitGruppen = tage.map((tag) => ({ ...tag, gruppen: gruppiere(tag.punkt
       ))}
     </section>
   )}
+  {/* Die Daten, die das Skript braucht - als JSON statt in jedem Element
+      verteilt, damit die Seite nicht mit Attributen zugestellt wird. */}
+  <script type="application/json" id="programmdaten" set:html={JSON.stringify(punkte)} />
 </Basis>
+
+<script>
+  import { alsKalender, dateiname, istExportierbar } from "../lib/kalender.ts";
+  import type { Programmpunkt } from "../lib/programm.ts";
+  import { browserSpeicher, ladeAuswahl, speichereAuswahl, umschalten } from "../lib/merkliste.ts";
+  import { jetztAlsOrtszeit, laufendUm } from "../lib/zeit.ts";
+
+  const datenElement = document.getElementById("programmdaten");
+  const punkte: Programmpunkt[] = datenElement ? JSON.parse(datenElement.textContent ?? "[]") : [];
+  const nachId = new Map(punkte.map((punkt) => [punkt.id, punkt]));
+
+  const meldung = document.getElementById("meldung");
+  const werkzeuge = document.getElementById("werkzeuge");
+  const nurMeine = document.getElementById("nurMeine");
+  const nurMeineText = document.getElementById("nurMeineText");
+  const alleExportieren = document.getElementById("alleExportieren") as HTMLButtonElement | null;
+
+  const speicher = browserSpeicher();
+  let auswahl = ladeAuswahl(speicher, [...nachId.keys()]);
+  let nurAuswahlZeigen = false;
+
+  function melde(text: string): void {
+    if (meldung) meldung.textContent = text;
+  }
+
+  /* ===== "Jetzt laeuft" ===== */
+
+  function markiereZeitlage(): void {
+    const jetzt = jetztAlsOrtszeit();
+    const { laufend, naechster } = laufendUm(punkte, jetzt);
+    const laufendeIds = new Set(laufend.map((punkt) => punkt.id));
+
+    for (const element of document.querySelectorAll<HTMLElement>(".punkt")) {
+      const id = element.dataset.id;
+      const marke = element.querySelector<HTMLElement>(".lage");
+      if (!id || !marke) continue;
+
+      if (laufendeIds.has(id)) {
+        element.dataset.lage = "jetzt";
+        marke.textContent = "Jetzt";
+        marke.hidden = false;
+      } else if (naechster?.id === id && laufend.length === 0) {
+        element.dataset.lage = "danach";
+        marke.textContent = "Als Nächstes";
+        marke.hidden = false;
+      } else {
+        delete element.dataset.lage;
+        marke.hidden = true;
+      }
+    }
+
+    const ziel = laufend[0] ?? (laufend.length === 0 ? naechster : null);
+    if (!ziel) return;
+
+    const zielElement = document.querySelector<HTMLElement>(`.punkt[data-id="${ziel.id}"]`);
+    zielElement?.scrollIntoView({
+      // Wer Bewegung reduziert haben will, springt (Regel 37).
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+      block: "center",
+    });
+  }
+
+  /* ===== Download ===== */
+
+  function ladeHerunter(ausgewaehlte: Programmpunkt[]): void {
+    const datei = new Blob([alsKalender(ausgewaehlte)], {
+      type: "text/calendar;charset=utf-8",
+    });
+    const adresse = URL.createObjectURL(datei);
+    const verweis = document.createElement("a");
+
+    verweis.href = adresse;
+    verweis.download = dateiname(ausgewaehlte);
+    verweis.click();
+
+    URL.revokeObjectURL(adresse);
+  }
+
+  /* ===== Auswahl ===== */
+
+  function zeichneAuswahl(): void {
+    for (const element of document.querySelectorAll<HTMLElement>(".punkt")) {
+      const id = element.dataset.id;
+      const knopf = element.querySelector<HTMLButtonElement>("[data-merken]");
+      const text = element.querySelector<HTMLElement>("[data-merken-text]");
+      if (!id || !knopf || !text) continue;
+
+      const gemerkt = auswahl.includes(id);
+      knopf.setAttribute("aria-pressed", String(gemerkt));
+      text.textContent = gemerkt ? "Gemerkt" : "Merken";
+
+      // Beim Filtern bleiben Punkte ohne Auswahl verborgen.
+      element.closest("li")?.toggleAttribute("hidden", nurAuswahlZeigen && !gemerkt);
+      if (!element.closest("li")) element.toggleAttribute("hidden", nurAuswahlZeigen && !gemerkt);
+    }
+
+    // Leer gewordene Abschnitte ausblenden, damit keine Ueberschrift ohne
+    // Inhalt stehen bleibt.
+    for (const abschnitt of document.querySelectorAll<HTMLElement>(".tag")) {
+      const sichtbar = [...abschnitt.querySelectorAll<HTMLElement>(".punkt")].some(
+        (punkt) => !punkt.hasAttribute("hidden") && !punkt.closest("li[hidden]"),
+      );
+      abschnitt.toggleAttribute("hidden", nurAuswahlZeigen && !sichtbar);
+    }
+
+    if (alleExportieren) {
+      alleExportieren.disabled =
+        auswahl.filter((id) => istExportierbar(nachId.get(id)!)).length === 0;
+    }
+  }
+
+  /* ===== Verdrahtung ===== */
+
+  for (const element of document.querySelectorAll<HTMLElement>(".punkt")) {
+    const id = element.dataset.id;
+    if (!id) continue;
+
+    element.querySelector<HTMLElement>(".aktionen")?.removeAttribute("hidden");
+
+    element.querySelector<HTMLButtonElement>("[data-merken]")?.addEventListener("click", () => {
+      auswahl = umschalten(auswahl, id);
+      const gespeichert = speichereAuswahl(speicher, auswahl);
+      zeichneAuswahl();
+
+      const titel = nachId.get(id)?.titel ?? "Programmpunkt";
+      if (!gespeichert) {
+        melde(`„${titel}“ gemerkt — lässt sich in diesem Browser aber nicht dauerhaft sichern.`);
+      } else {
+        melde(
+          auswahl.includes(id)
+            ? `„${titel}“ zu eurem Programm hinzugefügt.`
+            : `„${titel}“ aus eurem Programm entfernt.`,
+        );
+      }
+    });
+
+    element.querySelector<HTMLButtonElement>("[data-kalender]")?.addEventListener("click", () => {
+      const punkt = nachId.get(id);
+      if (punkt) ladeHerunter([punkt]);
+    });
+  }
+
+  werkzeuge?.removeAttribute("hidden");
+
+  nurMeine?.addEventListener("click", () => {
+    nurAuswahlZeigen = !nurAuswahlZeigen;
+    nurMeine.setAttribute("aria-pressed", String(nurAuswahlZeigen));
+    if (nurMeineText) {
+      nurMeineText.textContent = nurAuswahlZeigen ? "Ganzes Programm" : "Nur mein Programm";
+    }
+    zeichneAuswahl();
+
+    if (nurAuswahlZeigen && auswahl.length === 0) {
+      melde("Ihr habt euch noch nichts gemerkt. Tippt bei einem Punkt auf „Merken“.");
+    } else {
+      melde(nurAuswahlZeigen ? `Es werden ${auswahl.length} gemerkte Punkte gezeigt.` : "");
+    }
+  });
+
+  alleExportieren?.addEventListener("click", () => {
+    const ausgewaehlte = auswahl
+      .map((id) => nachId.get(id))
+      .filter((punkt): punkt is Programmpunkt => punkt !== undefined && istExportierbar(punkt));
+
+    if (ausgewaehlte.length > 0) ladeHerunter(ausgewaehlte);
+  });
+
+  zeichneAuswahl();
+  markiereZeitlage();
+</script>
 
 <style>
   .kopf {
@@ -189,6 +380,68 @@ const tageMitGruppen = tage.map((tag) => ({ ...tag, gruppen: gruppiere(tag.punkt
     font-size: var(--schrift-klein);
     font-weight: 700;
     color: var(--text-leise);
+  }
+
+  .werkzeuge {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--raum-2);
+    align-items: center;
+    padding: var(--raum-3);
+    margin-bottom: var(--raum-4);
+    background: var(--karte);
+    border: 1px solid var(--rand);
+    border-radius: var(--radius);
+  }
+
+  .werkzeug {
+    display: inline-flex;
+    gap: var(--raum-2);
+    align-items: center;
+    min-height: 44px;
+    padding: var(--raum-2) var(--raum-4);
+    font: inherit;
+    font-size: var(--schrift-klein);
+    font-weight: 600;
+    color: var(--akzent);
+    cursor: pointer;
+    background: var(--feld);
+    border: 1px solid var(--feldrand);
+    border-radius: 999px;
+  }
+
+  .werkzeug:hover:not(:disabled) {
+    background: var(--hover);
+  }
+
+  .werkzeug:disabled {
+    color: var(--text-leise);
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  .werkzeug[aria-pressed="true"] {
+    color: var(--kachel-gruen-text);
+    background: var(--kachel-gruen-von);
+    border-color: var(--kachel-gruen-von);
+  }
+
+  /* Der Hinweis gehoert sichtbar daneben, nicht in eine Fussnote: Sonst
+     rechnen Nutzende damit, ihre Auswahl auf dem Laptop wiederzufinden. */
+  .werkzeug-hinweis {
+    flex-basis: 100%;
+    margin: 0;
+    font-size: var(--schrift-klein);
+    color: var(--text-leise);
+  }
+
+  .meldung:not(:empty) {
+    padding: var(--raum-2) var(--raum-3);
+    margin-bottom: var(--raum-4);
+    font-size: var(--schrift-klein);
+    color: var(--hinweis-text);
+    background: var(--hinweis-flaeche);
+    border-radius: var(--radius-klein);
   }
 
   .parallel-liste {
