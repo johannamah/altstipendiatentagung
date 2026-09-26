@@ -1,6 +1,8 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
+import { erwarteKeinSeitenScroll } from "./hilfen.ts";
+
 test.beforeEach(async ({ page }) => {
   await page.goto("/programm");
 });
@@ -57,12 +59,7 @@ test("ist von der Startseite aus erreichbar", async ({ page }) => {
 
 test("laeuft ab 320px Breite ohne horizontales Scrollen", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 800 });
-
-  const ueberbreite = await page.evaluate(
-    () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
-  );
-
-  expect(ueberbreite).toBeLessThanOrEqual(0);
+  await erwarteKeinSeitenScroll(page);
 });
 
 for (const darstellung of ["hell", "dunkel"] as const) {

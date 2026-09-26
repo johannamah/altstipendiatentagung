@@ -2,6 +2,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 import { BEREICHE } from "../../src/daten/bereiche.ts";
+import { erwarteKeinSeitenScroll } from "./hilfen.ts";
 
 /**
  * Der Fehler, den diese Tests verhindern sollen: Acht Kacheln der Startseite
@@ -167,8 +168,7 @@ test.describe("schmale Geräte", () => {
       await page.setViewportSize({ width: 320, height: 800 });
       await page.goto(`/${bereich.slug}`);
 
-      await page.evaluate(() => window.scrollTo({ left: 9999, behavior: "instant" }));
-      expect(await page.evaluate(() => window.scrollX)).toBe(0);
+      await erwarteKeinSeitenScroll(page);
     });
   }
 });

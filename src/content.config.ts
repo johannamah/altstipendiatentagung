@@ -112,7 +112,8 @@ const unterkuenfte = defineCollection({
     adresse: z.string().optional(),
     telefon: z.string().optional(),
     email: z.string().optional(),
-    web: z.string().url().optional(),
+    // z.url() statt z.string().url(): Letzteres ist in zod 4 abgekuendigt.
+    web: z.url().optional(),
   }),
 });
 

@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
 
+import { erwarteKeinSeitenScroll } from "./hilfen.ts";
+
 /**
  * Tests fuer "Jetzt laeuft" (#3) und "Mein Programm" (#4).
  *
@@ -240,83 +242,7 @@ test.describe("Zeitachse", () => {
     await page.setViewportSize({ width: 320, height: 800 });
     await page.getByRole("button", { name: "Als Zeitachse" }).click();
 
-    /* Geprueft wird, was Regel 10 wirklich meint: Laesst sich die SEITE
-       seitwaerts schieben?
-
-       Die Ursache wird eingegrenzt, statt geraten: Ein Teilbaum nach dem
-       anderen wird versuchsweise ausgeblendet; verschwindet die Ueberbreite
-       dabei, liegt die Ursache darin, und es geht eine Ebene tiefer weiter.
-       Das benennt den Verursacher auch dann, wenn kein einzelnes Rechteck
-       ueber den Rand ragt - etwa bei Pseudo-Elementen oder bei Inhalten, die
-       ihren Container von innen aufspannen. */
-    const pfad = await page.evaluate(() => {
-      const ueberbreite = () =>
-        document.documentElement.scrollWidth - document.documentElement.clientWidth;
-
-      if (ueberbreite() <= 0) return ["keine Ueberbreite messbar"];
-
-      const beschreibe = (element: Element) => {
-        const klasse = element.className?.toString().trim().split(/\s+/)[0];
-        const kennung = element.id ? `#${element.id}` : klasse ? `.${klasse}` : "";
-        return `${element.tagName.toLowerCase()}${kennung}`;
-      };
-
-      const spur: string[] = [];
-      let knoten: Element = document.body;
-
-      suche: for (let tiefe = 0; tiefe < 12; tiefe += 1) {
-        for (const kind of [...knoten.children]) {
-          if (!(kind instanceof HTMLElement)) continue;
-
-          const vorher = kind.style.display;
-          kind.style.display = "none";
-          const behoben = ueberbreite() <= 0;
-          kind.style.display = vorher;
-
-          if (behoben) {
-            spur.push(beschreibe(kind));
-            knoten = kind;
-            continue suche;
-          }
-        }
-        break;
-      }
-
-      /* Bleibt die Eingrenzung stehen, tragen mehrere Geschwister gleichzeitig
-         bei - dann hilft das Ausblenden eines einzelnen nicht. In dem Fall wird
-         jedes Kind einzeln sichtbar geschaltet und sein Beitrag gemessen. */
-      const kinder = [...knoten.children].filter(
-        (kind): kind is HTMLElement => kind instanceof HTMLElement,
-      );
-      const zustand = kinder.map((kind) => kind.style.display);
-
-      for (const kind of kinder) kind.style.display = "none";
-
-      const einzeln: string[] = [];
-      for (const [index, kind] of kinder.entries()) {
-        kind.style.display = zustand[index]!;
-        const breit = ueberbreite();
-        if (breit > 0) einzeln.push(`${beschreibe(kind)}: +${breit}px`);
-        kind.style.display = "none";
-      }
-
-      for (const [index, kind] of kinder.entries()) kind.style.display = zustand[index]!;
-
-      return [
-        ...(spur.length > 0 ? spur : ["body"]),
-        einzeln.length > 0 ? `einzeln: ${einzeln.join(", ")}` : "kein Kind allein verantwortlich",
-      ];
-    });
-
-    // behavior "instant": basis.css schaltet weiches Scrollen ein, sonst misst
-    // der Test gegen eine noch laufende Animation.
-    await page.evaluate(() => window.scrollTo({ left: 9999, behavior: "instant" }));
-    const verschoben = await page.evaluate(() => window.scrollX);
-
-    expect(
-      verschoben,
-      `Die Seite liess sich um ${verschoben}px seitwaerts schieben.\n  ${pfad.join("\n  ")}`,
-    ).toBe(0);
+    await erwarteKeinSeitenScroll(page);
 
     const bereichScrollt = await page.evaluate(() => {
       const bereich = document.querySelector("#tag-2027-05-07 .tagesbereich");
