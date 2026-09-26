@@ -282,29 +282,31 @@ test.describe("Zeitachse", () => {
         break;
       }
 
-      /* Bleibt die Eingrenzung stehen, tragen mehrere Geschwister gleichzeitig
-         bei - dann hilft das Ausblenden eines einzelnen nicht. In dem Fall wird
-         jedes Kind einzeln sichtbar geschaltet und seine Ueberbreite gemessen. */
-      const kinder = [...knoten.children].filter(
-        (kind): kind is HTMLElement => kind instanceof HTMLElement,
-      );
-      const zustand = kinder.map((kind) => kind.style.display);
+      /* Die Eingrenzung bleibt bei main#inhalt stehen: Mehrere Tagesabschnitte
+         tragen gleichzeitig bei, ihr Beitrag skaliert mit der Zahl der
+         Straenge. Also werden die tatsaechlichen Boxmasse des schlimmsten
+         Abschnitts gemeldet - welche Box ist zu breit, und was sagt ihr
+         berechneter Stil dazu? */
+      const masse = (element: Element | null, name: string) => {
+        if (!element) return `${name}: fehlt`;
+        const stil = getComputedStyle(element);
+        return (
+          `${name}: rect ${Math.round(element.getBoundingClientRect().width)}` +
+          `, client ${element.clientWidth}, scroll ${element.scrollWidth}` +
+          `, overflow-x ${stil.overflowX}, max-width ${stil.maxWidth}, display ${stil.display}`
+        );
+      };
 
-      for (const kind of kinder) kind.style.display = "none";
-
-      const einzeln: string[] = [];
-      for (const [index, kind] of kinder.entries()) {
-        kind.style.display = zustand[index]!;
-        const breit = ueberbreite();
-        if (breit > 0) einzeln.push(`${beschreibe(kind)}: +${breit}px`);
-        kind.style.display = "none";
-      }
-
-      for (const [index, kind] of kinder.entries()) kind.style.display = zustand[index]!;
+      const abschnitt = document.querySelector("#tag-2027-05-07");
 
       return [
         ...(spur.length > 0 ? spur : ["body"]),
-        einzeln.length > 0 ? `einzeln: ${einzeln.join(", ")}` : "kein Kind allein verantwortlich",
+        masse(document.documentElement, "html"),
+        masse(document.body, "body"),
+        masse(document.querySelector("#inhalt"), "main"),
+        masse(abschnitt, "section"),
+        masse(abschnitt?.querySelector(".tagesbereich") ?? null, "tagesbereich"),
+        masse(abschnitt?.querySelector(".tagesliste") ?? null, "tagesliste"),
       ];
     });
 
@@ -315,7 +317,7 @@ test.describe("Zeitachse", () => {
 
     expect(
       verschoben,
-      `Die Seite liess sich um ${verschoben}px seitwaerts schieben. Spur: ${pfad.join(" > ")}`,
+      `Die Seite liess sich um ${verschoben}px seitwaerts schieben.\n  ${pfad.join("\n  ")}`,
     ).toBe(0);
 
     const bereichScrollt = await page.evaluate(() => {
