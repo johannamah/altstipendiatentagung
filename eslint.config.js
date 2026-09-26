@@ -12,6 +12,7 @@ export default defineConfig([
     "playwright-report/**",
     "test-results/**",
     "lighthouse-bericht/**",
+    "archiv/**",
   ]),
   tseslint.configs.recommended,
   eslintAstro.configs["flat/recommended"],

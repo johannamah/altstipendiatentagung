@@ -42,9 +42,9 @@ Lauf gegen WCAG 2.2 AA geprüft.
 
 ## Der ursprüngliche Entwurf
 
-`index.html` im Wurzelverzeichnis ist der erste, eigenständige Entwurf ohne
-Build-Werkzeuge. Er bleibt als lauffähige Vorschau bestehen, bis alle Ansichten
-überführt sind, und wird nicht weiterentwickelt. Details in
+Liegt unter [archiv/](archiv/): ein eigenständiger Entwurf ohne Build-Werkzeuge, der
+als Referenz bestehen bleibt, bis alle Ansichten überführt sind. Er wird nicht
+weiterentwickelt — siehe [archiv/README.md](archiv/README.md) und
 [ADR-0003](docs/decisions/0003-frontend-architektur.md).
 
 ## Veröffentlichung

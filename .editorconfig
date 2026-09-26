@@ -1,0 +1,21 @@
+# Einheitliche Grundeinstellungen fuer alle Editoren.
+# https://editorconfig.org - von VS Code, JetBrains und den meisten anderen
+# von Haus aus oder per Erweiterung unterstuetzt.
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.md]
+# In Markdown bedeuten zwei Leerzeichen am Zeilenende einen Zeilenumbruch.
+trim_trailing_whitespace = false
+
+[archiv/index.html]
+# Archiviert, wird nicht mehr bearbeitet (ADR-0003).
+trim_trailing_whitespace = false
+insert_final_newline = false
