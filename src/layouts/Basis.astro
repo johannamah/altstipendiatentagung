@@ -1,0 +1,245 @@
+---
+import IkonenSammlung from "../components/IkonenSammlung.astro";
+import Ikone from "../components/Ikone.astro";
+import "../styles/tokens.css";
+import "../styles/basis.css";
+
+/**
+ * Grundgeruest jeder Seite: Kopfleiste, Inhaltsbereich, Fusszeile.
+ */
+interface Props {
+  titel: string;
+  beschreibung: string;
+}
+
+const { titel, beschreibung } = Astro.props;
+---
+
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{titel}</title>
+    <meta name="description" content={beschreibung} />
+    <meta name="theme-color" content="#004684" />
+
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <script is:inline>
+      /* Laeuft vor dem ersten Zeichnen, damit die gewaehlte Darstellung nicht
+         kurz aufblitzt ("flash of wrong theme"). Deshalb inline und nicht als
+         Modul - ein Modul wuerde verzoegert ausgefuehrt.
+
+         localStorage kann werfen (privates Fenster, gesperrte Website-Daten),
+         darum im try/catch. Faellt es aus, gilt die Systemeinstellung. */
+      try {
+        const wahl = localStorage.getItem("darstellung");
+        if (wahl === "hell" || wahl === "dunkel") {
+          document.documentElement.dataset.theme = wahl;
+        }
+      } catch {
+        /* Systemeinstellung greift von selbst - kein Grund, etwas zu melden. */
+      }
+    </script>
+  </head>
+
+  <body>
+    <IkonenSammlung />
+
+    <a class="zum-inhalt" href="#inhalt">
+      Direkt zum Inhalt
+    </a>
+
+    <header class="kopfleiste">
+      <a class="marke" href="/">
+        <img class="marke-bild" src="/logo-icon-192.png" alt="" width="38" height="38" />
+        <span class="marke-text">
+          <span class="marke-titel">Jahrestagung 2027</span>
+          <span class="marke-unterzeile">Hildesheim · 5.–9. Mai 2027</span>
+        </span>
+        <span class="nur-vorlesen">Zur Startseite</span>
+      </a>
+
+      <button class="darstellung-knopf" type="button" id="darstellungKnopf" aria-live="polite">
+        <Ikone name="monitor" class="darstellung-ikone" />
+        <span class="nur-vorlesen" id="darstellungText">
+          Darstellung: Systemeinstellung
+        </span>
+      </button>
+    </header>
+
+    <main class="inhalt" id="inhalt">
+      <slot />
+    </main>
+
+    <footer class="fusszeile">
+      <p>
+        Altstipendiaten der Konrad-Adenauer-Stiftung e.&nbsp;V. · Diese Anwendung ist im Aufbau.
+      </p>
+    </footer>
+
+    <script>
+      /* Umschalter der Darstellung: Systemeinstellung -> hell -> dunkel -> zurueck.
+         Drei Zustaende, nicht zwei: "der Systemeinstellung folgen" ist ein eigener
+         Wunsch und nicht dasselbe wie "hell". */
+      const ZUSTAENDE = [
+        { wert: null, text: "Systemeinstellung", ikone: "monitor" },
+        { wert: "hell", text: "hell", ikone: "sun" },
+        { wert: "dunkel", text: "dunkel", ikone: "moon" },
+      ] as const;
+
+      const knopf = document.getElementById("darstellungKnopf");
+      const beschriftung = document.getElementById("darstellungText");
+      const verweis = knopf?.querySelector("use");
+
+      function lies(): number {
+        const gesetzt = document.documentElement.dataset.theme ?? null;
+        const index = ZUSTAENDE.findIndex((z) => z.wert === gesetzt);
+        return index === -1 ? 0 : index;
+      }
+
+      function zeichne(index: number): void {
+        const zustand = ZUSTAENDE[index]!;
+        verweis?.setAttribute("href", `#i-${zustand.ikone}`);
+        if (beschriftung) beschriftung.textContent = `Darstellung: ${zustand.text}`;
+        knopf?.setAttribute("title", `Darstellung: ${zustand.text} (zum Wechseln tippen)`);
+      }
+
+      let aktuell = lies();
+      zeichne(aktuell);
+
+      knopf?.addEventListener("click", () => {
+        aktuell = (aktuell + 1) % ZUSTAENDE.length;
+        const zustand = ZUSTAENDE[aktuell]!;
+
+        if (zustand.wert === null) {
+          delete document.documentElement.dataset.theme;
+        } else {
+          document.documentElement.dataset.theme = zustand.wert;
+        }
+
+        try {
+          if (zustand.wert === null) localStorage.removeItem("darstellung");
+          else localStorage.setItem("darstellung", zustand.wert);
+        } catch {
+          /* Die Wahl gilt dann nur fuer diese Sitzung. Kein Fehler fuer Nutzende. */
+        }
+
+        zeichne(aktuell);
+      });
+    </script>
+    <style>
+      .kopfleiste {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        display: flex;
+        gap: var(--raum-3);
+        align-items: center;
+        padding: var(--raum-3) var(--raum-4);
+        color: #fff;
+        background: var(--kopfleiste);
+        box-shadow: 0 2px 10px rgb(0 0 0 / 15%);
+      }
+
+      .marke {
+        display: flex;
+        flex: 1;
+        gap: var(--raum-2);
+        align-items: center;
+        min-width: 0;
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .marke-bild {
+        width: 38px;
+        height: 38px;
+        padding: 4px;
+        background: #fff;
+        border-radius: 10px;
+        object-fit: contain;
+      }
+
+      .marke-text {
+        min-width: 0;
+      }
+
+      .marke-titel,
+      .marke-unterzeile {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .marke-titel {
+        font-size: 0.95rem;
+        font-weight: 700;
+        line-height: var(--zeilenhoehe-eng);
+      }
+
+      .marke-unterzeile {
+        font-size: 0.78rem;
+        /* Nicht per opacity aufhellen: das senkt den Kontrast unkontrolliert.
+           Ein fester heller Ton bleibt nachpruefbar. */
+        color: #d6e3f0;
+      }
+
+      .darstellung-knopf {
+        display: inline-flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        /* Mindestgroesse fuer Beruehrung (Regel 7). */
+        width: 44px;
+        height: 44px;
+        color: #fff;
+        cursor: pointer;
+        background: rgb(255 255 255 / 14%);
+        border: none;
+        border-radius: 999px;
+      }
+
+      .darstellung-knopf:hover {
+        background: rgb(255 255 255 / 24%);
+      }
+
+      .darstellung-knopf:focus-visible {
+        outline: 3px solid #fff;
+        outline-offset: 2px;
+      }
+
+      .darstellung-ikone {
+        width: 1.35rem;
+        height: 1.35rem;
+      }
+
+      .inhalt {
+        /* Seitlicher Rand von 16px auf dem Smartphone, damit Text nie am
+           Bildschirmrand klebt. */
+        max-width: 1100px;
+        padding: var(--raum-6) var(--raum-4) var(--raum-12);
+        margin: 0 auto;
+      }
+
+      .fusszeile {
+        padding: var(--raum-6) var(--raum-4);
+        font-size: var(--schrift-klein);
+        color: var(--text-leise);
+        text-align: center;
+        border-top: 1px solid var(--rand);
+      }
+
+      .fusszeile p {
+        max-width: none;
+        margin: 0;
+      }
+    </style>
+  </body>
+</html>

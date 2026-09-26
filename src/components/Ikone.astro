@@ -1,0 +1,29 @@
+---
+/**
+ * Ein Icon aus der Icon-Sammlung.
+ *
+ * Standardmaessig dekorativ (aria-hidden), weil ein Icon neben einer
+ * Beschriftung nichts hinzufuegt und von Screenreadern sonst doppelt
+ * vorgelesen wird. Traegt das Icon selbst die Bedeutung, wird `beschriftung`
+ * gesetzt - dann bekommt es eine Rolle und einen Namen (Regel 45).
+ */
+interface Props {
+  /** Name des <symbol> ohne das Praefix "i-". */
+  name: string;
+  /** Nur setzen, wenn das Icon allein die Information traegt. */
+  beschriftung?: string;
+  class?: string;
+}
+
+const { name, beschriftung, class: klasse } = Astro.props;
+const dekorativ = beschriftung === undefined;
+---
+
+<svg
+  class:list={["ikone", klasse]}
+  role={dekorativ ? undefined : "img"}
+  aria-hidden={dekorativ ? "true" : undefined}
+  aria-label={beschriftung}
+>
+  <use href={`#i-${name}`}></use>
+</svg>

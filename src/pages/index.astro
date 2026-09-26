@@ -1,0 +1,96 @@
+---
+import Basis from "../layouts/Basis.astro";
+import Kachel from "../components/Kachel.astro";
+import Ikone from "../components/Ikone.astro";
+import { BEREICHE } from "../daten/bereiche.ts";
+---
+
+<Basis
+  titel="Jahrestagung 2027 – Hildesheim | Altstipendiaten der Konrad-Adenauer-Stiftung"
+  beschreibung="Programm, Anmeldung und Informationen zur Altstipendiatentagung 2027 der Altstipendiaten der Konrad-Adenauer-Stiftung in Hildesheim."
+>
+  <div class="aufmacher">
+    <img
+      class="aufmacher-logo"
+      src="/logo-full.png"
+      alt="Altstipendiaten der Konrad-Adenauer-Stiftung e. V."
+      width="560"
+      height="180"
+    />
+    <h1>Altstipendiatentagung 2027 „Demokratie leben – Europa gestalten“</h1>
+    <p>
+      Willkommen! Hier findet ihr das gesamte Programm, könnt euch anmelden und alles Wichtige rund
+      um Hildesheim entdecken.
+    </p>
+    <p class="aufmacher-termin">
+      <Ikone name="calendar" />
+      <span>5.–9. Mai 2027 · Hildesheim</span>
+    </p>
+  </div>
+
+  <nav aria-label="Bereiche">
+    <h2 class="nur-vorlesen">Bereiche der Tagungsapp</h2>
+    <ul class="kacheln">
+      {BEREICHE.map((bereich) => (
+        <li>
+          <Kachel bereich={bereich} />
+        </li>
+      ))}
+    </ul>
+  </nav>
+</Basis>
+
+<style>
+  .aufmacher {
+    margin-bottom: var(--raum-8);
+    text-align: center;
+  }
+
+  .aufmacher-logo {
+    width: min(60%, 280px);
+    height: auto;
+    margin: 0 auto var(--raum-4);
+  }
+
+  /* Die Absaetze des Aufmachers sind zentriert - dann muss auch die
+     Lesebreite zentriert begrenzt werden, sonst steht der Text ausser Mitte. */
+  .aufmacher p {
+    margin-inline: auto;
+    color: var(--text-leise);
+  }
+
+  .aufmacher-termin {
+    display: inline-flex;
+    gap: var(--raum-2);
+    align-items: center;
+    padding: var(--raum-2) var(--raum-4);
+    margin-bottom: 0;
+    font-size: var(--schrift-klein);
+    font-weight: 600;
+    color: var(--akzent);
+    background: var(--karte);
+    border: 1px solid var(--rand);
+    border-radius: 999px;
+    box-shadow: var(--schatten);
+  }
+
+  /* Liste, weil es eine Liste ist: Screenreader kuendigen "9 Einträge" an.
+     Die Aufzaehlungszeichen entfernt list-style, die Semantik bleibt. */
+  .kacheln {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+    gap: var(--raum-4);
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  /* Die Kachel selbst traegt die Hoehe; das Listenelement spannt sie nur auf. */
+  .kacheln li {
+    display: flex;
+  }
+
+  .kacheln li > :global(.kachel) {
+    flex: 1;
+  }
+</style>

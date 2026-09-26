@@ -1,0 +1,145 @@
+---
+import Ikone from "./Ikone.astro";
+import type { Bereich } from "../daten/bereiche.ts";
+
+/**
+ * Eine Kachel der Startseite.
+ *
+ * Bewusst ein <a> und kein <button>: Die Kachel fuehrt zu einer eigenen Adresse.
+ * Damit funktionieren Mittelklick, "In neuem Tab oeffnen" und der Zurueck-Knopf
+ * von selbst (Regel 1) - beim <button> im Entwurf war das nicht der Fall.
+ *
+ * Farben kommen ausschliesslich aus den Kacheltokens (Regel 17). Das Paar aus
+ * Flaeche und Textfarbe ist dabei zusammen definiert, damit der Kontrast
+ * garantiert werden kann - geprueft in tests/unit/farbtokens.test.ts.
+ */
+interface Props {
+  bereich: Bereich;
+}
+
+const { bereich } = Astro.props;
+---
+
+<a class="kachel" href={`/${bereich.slug}`} data-farbe={bereich.farbe}>
+  <Ikone name={bereich.ikone} class="kachel-ikone" />
+  <span class="kachel-text">
+    <span class="kachel-titel">{bereich.titel}</span>
+    <span class="kachel-unterzeile">{bereich.unterzeile}</span>
+  </span>
+</a>
+
+<style>
+  .kachel {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    /* Mindestens 44x44px sind das Minimum fuer Beruehrung (Regel 7); eine
+       Kachel ist deutlich groesser, die Zeile haelt die Untergrenze fest. */
+    min-height: 150px;
+    min-width: 44px;
+    padding: var(--raum-6) var(--raum-4);
+    overflow: hidden;
+    color: var(--kachel-text);
+    text-decoration: none;
+    background: linear-gradient(135deg, var(--kachel-von), var(--kachel-bis));
+    border-radius: var(--radius);
+    box-shadow: var(--schatten);
+    transition:
+      transform var(--dauer-kurz) ease,
+      box-shadow var(--dauer-kurz) ease;
+  }
+
+  .kachel:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--schatten-gross);
+  }
+
+  .kachel:active {
+    transform: translateY(0);
+  }
+
+  /* Der Fokusring aus basis.css sitzt aussen; auf farbigem Grund braucht er
+     zusaetzlich einen hellen Absatz, damit er auf jeder Kachelfarbe sichtbar
+     bleibt (Regel 41). */
+  .kachel:focus-visible {
+    outline: 3px solid var(--karte);
+    outline-offset: 3px;
+    box-shadow:
+      var(--schatten-gross),
+      0 0 0 6px var(--fokus);
+  }
+
+  .kachel-ikone {
+    width: 1.9rem;
+    height: 1.9rem;
+  }
+
+  .kachel-text {
+    display: block;
+    margin-top: var(--raum-3);
+  }
+
+  .kachel-titel {
+    display: block;
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: var(--zeilenhoehe-eng);
+  }
+
+  /* Kein opacity auf dem Text: Im Entwurf senkte `opacity:0.9` den Kontrast
+     zusaetzlich unter den ohnehin schon gemessenen Wert. Wirkt Text zu
+     kraeftig, gehoert das in ein eigenes Farbtoken - nicht in Transparenz. */
+  .kachel-unterzeile {
+    display: block;
+    margin-top: var(--raum-1);
+    font-size: var(--schrift-klein);
+  }
+
+  /* Farbzuweisung je Kachel. data-Attribut statt Klassenname, damit der
+     Zusammenhang zu den Tokens eindeutig bleibt. */
+  .kachel[data-farbe="blau"] {
+    --kachel-von: var(--kachel-blau-von);
+    --kachel-bis: var(--kachel-blau-bis);
+    --kachel-text: var(--kachel-blau-text);
+  }
+  .kachel[data-farbe="pink"] {
+    --kachel-von: var(--kachel-pink-von);
+    --kachel-bis: var(--kachel-pink-bis);
+    --kachel-text: var(--kachel-pink-text);
+  }
+  .kachel[data-farbe="gruen"] {
+    --kachel-von: var(--kachel-gruen-von);
+    --kachel-bis: var(--kachel-gruen-bis);
+    --kachel-text: var(--kachel-gruen-text);
+  }
+  .kachel[data-farbe="teal"] {
+    --kachel-von: var(--kachel-teal-von);
+    --kachel-bis: var(--kachel-teal-bis);
+    --kachel-text: var(--kachel-teal-text);
+  }
+  .kachel[data-farbe="lila"] {
+    --kachel-von: var(--kachel-lila-von);
+    --kachel-bis: var(--kachel-lila-bis);
+    --kachel-text: var(--kachel-lila-text);
+  }
+  .kachel[data-farbe="rot"] {
+    --kachel-von: var(--kachel-rot-von);
+    --kachel-bis: var(--kachel-rot-bis);
+    --kachel-text: var(--kachel-rot-text);
+  }
+  .kachel[data-farbe="braun"] {
+    --kachel-von: var(--kachel-braun-von);
+    --kachel-bis: var(--kachel-braun-bis);
+    --kachel-text: var(--kachel-braun-text);
+  }
+  .kachel[data-farbe="gold"] {
+    --kachel-von: var(--kachel-gold-von);
+    --kachel-bis: var(--kachel-gold-bis);
+    --kachel-text: var(--kachel-gold-text);
+  }
+  .kachel[data-farbe="orange"] {
+    --kachel-von: var(--kachel-orange-von);
+    --kachel-bis: var(--kachel-orange-bis);
+    --kachel-text: var(--kachel-orange-text);
+  }
+</style>

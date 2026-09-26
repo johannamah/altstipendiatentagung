@@ -1,0 +1,77 @@
+# Gruendliche Pruefstufe (ADR-0008): Browser- und Lighthouse-Laeufe.
+# Blockierend fuer den Merge, aber getrennt vom schnellen Workflow.
+name: Pruefung (gruendlich)
+
+on:
+  pull_request:
+
+concurrency:
+  group: gruendlich-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  ASTRO_TELEMETRY_DISABLED: "1"
+
+jobs:
+  e2e:
+    name: End-to-End und Barrierefreiheit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      # --with-deps: die Systembibliotheken, die Chromium im Runner braucht.
+      - name: Browser installieren
+        run: npx playwright install --with-deps chromium
+
+      - name: End-to-End-Tests (schmaler und breiter Viewport, inkl. axe)
+        run: npm run test:e2e
+
+      - name: Bericht sichern
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-bericht
+          path: playwright-report/
+          retention-days: 14
+
+  lighthouse:
+    name: Lighthouse
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+
+      # Schwellenwerte stehen in lighthouserc.json. Sie werden laut ADR-0008
+      # nach einem Basislauf schrittweise verschaerft, nicht vorab geraten.
+      # Bewusst per npx mit fester Version statt als devDependency:
+      # @lhci/cli zieht ueber puppeteer rund 300 Pakete mit mehreren hohen
+      # Schwachstellen nach, fuer die es keinen Fix gibt. Als Projektabhaengigkeit
+      # waere `npm audit` dauerhaft rot - und ein dauerhaft rotes Audit liest
+      # nach kurzer Zeit niemand mehr. Das Werkzeug laeuft nur hier, nur auf
+      # unserem eigenen Build, und wird beim Anheben der Version bewusst geprueft.
+      - name: Lighthouse CI
+        run: npx --yes @lhci/cli@0.15.1 autorun
+
+      # Der Bericht bleibt im Projekt, statt bei einem Dritten zu landen
+      # (Produktprinzip 4).
+      - name: Bericht sichern
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-bericht
+          path: lighthouse-bericht/
+          retention-days: 14
