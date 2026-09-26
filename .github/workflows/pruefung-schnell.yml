@@ -1,0 +1,47 @@
+# Schnelle Pruefstufe (ADR-0008): Ziel unter zwei Minuten, laeuft bei jedem Push.
+# Die langsamen Browser- und Lighthouse-Laeufe stehen bewusst in einem eigenen
+# Workflow - eine Pipeline, auf die man zehn Minuten wartet, wird umgangen.
+name: Pruefung (schnell)
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+# Ein neuer Push macht den laufenden Check ueberfluessig.
+concurrency:
+  group: schnell-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Produktprinzip 4 (Datensparsamkeit): keine Nutzungsdaten an Dritte.
+  ASTRO_TELEMETRY_DISABLED: "1"
+
+jobs:
+  pruefen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Abhaengigkeiten installieren
+        run: npm ci
+
+      - name: Formatierung
+        run: npm run format:check
+
+      - name: Linting
+        run: npm run lint
+
+      - name: Typpruefung
+        run: npm run typecheck
+
+      - name: Unit- und Integrationstests
+        run: npm run test
+
+      - name: Build
+        run: npm run build

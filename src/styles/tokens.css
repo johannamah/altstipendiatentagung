@@ -1,0 +1,228 @@
+/* ==========================================================================
+   Designtokens
+   ==========================================================================
+
+   Grundlage: ADR-0007. Tokens werden nach ROLLE benannt, nicht nach Farbwert.
+   Nicht "welches Blau", sondern "wofuer": --akzent ist Blau als Text, --kopfleiste
+   ist die Flaeche der Kopfzeile. Damit wird ein Wechsel der Darstellung oder der
+   Markenfarben zum Austausch von Werten und nicht zum Umbau von Komponenten.
+
+   REGELN (siehe docs/ui-ux-designregeln.md):
+   - Komponenten verwenden ausschliesslich diese Tokens. Ein "#" in einer
+     Komponentendatei ist ein Review-Befund (Regel 17).
+   - Jede Farbaenderung wird von tests/unit/farbtokens.test.ts gegen WCAG 2.2 AA
+     geprueft - in beiden Darstellungen (Regel 18). Der Test laeuft in der CI.
+
+   VORLAEUFIGKEIT: Die Markenfarbe --marke-blau ist aus dem Vereinslogo
+   uebernommen. Alle uebrigen Farben sind dazu ausgesuchte Ergaenzungen OHNE
+   Vorlage im Logo und ohne Freigabe durch den Verein (offene Frage F7).
+   Sie sind als vorlaeufig zu behandeln.
+   ========================================================================== */
+
+:root {
+  /* ===== Markenfarben =====
+     --marke-blau stammt aus dem Vereinslogo und wird nicht veraendert
+     (AGENTS.md, Abschnitt "Corporate Design und Markenfuehrung"). */
+  --marke-blau: #004684;
+  --marke-blau-dunkel: #002c54;
+
+  /* ===== Rollen: helle Darstellung ===== */
+  --text: #1b2430;
+  --text-leise: #4a5568;
+  --flaeche: #f7f8fa;
+  --karte: #ffffff;
+  --feld: #ffffff;
+  --hover: #f3f6fa;
+  --akzent: #004684;
+  --ueberschrift: #002c54;
+  --kopfleiste: #004684;
+
+  /* Rein dekorative Trennlinie - ohne Kontrastanspruch, weil sie keine
+     Information traegt und kein Bedienelement begrenzt. */
+  --rand: #e3e7ed;
+  /* Rand von Eingabefeldern: begrenzt ein Bedienelement und braucht daher
+     3:1 (WCAG 1.4.11). Genau deshalb ein eigenes Token und nicht --rand. */
+  --feldrand: #6e7784;
+  /* Fokusring. Bewusst nicht --akzent: der Fokus soll sich von gewoehnlichen
+     Akzenten unterscheiden lassen (Regel 41). */
+  --fokus: #0b5fb0;
+
+  --hinweis-flaeche: #fff7e6;
+  --hinweis-rand: #f6d48a;
+  --hinweis-text: #6b4e00;
+  --schlagwort-flaeche: #f1edff;
+  --schlagwort-rand: #d9cdff;
+  --schlagwort-text: #5a3ad1;
+  --toast-flaeche: #1b2430;
+  --toast-text: #ffffff;
+
+  /* ===== Kacheln der Startseite =====
+     Je Kachel ein Verlauf und die dazu gehoerende Textfarbe. Das PAAR ist das
+     Token, nicht die Flaeche allein - nur so laesst sich der Kontrast garantieren.
+
+     Der Entwurf setzte durchgaengig weissen Text. Geprueft ergab das fuer Gold
+     1,82:1, fuer Orange 2,10:1 und fuer Gruen 2,50:1 - klar unter der Grenze von
+     4,5:1 fuer die Unterzeile. Korrigiert wurde so wenig wie moeglich:
+     - Gold und Orange behalten ihre Leuchtkraft und erhalten dunklen Text.
+     - Bei den uebrigen wurde nur der hellere Verlaufsendpunkt nachgedunkelt,
+       Farbton und Saettigung blieben erhalten.
+     Geprueft wird jede Kachel automatisch in tests/unit/farbtokens.test.ts. */
+  --kachel-text-hell: #ffffff;
+  --kachel-text-dunkel: #1b2430;
+
+  --kachel-blau-von: #004684;
+  --kachel-blau-bis: #3d79b0;
+  --kachel-blau-text: #ffffff;
+
+  --kachel-pink-von: #b30062;
+  --kachel-pink-bis: #e3007d;
+  --kachel-pink-text: #ffffff;
+
+  --kachel-gruen-von: #4f812c;
+  --kachel-gruen-bis: #587f2f;
+  --kachel-gruen-text: #ffffff;
+
+  --kachel-teal-von: #00707c;
+  --kachel-teal-bis: #00808d;
+  --kachel-teal-text: #ffffff;
+
+  --kachel-lila-von: #5a3ad1;
+  --kachel-lila-bis: #7858f8;
+  --kachel-lila-text: #ffffff;
+
+  --kachel-rot-von: #b93226;
+  --kachel-rot-bis: #e02d1f;
+  --kachel-rot-text: #ffffff;
+
+  --kachel-braun-von: #9c5a2e;
+  --kachel-braun-bis: #ab6133;
+  --kachel-braun-text: #ffffff;
+
+  /* Gold und Orange: unveraenderte Flaechen, dunkler Text. */
+  --kachel-gold-von: #c79300;
+  --kachel-gold-bis: #f2b705;
+  --kachel-gold-text: #1b2430;
+
+  --kachel-orange-von: #d97f00;
+  --kachel-orange-bis: #ff9c00;
+  --kachel-orange-text: #1b2430;
+
+  /* ===== Dunkle Palette =====
+     Hier EINMAL gepflegt. Die beiden Bloecke darunter weisen die Werte nur zu,
+     damit Systemautomatik und Handschalter nicht auseinanderlaufen koennen.
+     Aenderungen also immer hier, nie unten. Der Gleichlauf beider Zuweisungen
+     wird in tests/unit/farbtokens.test.ts geprueft. */
+  --d-text: #e6eaf2;
+  --d-text-leise: #a2aec1;
+  --d-flaeche: #0e1621;
+  --d-karte: #17202d;
+  --d-feld: #111a25;
+  --d-hover: #1e2937;
+  --d-akzent: #79b0e8;
+  --d-ueberschrift: #9bc6f0;
+  --d-kopfleiste: #002c54;
+  --d-rand: #2a3646;
+  --d-feldrand: #7a8799;
+  --d-fokus: #9bc6f0;
+  --d-hinweis-flaeche: #2a2617;
+  --d-hinweis-rand: #5c4f22;
+  --d-hinweis-text: #efce84;
+  --d-schlagwort-flaeche: #221e33;
+  --d-schlagwort-rand: #3d3357;
+  --d-schlagwort-text: #bca8ff;
+  --d-toast-flaeche: #2e3b4e;
+  --d-toast-text: #e6eaf2;
+
+  /* ===== Nicht-Farbtokens ===== */
+  --radius: 18px;
+  --radius-klein: 12px;
+  --schatten: 0 6px 20px rgb(16 30 54 / 8%);
+  --schatten-gross: 0 14px 34px rgb(16 30 54 / 16%);
+  --d-schatten: 0 6px 20px rgb(0 0 0 / 45%);
+  --d-schatten-gross: 0 14px 34px rgb(0 0 0 / 60%);
+
+  /* Abstaende: Vielfache von 4px (Regel 6). */
+  --raum-1: 4px;
+  --raum-2: 8px;
+  --raum-3: 12px;
+  --raum-4: 16px;
+  --raum-6: 24px;
+  --raum-8: 32px;
+  --raum-12: 48px;
+
+  /* Schriftskala: fliessend statt an Haltepunkten gestuft (Regel 12).
+     Grundgroesse mindestens 17px auf dem Smartphone (Regel 11). */
+  --schrift-grund: clamp(1.0625rem, 0.5vw + 0.98rem, 1.125rem);
+  --schrift-klein: clamp(0.875rem, 0.25vw + 0.83rem, 0.9375rem);
+  --schrift-h3: clamp(1.125rem, 0.7vw + 1rem, 1.375rem);
+  --schrift-h2: clamp(1.375rem, 1.4vw + 1.1rem, 1.875rem);
+  --schrift-h1: clamp(1.75rem, 3vw + 1.1rem, 2.75rem);
+
+  --zeilenhoehe: 1.6;
+  --zeilenhoehe-eng: 1.25;
+  /* Lesbare Zeilenlaenge: 60-75 Zeichen (Regel 8). */
+  --lesebreite: 68ch;
+
+  /* Bewegungsdauern: 150-300ms (Regel 36). */
+  --dauer-kurz: 150ms;
+  --dauer-mittel: 250ms;
+
+  color-scheme: light;
+}
+
+/* Automatik: folgt der Systemeinstellung - ausser es wurde ausdruecklich
+   "hell" gewaehlt; dann gewinnt die Auswahl gegen das Betriebssystem. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="hell"]) {
+    color-scheme: dark;
+    --text: var(--d-text);
+    --text-leise: var(--d-text-leise);
+    --flaeche: var(--d-flaeche);
+    --karte: var(--d-karte);
+    --feld: var(--d-feld);
+    --hover: var(--d-hover);
+    --akzent: var(--d-akzent);
+    --ueberschrift: var(--d-ueberschrift);
+    --kopfleiste: var(--d-kopfleiste);
+    --rand: var(--d-rand);
+    --feldrand: var(--d-feldrand);
+    --fokus: var(--d-fokus);
+    --hinweis-flaeche: var(--d-hinweis-flaeche);
+    --hinweis-rand: var(--d-hinweis-rand);
+    --hinweis-text: var(--d-hinweis-text);
+    --schlagwort-flaeche: var(--d-schlagwort-flaeche);
+    --schlagwort-rand: var(--d-schlagwort-rand);
+    --schlagwort-text: var(--d-schlagwort-text);
+    --toast-flaeche: var(--d-toast-flaeche);
+    --toast-text: var(--d-toast-text);
+    --schatten: var(--d-schatten);
+    --schatten-gross: var(--d-schatten-gross);
+  }
+}
+
+/* Handschalter "dunkel": gewinnt immer, unabhaengig vom Betriebssystem. */
+:root[data-theme="dunkel"] {
+  color-scheme: dark;
+  --text: var(--d-text);
+  --text-leise: var(--d-text-leise);
+  --flaeche: var(--d-flaeche);
+  --karte: var(--d-karte);
+  --feld: var(--d-feld);
+  --hover: var(--d-hover);
+  --akzent: var(--d-akzent);
+  --ueberschrift: var(--d-ueberschrift);
+  --kopfleiste: var(--d-kopfleiste);
+  --rand: var(--d-rand);
+  --feldrand: var(--d-feldrand);
+  --fokus: var(--d-fokus);
+  --hinweis-flaeche: var(--d-hinweis-flaeche);
+  --hinweis-rand: var(--d-hinweis-rand);
+  --hinweis-text: var(--d-hinweis-text);
+  --schlagwort-flaeche: var(--d-schlagwort-flaeche);
+  --schlagwort-rand: var(--d-schlagwort-rand);
+  --schlagwort-text: var(--d-schlagwort-text);
+  --toast-flaeche: var(--d-toast-flaeche);
+  --toast-text: var(--d-toast-text);
+  --schatten: var(--d-schatten);
+  --schatten-gross: var(--d-schatten-gross);
+}

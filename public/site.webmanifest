@@ -2,11 +2,11 @@
   "name": "Jahrestagung 2027 – Altstipendiaten der Konrad-Adenauer-Stiftung",
   "short_name": "Jahrestagung 2027",
   "icons": [
-    { "src": "assets/logo-icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "assets/logo-icon-512.png", "sizes": "512x512", "type": "image/png" }
+    { "src": "/logo-icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/logo-icon-512.png", "sizes": "512x512", "type": "image/png" }
   ],
   "theme_color": "#004684",
   "background_color": "#F7F8FA",
   "display": "standalone",
-  "start_url": "."
+  "start_url": "/"
 }

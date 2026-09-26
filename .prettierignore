@@ -1,0 +1,14 @@
+dist/
+.astro/
+node_modules/
+package-lock.json
+playwright-report/
+test-results/
+
+# Der Einzeldatei-Entwurf wird laut ADR-0003 nicht mehr weiterentwickelt,
+# sondern abgeloest. Ihn umzuformatieren wuerde den Diff unlesbar machen.
+index.html
+
+# Der Dev-Container ist Werkzeug-Konfiguration und liegt ausserhalb der
+# Anwendung; devcontainer.json ist ausserdem JSONC mit Kommentaren.
+.devcontainer/

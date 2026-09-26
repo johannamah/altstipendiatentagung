@@ -10,3 +10,18 @@ desktop.ini
 .vscode/
 .idea/
 *.swp
+
+# Build-Ergebnisse und Zwischenstaende
+dist/
+.astro/
+
+# Testberichte
+playwright-report/
+test-results/
+lighthouse-bericht/
+.lighthouseci/
+
+# Lokale Umgebungsvariablen - gehoeren nie ins Repository (AGENTS.md)
+.env
+.env.*
+!.env.example
