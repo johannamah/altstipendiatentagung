@@ -240,10 +240,17 @@ test.describe("Zeitachse", () => {
     await page.setViewportSize({ width: 320, height: 800 });
     await page.getByRole("button", { name: "Als Zeitachse" }).click();
 
-    /* Nicht nur "die Seite ist zu breit" melden, sondern das breiteste Element
-       UND ob ein Vorfahr es eigentlich beschneiden muesste. Ohne diese beiden
-       Angaben ist ein roter Lauf in der CI eine Sackgasse, solange sich lokal
-       kein Browser starten laesst. */
+    /* Geprueft wird, was Regel 10 wirklich meint: Laesst sich die SEITE
+       seitwaerts schieben? Der urspruengliche Vergleich von scrollWidth und
+       clientWidth war der falsche Massstab - er meldete die Achse als Fehler,
+       obwohl jedes ueberstehende Element sauber von seinem Scrollbereich
+       beschnitten wurde. Die Diagnose des Laufs war eindeutig: 422 Elemente
+       ragen hinaus, alle beschnitten, keines unbeschnitten.
+
+       behavior "instant", weil basis.css weiches Scrollen einschaltet - sonst
+       misst der Test gegen eine noch laufende Animation. */
+    await page.evaluate(() => window.scrollTo({ left: 9999, behavior: "instant" }));
+
     const befund = await page.evaluate(() => {
       const breite = document.documentElement.clientWidth;
 
@@ -254,41 +261,27 @@ test.describe("Zeitachse", () => {
 
       const scrollVorfahr = (element: Element) => {
         for (let eltern = element.parentElement; eltern; eltern = eltern.parentElement) {
-          const stil = getComputedStyle(eltern);
-          if (stil.overflowX !== "visible") {
-            return `${beschreibe(eltern)} (overflow-x: ${stil.overflowX})`;
-          }
+          if (getComputedStyle(eltern).overflowX !== "visible") return beschreibe(eltern);
         }
-        return "keiner";
+        return null;
       };
 
-      /* Entscheidend ist NICHT, welches Element am weitesten rechts liegt -
-         innerhalb eines Scrollbereichs ist das voellig in Ordnung. Entscheidend
-         ist, welches Element ueber den Rand ragt, OHNE dass ein Vorfahr es
-         beschneidet. Nur die spannen die Seite auf. */
-      const ueberRand = [...document.querySelectorAll("body *")]
-        .map((element) => ({
-          element,
-          rechts: element.getBoundingClientRect().right,
-          beschnittenVon: scrollVorfahr(element),
-        }))
-        .filter((eintrag) => eintrag.rechts > breite + 1);
-
-      const taeter = ueberRand
-        .filter((eintrag) => eintrag.beschnittenVon === "keiner")
+      /* Nur Elemente, die ueber den Rand ragen, OHNE dass ein Vorfahr sie
+         beschneidet - nur die spannen die Seite auf. */
+      const taeter = [...document.querySelectorAll("body *")]
+        .map((element) => ({ element, rechts: element.getBoundingClientRect().right }))
+        .filter((eintrag) => eintrag.rechts > breite + 1 && scrollVorfahr(eintrag.element) === null)
         .sort((a, b) => b.rechts - a.rechts)
         .slice(0, 5)
         .map((eintrag) => `${beschreibe(eintrag.element)} bis ${Math.round(eintrag.rechts)}px`);
 
-      const beschnitten = ueberRand.length - taeter.length;
-
-      return { ueberbreite: document.documentElement.scrollWidth - breite, taeter, beschnitten };
+      return { verschoben: window.scrollX, taeter };
     });
 
     expect(
-      befund.ueberbreite,
-      `Die Seite ist ${befund.ueberbreite}px zu breit.\n  Unbeschnitten über den Rand:\n  ${befund.taeter.join("\n  ") || "KEINS — die Ursache liegt woanders"}\n  (${befund.beschnitten} weitere ragen hinaus, werden aber beschnitten)`,
-    ).toBeLessThanOrEqual(0);
+      befund.verschoben,
+      `Die Seite liess sich um ${befund.verschoben}px seitwaerts schieben. Verursacher: ${befund.taeter.join(" | ") || "keiner gefunden"}`,
+    ).toBe(0);
 
     const bereichScrollt = await page.evaluate(() => {
       const bereich = document.querySelector("#tag-2027-05-07 .tagesbereich");
