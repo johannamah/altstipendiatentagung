@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { minutenImTag, ordneStraengeZu, tagesFenster } from "../../src/lib/zeitachse.ts";
+import { alsAchse, minutenImTag, ordneStraengeZu, tagesFenster } from "../../src/lib/zeitachse.ts";
 import type { Programmpunkt } from "../../src/lib/programm.ts";
 
 const punkt = (id: string, beginn: string, ende?: string): Programmpunkt => ({
@@ -141,5 +141,36 @@ describe("ordneStraengeZu", () => {
 
     expect(straenge).toBe(0);
     expect(zuordnung.size).toBe(0);
+  });
+});
+
+describe("alsAchse", () => {
+  const tag = [
+    punkt("a", "2027-05-07T12:30", "2027-05-07T17:00"),
+    punkt("b", "2027-05-07T12:30", "2027-05-07T17:00"),
+  ];
+
+  /**
+   * Die erste Rasterspalte gehoert der Stundenskala, die Straenge beginnen bei
+   * Spalte 2. Der Versatz wird hier gerechnet und nicht per calc() im CSS:
+   * calc() in Grid-Linienangaben wird nicht zuverlaessig unterstuetzt, und
+   * faellt die Angabe aus, landen alle Eintraege stillschweigend in der
+   * automatischen Platzierung - sichtbar wird das erst als kaputtes Layout.
+   */
+  it("versetzt die Straenge um die Spalte der Stundenskala", () => {
+    const { eintraege } = alsAchse(tag, "2027-05-07");
+    const spalten = eintraege.map((e) => e.spalte).sort();
+
+    expect(spalten).toEqual([2, 3]);
+    expect(Math.min(...spalten)).toBeGreaterThanOrEqual(2);
+  });
+
+  it("gibt jedem Eintrag mindestens eine Rasterzeile Hoehe", () => {
+    const { eintraege } = alsAchse(
+      [punkt("kurz", "2027-05-07T12:30", "2027-05-07T12:31")],
+      "2027-05-07",
+    );
+
+    expect(eintraege[0]!.zeileBis).toBeGreaterThan(eintraege[0]!.zeileVon);
   });
 });

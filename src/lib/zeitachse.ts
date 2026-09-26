@@ -107,7 +107,14 @@ export interface AchsenPunkt {
   /** Rasterzeile, von 1 an - passt direkt auf grid-row. */
   zeileVon: number;
   zeileBis: number;
-  /** Rasterspalte, von 1 an - passt direkt auf grid-column. */
+  /**
+   * Rasterspalte, fertig fuer grid-column - die erste Spalte gehoert der
+   * Stundenskala, deshalb ist der Strang bereits um eins versetzt.
+   *
+   * Bewusst hier gerechnet und nicht im CSS: calc() in Grid-Linienangaben wird
+   * nicht zuverlaessig unterstuetzt, und faellt die Angabe aus, landen alle
+   * Eintraege stillschweigend in der automatischen Platzierung.
+   */
   spalte: number;
 }
 
@@ -135,7 +142,8 @@ export function alsAchse(
           Math.ceil((bis - fenster.von) / RASTER_MINUTEN) + 1,
           Math.floor((von - fenster.von) / RASTER_MINUTEN) + 2,
         ),
-        spalte: (zuordnung.get(punkt.id) ?? 0) + 1,
+        // +2: Strang 0 ist Spalte 1, davor liegt die Stundenskala.
+        spalte: (zuordnung.get(punkt.id) ?? 0) + 2,
       };
     });
 

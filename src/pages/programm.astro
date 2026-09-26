@@ -540,7 +540,12 @@ const tageAufbereitet = tage.map((tag) => {
      laufen und eine Kaffeepause kuerzer ist als ein Panel. */
 
   :global([data-ansicht="achse"]) .tagesbereich {
-    /* Waagerecht scrollbar - aber nur dieser Bereich, nie die Seite (Regel 10). */
+    /* Waagerecht scrollbar - aber nur dieser Bereich, nie die Seite (Regel 10).
+       max-width und min-width sind kein Zierrat: Ohne sie kann der Bereich von
+       seinem Rasterinhalt aufgespannt werden, statt ihn zu beschneiden - und
+       dann scrollt die Seite. */
+    max-width: 100%;
+    min-width: 0;
     padding-bottom: var(--raum-2);
     overflow-x: auto;
   }
@@ -576,7 +581,7 @@ const tageAufbereitet = tage.map((tag) => {
 
   :global([data-ansicht="achse"]) .eintrag {
     grid-row: var(--zeile-von) / var(--zeile-bis);
-    grid-column: calc(var(--spalte) + 1);
+    grid-column: var(--spalte);
     margin-bottom: 0;
     /* Laengere Punkte sollen nicht ueberlaufen, sondern innen scrollen. */
     overflow: hidden;

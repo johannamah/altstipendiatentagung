@@ -13,6 +13,12 @@ const WAEHREND_DER_EXKURSIONEN = new Date(Date.UTC(2027, 4, 7, 12, 0));
 const WEIT_VORHER = new Date(Date.UTC(2026, 10, 1, 9, 0));
 
 test.describe("Jetzt läuft", () => {
+  /* Ohne reduzierte Bewegung scrollt die Seite weich, und toBeInViewport wird
+     zum Rennen gegen die Animation - der Test war in der CI entsprechend
+     flackrig. Mit reduzierter Bewegung springt die Ansicht, und nebenbei ist
+     genau der Pfad geprueft, den Regel 37 verlangt. */
+  test.use({ reducedMotion: "reduce" });
+
   test("markiert die laufenden Exkursionen und springt hin", async ({ page }) => {
     await page.clock.setFixedTime(WAEHREND_DER_EXKURSIONEN);
     await page.goto("/programm");
@@ -234,10 +240,29 @@ test.describe("Zeitachse", () => {
     await page.setViewportSize({ width: 320, height: 800 });
     await page.getByRole("button", { name: "Als Zeitachse" }).click();
 
-    const ueberbreite = await page.evaluate(
-      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
-    );
-    expect(ueberbreite).toBeLessThanOrEqual(0);
+    /* Nicht nur "die Seite ist zu breit" melden, sondern WELCHES Element sie
+       aufspannt. Ohne das ist ein roter Lauf in der CI eine Sackgasse - man
+       sieht die Zahl, aber nicht die Ursache. */
+    const befund = await page.evaluate(() => {
+      const breite = document.documentElement.clientWidth;
+      const taeter = [...document.querySelectorAll<HTMLElement>("body *")]
+        .filter((element) => element.getBoundingClientRect().right > breite + 1)
+        .map((element) => {
+          const rechteck = element.getBoundingClientRect();
+          return `${element.tagName.toLowerCase()}.${element.className || "(ohne Klasse)"} bis ${Math.round(rechteck.right)}px`;
+        })
+        .slice(0, 6);
+
+      return {
+        ueberbreite: document.documentElement.scrollWidth - breite,
+        taeter,
+      };
+    });
+
+    expect(
+      befund.ueberbreite,
+      `Die Seite ist ${befund.ueberbreite}px zu breit. Verursacher: ${befund.taeter.join(" | ") || "keiner gefunden"}`,
+    ).toBeLessThanOrEqual(0);
 
     const bereichScrollt = await page.evaluate(() => {
       const bereich = document.querySelector("#tag-2027-05-07 .tagesbereich");
