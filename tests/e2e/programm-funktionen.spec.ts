@@ -282,7 +282,30 @@ test.describe("Zeitachse", () => {
         break;
       }
 
-      return spur.length > 0 ? spur : ["kein einzelner Teilbaum verantwortlich"];
+      /* Bleibt die Eingrenzung stehen, tragen mehrere Geschwister gleichzeitig
+         bei - dann hilft das Ausblenden eines einzelnen nicht. In dem Fall wird
+         jedes Kind einzeln sichtbar geschaltet und seine Ueberbreite gemessen. */
+      const kinder = [...knoten.children].filter(
+        (kind): kind is HTMLElement => kind instanceof HTMLElement,
+      );
+      const zustand = kinder.map((kind) => kind.style.display);
+
+      for (const kind of kinder) kind.style.display = "none";
+
+      const einzeln: string[] = [];
+      for (const [index, kind] of kinder.entries()) {
+        kind.style.display = zustand[index]!;
+        const breit = ueberbreite();
+        if (breit > 0) einzeln.push(`${beschreibe(kind)}: +${breit}px`);
+        kind.style.display = "none";
+      }
+
+      for (const [index, kind] of kinder.entries()) kind.style.display = zustand[index]!;
+
+      return [
+        ...(spur.length > 0 ? spur : ["body"]),
+        einzeln.length > 0 ? `einzeln: ${einzeln.join(", ")}` : "kein Kind allein verantwortlich",
+      ];
     });
 
     // behavior "instant": basis.css schaltet weiches Scrollen ein, sonst misst
