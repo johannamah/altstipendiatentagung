@@ -1,6 +1,7 @@
 ---
 import Ikone from "./Ikone.astro";
 import { formatiereZeitraum, STATUS_TEXT, type Programmpunkt as Punkt } from "../lib/programm.ts";
+import { istExportierbar } from "../lib/kalender.ts";
 
 interface Props {
   punkt: Punkt;
@@ -9,6 +10,7 @@ interface Props {
 const { punkt } = Astro.props;
 const statusText = STATUS_TEXT[punkt.status];
 const zeit = formatiereZeitraum(punkt);
+const exportierbar = istExportierbar(punkt);
 ---
 
 <article
@@ -48,6 +50,24 @@ const zeit = formatiereZeitraum(punkt);
       <span>{punkt.hinweis}</span>
     </p>
   )}
+
+  {/* Beide Knoepfe brauchen JavaScript und werden erst davon eingeblendet -
+      ein Knopf, der nichts tut, ist schlimmer als keiner. */}
+  <p class="aktionen" hidden>
+    <button class="aktion" type="button" aria-pressed="false" data-merken>
+      <Ikone name="check" />
+      <span data-merken-text>Merken</span>
+      <span class="nur-vorlesen">: {punkt.titel}</span>
+    </button>
+
+    {exportierbar && (
+      <button class="aktion" type="button" data-kalender>
+        <Ikone name="calendar" />
+        <span>Zum Kalender</span>
+        <span class="nur-vorlesen">hinzufügen: {punkt.titel}</span>
+      </button>
+    )}
+  </p>
 </article>
 
 <style>

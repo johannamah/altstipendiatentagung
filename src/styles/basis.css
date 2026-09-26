@@ -50,6 +50,17 @@ body {
   -webkit-text-size-adjust: 100%;
 }
 
+/* Das hidden-Attribut muss gewinnen.
+   Die Voreinstellung des Browsers ist nur `[hidden] { display: none }` mit
+   niedriger Spezifitaet - jede Komponentenregel wie `.aktionen { display: flex }`
+   ueberstimmt sie. Genau das ist einmal passiert: Bedienelemente, die ohne
+   JavaScript nicht funktionieren, waren trotz hidden sichtbar.
+   !important ist hier die richtige Wahl: "verborgen heisst verborgen" ist eine
+   Aussage, die keine Komponente ueberschreiben koennen soll. */
+[hidden] {
+  display: none !important;
+}
+
 /* ===== Fokus =====
    Der wichtigste Einzelpunkt fuer Tastaturbedienung (Regel 41). Im
    Einzeldatei-Entwurf fehlte er vollstaendig, obwohl die Kacheln
