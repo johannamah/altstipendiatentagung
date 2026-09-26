@@ -12,6 +12,7 @@ import {
   type Programmpunkt as Punkt,
   type Spur,
 } from "../lib/programm.ts";
+import { alsAchse, RASTER_MINUTEN, stundenMarken } from "../lib/zeitachse.ts";
 
 const eintraege = await getCollection("programm");
 const punkte: Punkt[] = eintraege.map((eintrag) => ({ id: eintrag.id, ...eintrag.data }));
@@ -42,7 +43,24 @@ function gruppiere(punkteDesTages: Punkt[]): Gruppe[] {
   return gruppen;
 }
 
-const tageMitGruppen = tage.map((tag) => ({ ...tag, gruppen: gruppiere(tag.punkte) }));
+/**
+ * Beide Ansichten - Liste und Zeitachse - entstehen aus DEMSELBEN Markup.
+ * Eine zweite, versteckte Fassung waere fuer Screenreader doppelter Inhalt und
+ * fuer die Wartung eine zweite Wahrheit; umgeschaltet wird nur das Layout.
+ */
+const tageAufbereitet = tage.map((tag) => {
+  const achse = alsAchse(tag.punkte, tag.datum);
+  const lage = new Map(achse.eintraege.map((e) => [e.punkt.id, e]));
+
+  return {
+    ...tag,
+    gruppen: gruppiere(tag.punkte),
+    straenge: achse.straenge,
+    zeilen: (achse.fenster.bis - achse.fenster.von) / RASTER_MINUTEN,
+    marken: stundenMarken(achse.fenster),
+    lage,
+  };
+});
 ---
 
 <Basis
@@ -67,6 +85,11 @@ const tageMitGruppen = tage.map((tag) => ({ ...tag, gruppen: gruppiere(tag.punkt
       <span id="nurMeineText">Nur mein Programm</span>
     </button>
 
+    <button class="werkzeug" type="button" id="ansichtWechseln" aria-pressed="false">
+      <Ikone name="clipboard" />
+      <span id="ansichtText">Als Zeitachse</span>
+    </button>
+
     <button class="werkzeug" type="button" id="alleExportieren" disabled>
       <Ikone name="calendar" />
       <span>Mein Programm in den Kalender</span>
@@ -80,7 +103,7 @@ const tageMitGruppen = tage.map((tag) => ({ ...tag, gruppen: gruppiere(tag.punkt
 
   <nav class="tagesauswahl" aria-label="Tage der Tagung">
     <ul>
-      {tageMitGruppen.map((tag) => (
+      {tageAufbereitet.map((tag) => (
         <li>
           <a href={`#tag-${tag.datum}`}>{formatiereTagKurz(tag.datum)}</a>
         </li>
@@ -88,28 +111,54 @@ const tageMitGruppen = tage.map((tag) => ({ ...tag, gruppen: gruppiere(tag.punkt
     </ul>
   </nav>
 
-  {tageMitGruppen.map((tag) => (
+  {tageAufbereitet.map((tag) => (
     <section class="tag" id={`tag-${tag.datum}`} aria-labelledby={`ueberschrift-${tag.datum}`}>
       <h2 id={`ueberschrift-${tag.datum}`}>{formatiereDatum(tag.datum)}</h2>
 
-      {tag.gruppen.map((gruppe) =>
-        gruppe.punkte.length > 1 ? (
-          <div class="parallel">
-            <p class="parallel-kopf">
-              {SPUR_TEXT[gruppe.spur] ?? "Gleichzeitig"} · {gruppe.punkte.length} zur Wahl
-            </p>
-            <ul class="parallel-liste">
-              {gruppe.punkte.map((punkt) => (
-                <li>
-                  <Programmpunkt punkt={punkt} />
+      {/* In der Achsenansicht darf dieser Bereich waagerecht scrollen, die
+          Seite selbst nie (Regel 10). tabindex macht ihn mit der Tastatur
+          scrollbar, aria-label sagt, worum es sich handelt. */}
+      <div
+        class="tagesbereich"
+        tabindex="0"
+        role="group"
+        aria-label={`Programm am ${formatiereDatum(tag.datum)}`}
+      >
+        <ol
+          class="tagesliste"
+          style={`--straenge:${tag.straenge}; --zeilen:${tag.zeilen}`}
+          data-straenge={tag.straenge}
+        >
+          {/* Stundenmarken: nur in der Achsenansicht sichtbar, fuer
+              Screenreader ohnehin ohne Wert - die Zeit steht an jedem Punkt. */}
+          {tag.marken.map((marke) => (
+            <li class="stundenmarke" style={`--zeile:${marke.zeile}`} aria-hidden="true">
+              <span>{marke.beschriftung}</span>
+            </li>
+          ))}
+
+          {tag.gruppen.map((gruppe) => (
+            <>
+              {gruppe.punkte.length > 1 && (
+                <li class="gruppenkopf">
+                  {SPUR_TEXT[gruppe.spur] ?? "Gleichzeitig"} · {gruppe.punkte.length} zur Wahl
                 </li>
-              ))}
-            </ul>
-          </div>
-        ) : (
-          <Programmpunkt punkt={gruppe.punkte[0]!} />
-        ),
-      )}
+              )}
+              {gruppe.punkte.map((punkt) => {
+                const lage = tag.lage.get(punkt.id);
+                return (
+                  <li
+                    class="eintrag"
+                    style={`--zeile-von:${lage?.zeileVon ?? 1}; --zeile-bis:${lage?.zeileBis ?? 2}; --spalte:${lage?.spalte ?? 1}`}
+                  >
+                    <Programmpunkt punkt={punkt} />
+                  </li>
+                );
+              })}
+            </>
+          ))}
+        </ol>
+      </div>
     </section>
   ))}
 
@@ -142,6 +191,8 @@ const tageMitGruppen = tage.map((tag) => ({ ...tag, gruppen: gruppiere(tag.punkt
   const nurMeine = document.getElementById("nurMeine");
   const nurMeineText = document.getElementById("nurMeineText");
   const alleExportieren = document.getElementById("alleExportieren") as HTMLButtonElement | null;
+  const ansichtWechseln = document.getElementById("ansichtWechseln");
+  const ansichtText = document.getElementById("ansichtText");
 
   const speicher = browserSpeicher();
   let auswahl = ladeAuswahl(speicher, [...nachId.keys()]);
@@ -270,6 +321,30 @@ const tageMitGruppen = tage.map((tag) => ({ ...tag, gruppen: gruppiere(tag.punkt
 
   werkzeuge?.removeAttribute("hidden");
 
+  /* ===== Liste oder Zeitachse =====
+     Beide Ansichten entstehen aus demselben Markup; umgeschaltet wird nur das
+     Layout ueber ein Attribut am Wurzelelement. Deshalb bleibt die Reihenfolge
+     im Dokument in beiden Ansichten dieselbe - fuer Screenreader aendert sich
+     nichts (Issue #5).
+
+     Standard ist die Liste: Sie funktioniert auf jedem Geraet, waehrend die
+     Achse bei sieben Straengen waagerechtes Scrollen braucht. */
+  ansichtWechseln?.addEventListener("click", () => {
+    const achse = document.documentElement.dataset.ansicht !== "achse";
+
+    if (achse) document.documentElement.dataset.ansicht = "achse";
+    else delete document.documentElement.dataset.ansicht;
+
+    ansichtWechseln.setAttribute("aria-pressed", String(achse));
+    if (ansichtText) ansichtText.textContent = achse ? "Als Liste" : "Als Zeitachse";
+
+    melde(
+      achse
+        ? "Zeitachse: Die Höhe zeigt die Dauer, nebeneinander steht, was gleichzeitig läuft. Waagerecht scrollen zeigt weitere Stränge."
+        : "Liste: alle Punkte untereinander in zeitlicher Reihenfolge.",
+    );
+  });
+
   nurMeine?.addEventListener("click", () => {
     nurAuswahlZeigen = !nurAuswahlZeigen;
     nurMeine.setAttribute("aria-pressed", String(nurAuswahlZeigen));
@@ -363,23 +438,38 @@ const tageMitGruppen = tage.map((tag) => ({ ...tag, gruppen: gruppiere(tag.punkt
     border-bottom: 2px solid var(--rand);
   }
 
-  .tag > :global(.punkt) {
+  /* ===== Tagesansicht: Liste (Standard) =====
+     Beide Ansichten teilen sich dieses Markup. In der Liste zaehlen die
+     Rasterkoordinaten der Eintraege nicht - sie stehen schlicht untereinander. */
+
+  .tagesbereich {
+    /* Nur die Achsenansicht scrollt; in der Liste gaebe es nichts zu scrollen. */
+    overflow: visible;
+  }
+
+  .tagesliste {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .eintrag {
     margin-bottom: var(--raum-3);
   }
 
-  .parallel {
-    padding: var(--raum-3);
+  .gruppenkopf {
+    padding: var(--raum-2) var(--raum-3);
     margin-bottom: var(--raum-3);
-    background: var(--hover);
-    border: 1px dashed var(--rand);
-    border-radius: var(--radius);
-  }
-
-  .parallel-kopf {
-    margin: 0 0 var(--raum-3);
     font-size: var(--schrift-klein);
     font-weight: 700;
     color: var(--text-leise);
+    background: var(--hover);
+    border: 1px dashed var(--rand);
+    border-radius: var(--radius-klein);
+  }
+
+  .stundenmarke {
+    display: none;
   }
 
   .werkzeuge {
@@ -444,12 +534,56 @@ const tageMitGruppen = tage.map((tag) => ({ ...tag, gruppen: gruppiere(tag.punkt
     border-radius: var(--radius-klein);
   }
 
-  .parallel-liste {
+  /* ===== Tagesansicht: Zeitachse =====
+     Hoehe folgt der Dauer, Spalten sind die Straenge. Damit zeigt die Ansicht
+     das, was eine Liste verschweigt: dass sieben Exkursionen gleichzeitig
+     laufen und eine Kaffeepause kuerzer ist als ein Panel. */
+
+  :global([data-ansicht="achse"]) .tagesbereich {
+    /* Waagerecht scrollbar - aber nur dieser Bereich, nie die Seite (Regel 10). */
+    padding-bottom: var(--raum-2);
+    overflow-x: auto;
+  }
+
+  :global([data-ansicht="achse"]) .tagesbereich:focus-visible {
+    outline: 3px solid var(--fokus);
+    outline-offset: 2px;
+  }
+
+  :global([data-ansicht="achse"]) .tagesliste {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
-    gap: var(--raum-3);
-    padding: 0;
-    margin: 0;
-    list-style: none;
+    /* Erste Spalte: die Stundenskala. Danach je Strang eine Spalte. */
+    grid-template-columns: 4.5rem repeat(var(--straenge), minmax(220px, 1fr));
+    /* 15 Minuten = eine Rasterzeile. 1.35rem je Viertelstunde ergibt bei
+       45 Minuten eine Karte, in die Titel und Ort passen. */
+    grid-template-rows: repeat(var(--zeilen), 1.35rem);
+    column-gap: var(--raum-2);
+  }
+
+  :global([data-ansicht="achse"]) .gruppenkopf {
+    display: none;
+  }
+
+  :global([data-ansicht="achse"]) .stundenmarke {
+    display: block;
+    grid-row: var(--zeile);
+    grid-column: 1;
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-leise);
+    border-top: 1px solid var(--rand);
+  }
+
+  :global([data-ansicht="achse"]) .eintrag {
+    grid-row: var(--zeile-von) / var(--zeile-bis);
+    grid-column: calc(var(--spalte) + 1);
+    margin-bottom: 0;
+    /* Laengere Punkte sollen nicht ueberlaufen, sondern innen scrollen. */
+    overflow: hidden;
+  }
+
+  :global([data-ansicht="achse"]) .eintrag > :global(.punkt) {
+    height: 100%;
+    overflow-y: auto;
   }
 </style>
