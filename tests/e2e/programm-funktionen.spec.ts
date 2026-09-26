@@ -282,31 +282,29 @@ test.describe("Zeitachse", () => {
         break;
       }
 
-      /* Die Eingrenzung bleibt bei main#inhalt stehen: Mehrere Tagesabschnitte
-         tragen gleichzeitig bei, ihr Beitrag skaliert mit der Zahl der
-         Straenge. Also werden die tatsaechlichen Boxmasse des schlimmsten
-         Abschnitts gemeldet - welche Box ist zu breit, und was sagt ihr
-         berechneter Stil dazu? */
-      const masse = (element: Element | null, name: string) => {
-        if (!element) return `${name}: fehlt`;
-        const stil = getComputedStyle(element);
-        return (
-          `${name}: rect ${Math.round(element.getBoundingClientRect().width)}` +
-          `, client ${element.clientWidth}, scroll ${element.scrollWidth}` +
-          `, overflow-x ${stil.overflowX}, max-width ${stil.maxWidth}, display ${stil.display}`
-        );
-      };
+      /* Bleibt die Eingrenzung stehen, tragen mehrere Geschwister gleichzeitig
+         bei - dann hilft das Ausblenden eines einzelnen nicht. In dem Fall wird
+         jedes Kind einzeln sichtbar geschaltet und sein Beitrag gemessen. */
+      const kinder = [...knoten.children].filter(
+        (kind): kind is HTMLElement => kind instanceof HTMLElement,
+      );
+      const zustand = kinder.map((kind) => kind.style.display);
 
-      const abschnitt = document.querySelector("#tag-2027-05-07");
+      for (const kind of kinder) kind.style.display = "none";
+
+      const einzeln: string[] = [];
+      for (const [index, kind] of kinder.entries()) {
+        kind.style.display = zustand[index]!;
+        const breit = ueberbreite();
+        if (breit > 0) einzeln.push(`${beschreibe(kind)}: +${breit}px`);
+        kind.style.display = "none";
+      }
+
+      for (const [index, kind] of kinder.entries()) kind.style.display = zustand[index]!;
 
       return [
         ...(spur.length > 0 ? spur : ["body"]),
-        masse(document.documentElement, "html"),
-        masse(document.body, "body"),
-        masse(document.querySelector("#inhalt"), "main"),
-        masse(abschnitt, "section"),
-        masse(abschnitt?.querySelector(".tagesbereich") ?? null, "tagesbereich"),
-        masse(abschnitt?.querySelector(".tagesliste") ?? null, "tagesliste"),
+        einzeln.length > 0 ? `einzeln: ${einzeln.join(", ")}` : "kein Kind allein verantwortlich",
       ];
     });
 

@@ -445,6 +445,18 @@ const tageAufbereitet = tage.map((tag) => {
   .tagesbereich {
     /* Nur die Achsenansicht scrollt; in der Liste gaebe es nichts zu scrollen. */
     overflow: visible;
+
+    /* position: relative ist hier kein Zierrat, sondern die Voraussetzung
+       dafuer, dass der Scrollbereich ueberhaupt alles beschneidet:
+       Ein Scrollcontainer beschneidet absolut positionierte Nachfahren NUR,
+       wenn er selbst ihr umschliessender Block ist - also positioniert ist.
+
+       Ohne diese Zeile liegen die .nur-vorlesen-Spannen in den Knoepfen
+       ausserhalb der Beschneidung. Ihre statische Position liegt weit rechts
+       im Raster, ihr umschliessender Block ist dann das Wurzelelement - und
+       genau das macht die ganze SEITE waagerecht scrollbar, obwohl der
+       Tagesbereich selbst korrekt bei 288px klippt. */
+    position: relative;
   }
 
   .tagesliste {
