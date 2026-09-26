@@ -241,17 +241,13 @@ test.describe("Zeitachse", () => {
     await page.getByRole("button", { name: "Als Zeitachse" }).click();
 
     /* Geprueft wird, was Regel 10 wirklich meint: Laesst sich die SEITE
-       seitwaerts schieben? Der urspruengliche Vergleich von scrollWidth und
-       clientWidth war der falsche Massstab - er meldete die Achse als Fehler,
-       obwohl jedes ueberstehende Element sauber von seinem Scrollbereich
-       beschnitten wurde. Die Diagnose des Laufs war eindeutig: 422 Elemente
-       ragen hinaus, alle beschnitten, keines unbeschnitten.
+       seitwaerts schieben?
 
-       behavior "instant", weil basis.css weiches Scrollen einschaltet - sonst
-       misst der Test gegen eine noch laufende Animation. */
-    await page.evaluate(() => window.scrollTo({ left: 9999, behavior: "instant" }));
-
-    const befund = await page.evaluate(() => {
+       Reihenfolge beachten: erst messen, dann schieben. Wird nach dem Schieben
+       gemessen, rutschen genau die Elemente wieder in den sichtbaren Bereich,
+       die man sucht - die Diagnose meldete deshalb im letzten Lauf "keiner
+       gefunden", obwohl die Seite sich um 1174px schieben liess. */
+    const taeter = await page.evaluate(() => {
       const breite = document.documentElement.clientWidth;
 
       const beschreibe = (element: Element) => {
@@ -259,28 +255,32 @@ test.describe("Zeitachse", () => {
         return `${element.tagName.toLowerCase()}.${klasse}`;
       };
 
-      const scrollVorfahr = (element: Element) => {
+      const beschneidenderVorfahr = (element: Element) => {
         for (let eltern = element.parentElement; eltern; eltern = eltern.parentElement) {
           if (getComputedStyle(eltern).overflowX !== "visible") return beschreibe(eltern);
         }
         return null;
       };
 
-      /* Nur Elemente, die ueber den Rand ragen, OHNE dass ein Vorfahr sie
-         beschneidet - nur die spannen die Seite auf. */
-      const taeter = [...document.querySelectorAll("body *")]
+      return [...document.querySelectorAll("body *")]
         .map((element) => ({ element, rechts: element.getBoundingClientRect().right }))
-        .filter((eintrag) => eintrag.rechts > breite + 1 && scrollVorfahr(eintrag.element) === null)
+        .filter(
+          (eintrag) =>
+            eintrag.rechts > breite + 1 && beschneidenderVorfahr(eintrag.element) === null,
+        )
         .sort((a, b) => b.rechts - a.rechts)
         .slice(0, 5)
         .map((eintrag) => `${beschreibe(eintrag.element)} bis ${Math.round(eintrag.rechts)}px`);
-
-      return { verschoben: window.scrollX, taeter };
     });
 
+    // behavior "instant": basis.css schaltet weiches Scrollen ein, sonst misst
+    // der Test gegen eine noch laufende Animation.
+    await page.evaluate(() => window.scrollTo({ left: 9999, behavior: "instant" }));
+    const verschoben = await page.evaluate(() => window.scrollX);
+
     expect(
-      befund.verschoben,
-      `Die Seite liess sich um ${befund.verschoben}px seitwaerts schieben. Verursacher: ${befund.taeter.join(" | ") || "keiner gefunden"}`,
+      verschoben,
+      `Die Seite liess sich um ${verschoben}px seitwaerts schieben. Verursacher: ${taeter.join(" | ") || "keiner gefunden"}`,
     ).toBe(0);
 
     const bereichScrollt = await page.evaluate(() => {
