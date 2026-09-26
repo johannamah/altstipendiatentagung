@@ -57,15 +57,20 @@ tests/
 ├── unit/         Vitest
 └── e2e/          Playwright
 docs/             Vision, offene Fragen, ADRs, Designregeln
+archiv/           Der ursprüngliche Einzeldatei-Entwurf, siehe archiv/README.md
 ```
 
-### `index.html` im Wurzelverzeichnis
+`src/daten/` enthält strukturelle Daten der Anwendung, etwa die Navigation.
+Redaktionelle Inhalte mit Schema — Programm, FAQ, Hotels — gehören nach
+`src/content/` ([ADR-0006](docs/decisions/0006-inhalte-als-daten.md)).
+
+### `archiv/`
 
 Der ursprüngliche Einzeldatei-Entwurf. Er bleibt laut
-[ADR-0003](docs/decisions/0003-frontend-architektur.md) als lauffähige Vorschau
-bestehen, **bis alle Ansichten überführt sind**, und wird nicht weiterentwickelt.
-Er ist von Prettier und ESLint ausgenommen, damit sein Diff lesbar bleibt.
-Astro baut ihn nicht mit — er liegt außerhalb von `src/` und `public/`.
+[ADR-0003](docs/decisions/0003-frontend-architektur.md) als Referenz bestehen,
+**bis alle Ansichten überführt sind**, und wird nicht weiterentwickelt. Von Prettier
+und ESLint ausgenommen, damit sein Diff lesbar bleibt; Astro baut ihn nicht mit.
+Details in [archiv/README.md](archiv/README.md).
 
 ## Zwei Prüfstufen
 
