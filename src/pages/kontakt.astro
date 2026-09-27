@@ -5,7 +5,9 @@ import { getCollection } from "astro:content";
 import Basis from "../layouts/Basis.astro";
 import Seitenkopf from "../components/Seitenkopf.astro";
 import Ikone from "../components/Ikone.astro";
+import Ortsangabe from "../components/Ortsangabe.astro";
 
+const tagungsort = (await getCollection("orte")).find((eintrag) => eintrag.id === "novotel");
 const eintraege = await getCollection("kontakte");
 const kontakte = eintraege
   .map((eintrag) => eintrag.data)
@@ -111,11 +113,7 @@ const alleOhneKontaktdaten = kontakte.filter(
     <h2>
       <Ikone name="pin" /> Tagungsort
     </h2>
-    <p>
-      Novotel Hildesheim
-      <br />
-      Bahnhofsallee 38, 31134 Hildesheim
-    </p>
+    {tagungsort && <Ortsangabe ort={{ id: tagungsort.id, ...tagungsort.data }} />}
   </section>
 </Basis>
 

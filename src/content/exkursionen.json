@@ -8,7 +8,8 @@
     "anreise": "[Anreiseinfo einfügen, z. B. gemeinsamer Fußweg/Bustransfer ab Novotel]",
     "verantwortlich": "[Name Verantwortliche:r Orga-Team]",
     "telefon": "[Telefonnummer einfügen]",
-    "info": "Gemeinsamer Rundgang durch die beiden UNESCO-Welterbekirchen mit Schwerpunkt auf ihrer Bedeutung für Werte, Religion und europäische Identität."
+    "info": "Gemeinsamer Rundgang durch die beiden UNESCO-Welterbekirchen mit Schwerpunkt auf ihrer Bedeutung für Werte, Religion und europäische Identität.",
+    "ortId": "dom"
   },
   {
     "id": "landwirtschaft",
@@ -19,7 +20,8 @@
     "anreise": "[Anreiseinfo einfügen, z. B. gemeinsamer Bustransfer ab Novotel]",
     "verantwortlich": "[Name Verantwortliche:r Orga-Team]",
     "telefon": "[Telefonnummer einfügen]",
-    "info": "Einblick in einen landwirtschaftlichen Betrieb der Region mit Fokus auf europäische Agrarpolitik und ihre praktische Umsetzung vor Ort."
+    "info": "Einblick in einen landwirtschaftlichen Betrieb der Region mit Fokus auf europäische Agrarpolitik und ihre praktische Umsetzung vor Ort.",
+    "ortId": "hof-riepl-bauer"
   },
   {
     "id": "stadtfuehrungen",
@@ -41,7 +43,8 @@
     "anreise": "[Anreiseinfo einfügen, z. B. gemeinsamer Bustransfer nach Hannover, ca. 45 Min.]",
     "verantwortlich": "[Name Verantwortliche:r Orga-Team]",
     "telefon": "[Telefonnummer einfügen]",
-    "info": "Blick hinter die Kulissen des NDR Landesfunkhauses Niedersachsen in Hannover – Medien, Journalismus und öffentlich-rechtlicher Rundfunk in Europa."
+    "info": "Blick hinter die Kulissen des NDR Landesfunkhauses Niedersachsen in Hannover – Medien, Journalismus und öffentlich-rechtlicher Rundfunk in Europa.",
+    "ortId": "ndr-hannover"
   },
   {
     "id": "exkursion-5",

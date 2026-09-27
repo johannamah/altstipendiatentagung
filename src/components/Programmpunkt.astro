@@ -1,13 +1,17 @@
 ---
 import Ikone from "./Ikone.astro";
+import Ortsangabe from "./Ortsangabe.astro";
+import type { Ort } from "../lib/orte.ts";
 import { formatiereZeitraum, STATUS_TEXT, type Programmpunkt as Punkt } from "../lib/programm.ts";
 import { istExportierbar } from "../lib/kalender.ts";
 
 interface Props {
   punkt: Punkt;
+  /** Der aufgeloeste Ort - die Daten tragen nur dessen Kennung. */
+  ort?: Ort;
 }
 
-const { punkt } = Astro.props;
+const { punkt, ort } = Astro.props;
 const statusText = STATUS_TEXT[punkt.status];
 const zeit = formatiereZeitraum(punkt);
 const exportierbar = istExportierbar(punkt);
@@ -33,16 +37,7 @@ const exportierbar = istExportierbar(punkt);
 
   {punkt.beschreibung && <p class="beschreibung">{punkt.beschreibung}</p>}
 
-  {(punkt.ort || punkt.adresse) && (
-    <p class="ort">
-      <Ikone name="pin" />
-      <span>
-        {punkt.ort}
-        {punkt.ort && punkt.adresse && <br />}
-        {punkt.adresse}
-      </span>
-    </p>
-  )}
+  {ort && <Ortsangabe ort={ort} raum={punkt.raum} />}
 
   {punkt.hinweis && (
     <p class="hinweis">
@@ -123,14 +118,12 @@ const exportierbar = istExportierbar(punkt);
   }
 
   .beschreibung,
-  .ort,
   .hinweis {
     margin: var(--raum-2) 0 0;
     font-size: var(--schrift-klein);
     color: var(--text-leise);
   }
 
-  .ort,
   .hinweis {
     display: flex;
     gap: var(--raum-2);

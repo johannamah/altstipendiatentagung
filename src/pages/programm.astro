@@ -14,6 +14,9 @@ import {
 } from "../lib/programm.ts";
 import { alsAchse, RASTER_MINUTEN, stundenMarken } from "../lib/zeitachse.ts";
 
+const orte = new Map(
+  (await getCollection("orte")).map((eintrag) => [eintrag.id, { id: eintrag.id, ...eintrag.data }]),
+);
 const eintraege = await getCollection("programm");
 const punkte: Punkt[] = eintraege.map((eintrag) => ({ id: eintrag.id, ...eintrag.data }));
 const { tage, ohneZeit } = nachTagenGruppieren(punkte);
@@ -155,7 +158,10 @@ const tageAufbereitet = tage.map((tag) => {
                     class="eintrag"
                     style={`--zeile-von:${lage?.zeileVon ?? 1}; --zeile-bis:${lage?.zeileBis ?? 2}; --spalte:${lage?.spalte ?? 1}`}
                   >
-                    <Programmpunkt punkt={punkt} />
+                    <Programmpunkt
+                      punkt={punkt}
+                      ort={punkt.ortId ? orte.get(punkt.ortId) : undefined}
+                    />
                   </li>
                 );
               })}
@@ -171,24 +177,33 @@ const tageAufbereitet = tage.map((tag) => {
       <h2 id="ueberschrift-ohne-zeit">Noch ohne Termin</h2>
       <p class="einleitung">Diese Punkte sind geplant, stehen aber noch nicht fest im Ablauf.</p>
       {ohneZeit.map((punkt) => (
-        <Programmpunkt punkt={punkt} />
+        <Programmpunkt punkt={punkt} ort={punkt.ortId ? orte.get(punkt.ortId) : undefined} />
       ))}
     </section>
   )}
   {/* Die Daten, die das Skript braucht - als JSON statt in jedem Element
       verteilt, damit die Seite nicht mit Attributen zugestellt wird. */}
-  <script type="application/json" id="programmdaten" set:html={JSON.stringify(punkte)} />
+  <script
+    type="application/json"
+    id="programmdaten"
+    set:html={JSON.stringify({ punkte, orte: [...orte.values()] })}
+  />
 </Basis>
 
 <script>
   import { alsKalender, dateiname, istExportierbar } from "../lib/kalender.ts";
   import type { Programmpunkt } from "../lib/programm.ts";
+  import type { Ort } from "../lib/orte.ts";
   import { browserSpeicher, ladeAuswahl, speichereAuswahl, umschalten } from "../lib/merkliste.ts";
   import { jetztAlsOrtszeit, laufendUm } from "../lib/zeit.ts";
 
   const datenElement = document.getElementById("programmdaten");
-  const punkte: Programmpunkt[] = datenElement ? JSON.parse(datenElement.textContent ?? "[]") : [];
+  const daten: { punkte: Programmpunkt[]; orte: Ort[] } = datenElement
+    ? JSON.parse(datenElement.textContent ?? '{"punkte":[],"orte":[]}')
+    : { punkte: [], orte: [] };
+  const punkte = daten.punkte;
   const nachId = new Map(punkte.map((punkt) => [punkt.id, punkt]));
+  const orteNachId = new Map(daten.orte.map((ort) => [ort.id, ort]));
 
   const meldung = document.getElementById("meldung");
   const werkzeuge = document.getElementById("werkzeuge");
@@ -246,7 +261,7 @@ const tageAufbereitet = tage.map((tag) => {
   /* ===== Download ===== */
 
   function ladeHerunter(ausgewaehlte: Programmpunkt[]): void {
-    const datei = new Blob([alsKalender(ausgewaehlte)], {
+    const datei = new Blob([alsKalender(ausgewaehlte, orteNachId)], {
       type: "text/calendar;charset=utf-8",
     });
     const adresse = URL.createObjectURL(datei);

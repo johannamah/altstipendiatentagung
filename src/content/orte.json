@@ -1,0 +1,97 @@
+[
+  {
+    "id": "novotel",
+    "name": "Novotel Hildesheim",
+    "adresse": "Bahnhofsallee 38",
+    "plz": "31134",
+    "stadt": "Hildesheim",
+    "art": "tagungsort",
+    "hinweis": "Hauptveranstaltungsort der Jahrestagung"
+  },
+  {
+    "id": "deseo",
+    "name": "deseo Cafe . Restaurant . Bar",
+    "adresse": "Hindenburgplatz 3",
+    "plz": "31134",
+    "stadt": "Hildesheim",
+    "art": "rahmenprogramm"
+  },
+  {
+    "id": "dom",
+    "name": "Dom St. Mariae",
+    "adresse": "Domhof 3",
+    "plz": "31134",
+    "stadt": "Hildesheim",
+    "art": "rahmenprogramm",
+    "hinweis": "UNESCO-Welterbe"
+  },
+  {
+    "id": "roemer-pelizaeus",
+    "name": "Roemer- und Pelizaeus-Museum",
+    "adresse": "Am Steine 1",
+    "plz": "31134",
+    "stadt": "Hildesheim",
+    "art": "exkursion"
+  },
+  {
+    "id": "marktplatz",
+    "name": "Historischer Marktplatz",
+    "stadt": "Hildesheim",
+    "art": "rahmenprogramm"
+  },
+  {
+    "id": "hof-riepl-bauer",
+    "name": "Hof Riepl-Bauer",
+    "adresse": "Ritterstraße 63",
+    "plz": "31174",
+    "stadt": "Garmissen",
+    "art": "exkursion"
+  },
+  {
+    "id": "ndr-hannover",
+    "name": "NDR Funkhaus Hannover",
+    "adresse": "Rudolf-von-Bennigsen-Ufer 22",
+    "plz": "30169",
+    "stadt": "Hannover",
+    "art": "exkursion"
+  },
+  {
+    "id": "helo-sports",
+    "name": "Helo Sports",
+    "adresse": "Schinkelstraße 17",
+    "plz": "31137",
+    "stadt": "Hildesheim",
+    "art": "exkursion"
+  },
+  {
+    "id": "fagus-werk",
+    "name": "Fagus-Werk",
+    "adresse": "Hannoversche Str. 58",
+    "plz": "31061",
+    "stadt": "Alfeld (Leine)",
+    "art": "exkursion",
+    "hinweis": "UNESCO-Welterbe"
+  },
+  {
+    "id": "bosch",
+    "name": "Bosch Hildesheim",
+    "stadt": "Hildesheim",
+    "art": "exkursion"
+  },
+  {
+    "id": "bb-hotel",
+    "name": "B&B Hotel Hildesheim",
+    "adresse": "Pepperworth 6",
+    "plz": "31134",
+    "stadt": "Hildesheim",
+    "art": "uebernachtung"
+  },
+  {
+    "id": "hey-lou",
+    "name": "Hey Lou Hotel Hildesheim",
+    "adresse": "Zingel 26",
+    "plz": "31134",
+    "stadt": "Hildesheim",
+    "art": "uebernachtung"
+  }
+]

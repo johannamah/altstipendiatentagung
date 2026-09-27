@@ -1,0 +1,150 @@
+---
+import Ikone from "./Ikone.astro";
+import {
+  appleKartenVerweis,
+  googleMapsVerweis,
+  hatKartenverweis,
+  vollstaendigeAdresse,
+  type Ort,
+} from "../lib/orte.ts";
+
+/**
+ * Ort mit Adresse und Weiterleitung an die Karten-App.
+ *
+ * Bewusst BEIDE Verweise nebeneinander statt Plattformerkennung: Die liegt
+ * regelmaessig daneben, und wer weder das eine noch das andere nutzt, haette
+ * gar keine Moeglichkeit. Deshalb zusaetzlich "Adresse kopieren".
+ */
+interface Props {
+  ort: Ort;
+  /** Raum innerhalb des Ortes, z. B. "Raum 2". */
+  raum?: string;
+  /** Kompakt: nur Name und Raum, ohne Adresse und Verweise. */
+  knapp?: boolean;
+}
+
+const { ort, raum, knapp = false } = Astro.props;
+const adresse = vollstaendigeAdresse(ort);
+const verweisbar = hatKartenverweis(ort);
+---
+
+<div class="ortsangabe">
+  <p class="zeile">
+    <Ikone name="pin" />
+    <span>
+      <b>{ort.name}</b>
+      {raum && <>, {raum}</>}
+      {!knapp && adresse && (
+        <>
+          <br />
+          {adresse}
+        </>
+      )}
+    </span>
+  </p>
+
+  {!knapp && verweisbar && (
+    <p class="verweise">
+      <a href={googleMapsVerweis(ort)} target="_blank" rel="noopener">
+        <Ikone name="globe" />
+        <span>Google Maps</span>
+        <span class="nur-vorlesen">– {ort.name} – öffnet in neuem Tab</span>
+      </a>
+
+      <a href={appleKartenVerweis(ort)} target="_blank" rel="noopener">
+        <Ikone name="pin" />
+        <span>Apple Karten</span>
+        <span class="nur-vorlesen">– {ort.name} – öffnet in neuem Tab</span>
+      </a>
+
+      {/* Braucht JavaScript und wird erst davon eingeblendet. */}
+      <button class="kopieren" type="button" data-adresse={`${ort.name}, ${adresse}`} hidden>
+        <Ikone name="clipboard" />
+        <span>Adresse kopieren</span>
+      </button>
+    </p>
+  )}
+
+  {!knapp && !verweisbar && (
+    <p class="offen">
+      Die genaue Adresse steht noch nicht fest – deshalb gibt es hier noch keine Wegbeschreibung.
+    </p>
+  )}
+</div>
+
+<style>
+  .zeile {
+    display: flex;
+    gap: var(--raum-2);
+    align-items: flex-start;
+    margin: 0;
+    font-size: var(--schrift-klein);
+    color: var(--text-leise);
+  }
+
+  .verweise {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--raum-2);
+    margin: var(--raum-2) 0 0;
+  }
+
+  .verweise a,
+  .kopieren {
+    display: inline-flex;
+    gap: var(--raum-1);
+    align-items: center;
+    /* Mindestgroesse fuer Beruehrung (Regel 7). */
+    min-height: 44px;
+    padding: var(--raum-1) var(--raum-3);
+    font: inherit;
+    font-size: var(--schrift-klein);
+    font-weight: 600;
+    color: var(--akzent);
+    text-decoration: none;
+    cursor: pointer;
+    background: var(--feld);
+    border: 1px solid var(--feldrand);
+    border-radius: 999px;
+  }
+
+  .verweise a:hover,
+  .kopieren:hover {
+    background: var(--hover);
+  }
+
+  .offen {
+    margin: var(--raum-2) 0 0;
+    font-size: var(--schrift-klein);
+    font-style: italic;
+    color: var(--text-leise);
+  }
+</style>
+
+<script>
+  /* Kopieren braucht die Zwischenablage und damit JavaScript. Der Knopf wird
+     deshalb erst hier eingeblendet - ein Knopf, der nichts tut, ist schlimmer
+     als keiner. */
+  for (const knopf of document.querySelectorAll<HTMLButtonElement>(".kopieren")) {
+    if (!navigator.clipboard) continue;
+
+    knopf.removeAttribute("hidden");
+
+    knopf.addEventListener("click", async () => {
+      const beschriftung = knopf.querySelector("span");
+      if (!beschriftung) return;
+
+      try {
+        await navigator.clipboard.writeText(knopf.dataset.adresse ?? "");
+        beschriftung.textContent = "Kopiert";
+      } catch {
+        // Manche Browser verweigern den Zugriff ohne sichtbaren Grund.
+        beschriftung.textContent = "Kopieren nicht möglich";
+      }
+
+      window.setTimeout(() => {
+        beschriftung.textContent = "Adresse kopieren";
+      }, 2000);
+    });
+  }
+</script>

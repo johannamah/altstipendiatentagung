@@ -6,44 +6,43 @@
     "beginn": "2027-05-05T19:00",
     "spur": "rahmen",
     "status": "vorlaeufig",
-    "ort": "deseo Cafe . Restaurant . Bar",
-    "adresse": "Hindenburgplatz 3, 31134 Hildesheim"
+    "ortId": "deseo"
   },
   {
     "id": "registrierung",
     "titel": "Registrierung & Mittagsimbiss",
     "beginn": "2027-05-06T11:30",
     "ende": "2027-05-06T13:00",
-    "ort": "Novotel"
+    "ortId": "novotel"
   },
   {
     "id": "begruessung",
     "titel": "Begrüßung zur Jahrestagung 2027",
     "beginn": "2027-05-06T13:00",
     "ende": "2027-05-06T13:30",
-    "ort": "Novotel"
+    "ortId": "novotel"
   },
   {
     "id": "einfuehrung",
     "titel": "Einführung in das Thema „Demokratie leben – Europa gestalten“",
     "beginn": "2027-05-06T13:30",
     "ende": "2027-05-06T14:30",
-    "ort": "Novotel"
+    "ortId": "novotel"
   },
   {
     "id": "kaffeepause-donnerstag",
     "titel": "Kaffeepause",
     "beginn": "2027-05-06T14:30",
     "ende": "2027-05-06T15:00",
-    "ort": "Novotel"
+    "ortId": "novotel"
   },
   {
     "id": "mitgliederversammlung",
     "titel": "Mitgliederversammlung",
     "beginn": "2027-05-06T15:00",
     "ende": "2027-05-06T17:00",
-    "ort": "Novotel",
-    "status": "vorlaeufig"
+    "status": "vorlaeufig",
+    "ortId": "novotel"
   },
   {
     "id": "partnerprogramm",
@@ -51,8 +50,7 @@
     "status": "vorlaeufig",
     "beginn": "2027-05-06T15:00",
     "ende": "2027-05-06T17:00",
-    "ort": "Roemer- und Pelizaeus-Museum",
-    "adresse": "Am Steine 1, 31134 Hildesheim"
+    "ortId": "roemer-pelizaeus"
   },
   {
     "id": "spaziergang-weinfest",
@@ -67,22 +65,22 @@
     "titel": "Niedersächsischer Abend",
     "beginn": "2027-05-06T19:00",
     "ende": "2027-05-07T01:00",
-    "ort": "Novotel",
-    "spur": "rahmen"
+    "spur": "rahmen",
+    "ortId": "novotel"
   },
   {
     "id": "panel-europa-unter-druck",
     "titel": "„Europa unter Druck – Wie behaupten wir uns in einer neuen Weltordnung?“",
     "beginn": "2027-05-07T10:00",
     "ende": "2027-05-07T11:30",
-    "ort": "Novotel"
+    "ortId": "novotel"
   },
   {
     "id": "stehimbiss",
     "titel": "Stehimbiss vor Exkursionsstart",
     "beginn": "2027-05-07T11:30",
     "ende": "2027-05-07T12:30",
-    "ort": "Novotel"
+    "ortId": "novotel"
   },
   {
     "id": "exkursion-dom",
@@ -90,18 +88,16 @@
     "beschreibung": "In der Dom St. Mariae und der St. Michaeliskirche.",
     "beginn": "2027-05-07T12:30",
     "ende": "2027-05-07T17:00",
-    "ort": "Dom St. Mariae & St. Michaeliskirche",
-    "adresse": "Domhof 3, 31134 Hildesheim",
-    "spur": "exkursion"
+    "spur": "exkursion",
+    "ortId": "dom"
   },
   {
     "id": "exkursion-landwirtschaft",
     "titel": "Europa auf dem Acker – Landwirtschaft zwischen Politik, Markt und Verantwortung",
     "beginn": "2027-05-07T12:30",
     "ende": "2027-05-07T17:00",
-    "ort": "Hof Riepl-Bauer",
-    "adresse": "Ritterstraße 63, 31174 Garmissen",
-    "spur": "exkursion"
+    "spur": "exkursion",
+    "ortId": "hof-riepl-bauer"
   },
   {
     "id": "exkursion-stadt",
@@ -116,198 +112,207 @@
     "titel": "Öffentlichkeit und Demokratie – Einblicke in den öffentlich-rechtlichen Rundfunk",
     "beginn": "2027-05-07T12:30",
     "ende": "2027-05-07T17:00",
-    "ort": "NDR Funkhaus Hannover",
-    "adresse": "Rudolf-von-Bennigsen-Ufer 22, 30169 Hannover",
-    "spur": "exkursion"
+    "spur": "exkursion",
+    "ortId": "ndr-hannover"
   },
   {
     "id": "exkursion-mittelstand",
     "titel": "Mittelstand mit Weitblick – Unternehmertum und Verantwortung aus Hildesheim",
     "beginn": "2027-05-07T12:30",
     "ende": "2027-05-07T17:00",
-    "ort": "Helo Sports",
-    "adresse": "Schinkelstraße 17, 31137 Hildesheim",
-    "spur": "exkursion"
+    "spur": "exkursion",
+    "ortId": "helo-sports"
   },
   {
     "id": "exkursion-fagus",
     "titel": "Industriekultur trifft Zukunft – Arbeit, Architektur und Wandel im Fagus-Werk",
     "beginn": "2027-05-07T12:30",
     "ende": "2027-05-07T17:00",
-    "ort": "Fagus-Werk",
-    "adresse": "Hannoversche Str. 58, 31061 Alfeld (Leine)",
-    "spur": "exkursion"
+    "spur": "exkursion",
+    "ortId": "fagus-werk"
   },
   {
     "id": "exkursion-bosch",
     "titel": "Technologie im Wandel – Innovation, Industrie und Europas Wettbewerbsfähigkeit",
     "beginn": "2027-05-07T12:30",
     "ende": "2027-05-07T17:00",
-    "ort": "Bosch Hildesheim",
     "spur": "exkursion",
-    "status": "vorlaeufig"
+    "status": "vorlaeufig",
+    "ortId": "bosch"
   },
   {
     "id": "weinfest",
     "titel": "Hildesheimer Weinfest",
     "beginn": "2027-05-07T20:00",
-    "ort": "Historischer Marktplatz",
     "spur": "rahmen",
     "optional": true,
     "hinweis": "Ortsbezeichnung wird noch gegengeprüft.",
-    "ende": "2027-05-08T00:00"
+    "ende": "2027-05-08T00:00",
+    "ortId": "marktplatz"
   },
   {
     "id": "studium-generale",
     "titel": "Studium Generale",
     "beginn": "2027-05-08T09:00",
     "ende": "2027-05-08T12:00",
-    "ort": "Novotel",
-    "hinweis": "Der erste Vortrag beginnt laut Planung um 09:15 Uhr — der Rahmen wird noch abgestimmt."
+    "hinweis": "Der erste Vortrag beginnt laut Planung um 09:15 Uhr — der Rahmen wird noch abgestimmt.",
+    "ortId": "novotel"
   },
   {
     "id": "studium-generale-1",
     "titel": "Studium Generale: Vortrag 1",
     "beginn": "2027-05-08T09:15",
     "ende": "2027-05-08T10:00",
-    "ort": "Novotel, Raum 1",
     "spur": "studium-generale",
-    "status": "platzhalter"
+    "status": "platzhalter",
+    "ortId": "novotel",
+    "raum": "Raum 1"
   },
   {
     "id": "studium-generale-2",
     "titel": "Studium Generale: Vortrag 2",
     "beginn": "2027-05-08T09:15",
     "ende": "2027-05-08T10:00",
-    "ort": "Novotel, Raum 2",
     "spur": "studium-generale",
-    "status": "platzhalter"
+    "status": "platzhalter",
+    "ortId": "novotel",
+    "raum": "Raum 2"
   },
   {
     "id": "studium-generale-3",
     "titel": "Studium Generale: Vortrag 3",
     "beginn": "2027-05-08T09:15",
     "ende": "2027-05-08T10:00",
-    "ort": "Novotel, Raum 3",
     "spur": "studium-generale",
-    "status": "platzhalter"
+    "status": "platzhalter",
+    "ortId": "novotel",
+    "raum": "Raum 3"
   },
   {
     "id": "studium-generale-4",
     "titel": "Studium Generale: Vortrag 4",
     "beginn": "2027-05-08T10:00",
     "ende": "2027-05-08T10:45",
-    "ort": "Novotel, Raum 1",
     "spur": "studium-generale",
-    "status": "platzhalter"
+    "status": "platzhalter",
+    "ortId": "novotel",
+    "raum": "Raum 1"
   },
   {
     "id": "studium-generale-5",
     "titel": "Studium Generale: Vortrag 5",
     "beginn": "2027-05-08T10:00",
     "ende": "2027-05-08T10:45",
-    "ort": "Novotel, Raum 2",
     "spur": "studium-generale",
-    "status": "platzhalter"
+    "status": "platzhalter",
+    "ortId": "novotel",
+    "raum": "Raum 2"
   },
   {
     "id": "studium-generale-6",
     "titel": "Studium Generale: Vortrag 6",
     "beginn": "2027-05-08T10:00",
     "ende": "2027-05-08T10:45",
-    "ort": "Novotel, Raum 3",
     "spur": "studium-generale",
-    "status": "platzhalter"
+    "status": "platzhalter",
+    "ortId": "novotel",
+    "raum": "Raum 3"
   },
   {
     "id": "kaffeepause-samstag",
     "titel": "Kaffeepause",
     "zeitHinweis": "während des Studium Generale",
-    "ort": "Novotel",
     "status": "vorlaeufig",
-    "hinweis": "Uhrzeit steht noch nicht fest."
+    "hinweis": "Uhrzeit steht noch nicht fest.",
+    "ortId": "novotel"
   },
   {
     "id": "studium-generale-7",
     "titel": "Studium Generale: Vortrag 7",
     "beginn": "2027-05-08T10:45",
     "ende": "2027-05-08T11:30",
-    "ort": "Novotel, Raum 1",
     "spur": "studium-generale",
-    "status": "platzhalter"
+    "status": "platzhalter",
+    "ortId": "novotel",
+    "raum": "Raum 1"
   },
   {
     "id": "studium-generale-8",
     "titel": "Studium Generale: Vortrag 8",
     "beginn": "2027-05-08T10:45",
     "ende": "2027-05-08T11:30",
-    "ort": "Novotel, Raum 2",
     "spur": "studium-generale",
-    "status": "platzhalter"
+    "status": "platzhalter",
+    "ortId": "novotel",
+    "raum": "Raum 2"
   },
   {
     "id": "studium-generale-9",
     "titel": "Studium Generale: Vortrag 9",
     "beginn": "2027-05-08T10:45",
     "ende": "2027-05-08T11:30",
-    "ort": "Novotel, Raum 3",
     "spur": "studium-generale",
-    "status": "platzhalter"
+    "status": "platzhalter",
+    "ortId": "novotel",
+    "raum": "Raum 3"
   },
   {
     "id": "studium-generale-10",
     "titel": "Studium Generale: Vortrag 10",
     "beginn": "2027-05-08T11:30",
     "ende": "2027-05-08T12:00",
-    "ort": "Novotel, Raum 1",
     "spur": "studium-generale",
     "status": "platzhalter",
-    "hinweis": "Kürzer als die übrigen Vorträge — wird noch abgestimmt."
+    "hinweis": "Kürzer als die übrigen Vorträge — wird noch abgestimmt.",
+    "ortId": "novotel",
+    "raum": "Raum 1"
   },
   {
     "id": "studium-generale-11",
     "titel": "Studium Generale: Vortrag 11",
     "beginn": "2027-05-08T11:30",
     "ende": "2027-05-08T12:00",
-    "ort": "Novotel, Raum 2",
     "spur": "studium-generale",
     "status": "platzhalter",
-    "hinweis": "Kürzer als die übrigen Vorträge — wird noch abgestimmt."
+    "hinweis": "Kürzer als die übrigen Vorträge — wird noch abgestimmt.",
+    "ortId": "novotel",
+    "raum": "Raum 2"
   },
   {
     "id": "studium-generale-12",
     "titel": "Studium Generale: Vortrag 12",
     "beginn": "2027-05-08T11:30",
     "ende": "2027-05-08T12:00",
-    "ort": "Novotel, Raum 3",
     "spur": "studium-generale",
     "status": "platzhalter",
-    "hinweis": "Kürzer als die übrigen Vorträge — wird noch abgestimmt."
+    "hinweis": "Kürzer als die übrigen Vorträge — wird noch abgestimmt.",
+    "ortId": "novotel",
+    "raum": "Raum 3"
   },
   {
     "id": "mittagsimbiss-samstag",
     "titel": "Mittagsimbiss",
     "beginn": "2027-05-08T11:45",
     "ende": "2027-05-08T13:00",
-    "ort": "Novotel",
-    "hinweis": "Überschneidet sich mit den letzten Vorträgen des Studium Generale."
+    "hinweis": "Überschneidet sich mit den letzten Vorträgen des Studium Generale.",
+    "ortId": "novotel"
   },
   {
     "id": "panel-nie-wieder",
     "titel": "Nie wieder? – Deutschlands Verantwortung für Frieden und Freiheit in Europa",
     "beginn": "2027-05-08T13:00",
     "ende": "2027-05-08T14:30",
-    "ort": "Novotel",
-    "status": "vorlaeufig"
+    "status": "vorlaeufig",
+    "ortId": "novotel"
   },
   {
     "id": "konzert",
     "titel": "Konzert mit Chor und Orchester",
     "beginn": "2027-05-08T15:30",
     "ende": "2027-05-08T17:00",
-    "ort": "Dom St. Mariae",
     "spur": "rahmen",
-    "hinweis": "Ortsangabe in der Vorlage abgeschnitten – ein Wechsel des Veranstaltungsorts ist angedeutet und noch zu klären."
+    "hinweis": "Ortsangabe in der Vorlage abgeschnitten – ein Wechsel des Veranstaltungsorts ist angedeutet und noch zu klären.",
+    "ortId": "dom"
   },
   {
     "id": "zeit-zum-umziehen",
@@ -321,8 +326,8 @@
     "titel": "Festabend",
     "beginn": "2027-05-08T19:00",
     "ende": "2027-05-09T03:00",
-    "ort": "Novotel",
-    "spur": "rahmen"
+    "spur": "rahmen",
+    "ortId": "novotel"
   },
   {
     "id": "panel-was-haelt-uns-zusammen",
@@ -337,10 +342,10 @@
     "titel": "Ökumenischer Gottesdienst",
     "beginn": "2027-05-09T12:00",
     "ende": "2027-05-09T13:30",
-    "ort": "Dom St. Mariae",
     "spur": "rahmen",
     "status": "vorlaeufig",
-    "hinweis": "Ortsangabe in der Vorlage abgeschnitten – ein Wechsel des Veranstaltungsorts ist angedeutet und noch zu klären."
+    "hinweis": "Ortsangabe in der Vorlage abgeschnitten – ein Wechsel des Veranstaltungsorts ist angedeutet und noch zu klären.",
+    "ortId": "dom"
   },
   {
     "id": "verabschiedung",

@@ -103,6 +103,13 @@
   --kachel-gold-bis: #f2b705;
   --kachel-gold-text: #1b2430;
 
+  /* Schiefer fuer "Orte & Anfahrt" - bewusst zurueckhaltend, weil die Kachel
+     kein Thema benennt, sondern ein Werkzeug. 9,65:1 bzw. 5,40:1 mit weisser
+     Schrift. */
+  --kachel-schiefer-von: #37474f;
+  --kachel-schiefer-bis: #546e7a;
+  --kachel-schiefer-text: #ffffff;
+
   --kachel-orange-von: #d97f00;
   --kachel-orange-bis: #ff9c00;
   --kachel-orange-text: #1b2430;

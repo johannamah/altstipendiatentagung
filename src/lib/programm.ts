@@ -19,8 +19,9 @@ export interface Programmpunkt {
   beginn?: string;
   ende?: string;
   zeitHinweis?: string;
-  ort?: string;
-  adresse?: string;
+  /** Verweist auf einen Eintrag in der Ortssammlung. */
+  ortId?: string;
+  raum?: string;
   beschreibung?: string;
   spur: Spur;
   status: Bestaetigung;

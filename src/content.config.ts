@@ -29,6 +29,37 @@ const ortszeit = z
   .string()
   .regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/, "Erwartet wird JJJJ-MM-TTTHH:MM (Ortszeit)");
 
+/**
+ * Die Orte der Tagung, an EINER Stelle gepflegt.
+ *
+ * Vorher standen Ort und Adresse als Freitext in drei Sammlungen - mit
+ * 17 Schreibweisen fuer 12 Orte. "Novotel", "Novotel Hildesheim" und
+ * "Novotel, Raum 2" waren dasselbe Haus, und die Adresse stand genau einmal
+ * da, obwohl das Haus 36-mal im Programm vorkommt. Das verstiess gegen
+ * Produktprinzip 2 und machte jede Kartenverknuepfung zum Gluecksspiel.
+ *
+ * Koordinaten sind freiwillig: Fuer die Weiterleitung an Karten-Apps genuegt
+ * die Adresse. Erst die Uebersichtskarte braucht sie - fehlen sie, zeigt die
+ * Seite die Liste und sagt, dass die Karte noch fehlt.
+ */
+const orte = defineCollection({
+  loader: file("src/content/orte.json"),
+  schema: z.object({
+    name: z.string().min(1),
+    adresse: z.string().optional(),
+    plz: z.string().optional(),
+    stadt: z.string().min(1),
+    art: z.enum(["tagungsort", "exkursion", "uebernachtung", "rahmenprogramm"]),
+    hinweis: z.string().optional(),
+    koordinaten: z
+      .object({
+        breite: z.number().min(-90).max(90),
+        laenge: z.number().min(-180).max(180),
+      })
+      .optional(),
+  }),
+});
+
 const programm = defineCollection({
   loader: file("src/content/programm.json"),
   schema: z
@@ -43,8 +74,10 @@ const programm = defineCollection({
       ende: ortszeit.optional(),
       /** Wenn es keine feste Zeit gibt, z. B. "ab 19:00 Uhr". */
       zeitHinweis: z.string().optional(),
-      ort: z.string().optional(),
-      adresse: z.string().optional(),
+      /** Verweist auf einen Eintrag in orte.json. */
+      ortId: z.string().optional(),
+      /** Raum innerhalb des Ortes, z. B. "Raum 2". */
+      raum: z.string().optional(),
       beschreibung: z.string().optional(),
       spur: spur.default("haupt"),
       status: bestaetigung.default("bestaetigt"),
@@ -89,6 +122,8 @@ const exkursionen = defineCollection({
     /** Plaetze insgesamt. Die Vergabe braucht einen Server (ADR-0004). */
     plaetze: z.number().int().positive(),
     zeitrahmen: z.string().min(1),
+    /** Verweist auf einen Eintrag in orte.json. */
+    ortId: z.string().optional(),
     treffpunkt: z.string().optional(),
     anreise: z.string().optional(),
     verantwortlich: z.string().optional(),
@@ -102,6 +137,8 @@ const unterkuenfte = defineCollection({
   loader: file("src/content/unterkuenfte.json"),
   schema: z.object({
     name: z.string().min(1),
+    /** Verweist auf einen Eintrag in orte.json. */
+    ortId: z.string().optional(),
     /** true = eigenes Kontingent fuer die Tagung, false = blosse Empfehlung. */
     kontingent: z.boolean().default(false),
     zeitraum: z.string().optional(),
@@ -188,6 +225,14 @@ const faq = defineCollection({
   schema: z.object({
     frage: z.string().min(1),
     antwort: z.string().min(1),
+    /**
+     * Nummerierte Schritte fuer Fragen, die eine Anleitung sind. Fliesstext
+     * taugt dafuer nicht: Am Geraet arbeitet man eine Anleitung ab und hebt
+     * dabei den Blick - in einem Absatz verliert man die Stelle.
+     */
+    schritte: z.array(z.string().min(1)).min(2).optional(),
+    /** Nachgestellte Einordnung, z. B. warum ein Schritt fehlschlagen kann. */
+    hinweis: z.string().min(1).optional(),
   }),
 });
 
@@ -227,6 +272,7 @@ const stadtlinks = defineCollection({
 });
 
 export const collections = {
+  orte,
   programm,
   exkursionen,
   unterkuenfte,
