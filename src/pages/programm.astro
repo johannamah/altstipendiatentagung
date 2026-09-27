@@ -33,7 +33,11 @@ function gruppiere(punkteDesTages: Punkt[]): Gruppe[] {
     const schluessel = `${punkt.spur}|${punkt.beginn ?? ""}|${punkt.ende ?? ""}`;
     const letzte = gruppen.at(-1);
 
-    if (letzte?.schluessel === schluessel && punkt.spur !== "haupt" && punkt.spur !== "rahmen") {
+    /* Gleiche Spur und gleiche Zeit heisst: Man muss sich entscheiden. Das gilt
+       nicht nur fuer Exkursionen und Vortraege - am Donnerstag laufen
+       Mitgliederversammlung und Partnerprogramm beide von 15:00 bis 17:00.
+       Die Einschraenkung auf bestimmte Spuren hat genau das verschwiegen. */
+    if (letzte?.schluessel === schluessel) {
       letzte.punkte.push(punkt);
     } else {
       gruppen.push({ schluessel, spur: punkt.spur, punkte: [punkt] });

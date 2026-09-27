@@ -109,6 +109,13 @@ describe("formatiereZeitraum", () => {
     expect(formatiereZeitraum(punkt({ id: "a", beginn: "2027-05-07T21:00" }))).toBe("ab 21:00 Uhr");
   });
 
+  it("schreibt ein Ende um Mitternacht als 24:00, ohne Folgetag-Zusatz", () => {
+    // Das Weinfest laeuft von 20:00 bis Mitternacht.
+    expect(
+      formatiereZeitraum(punkt({ id: "a", beginn: "2027-05-07T20:00", ende: "2027-05-08T00:00" })),
+    ).toBe("20:00–24:00 Uhr");
+  });
+
   it("weist auf den Folgetag hin, wenn ein Punkt ueber Mitternacht geht", () => {
     expect(
       formatiereZeitraum(punkt({ id: "a", beginn: "2027-05-08T19:00", ende: "2027-05-09T03:00" })),
