@@ -85,7 +85,6 @@
   {
     "id": "exkursion-dom",
     "titel": "Glaube, Werte, Europa – Auf den Spuren europäischer Identität",
-    "beschreibung": "In der Dom St. Mariae und der St. Michaeliskirche.",
     "beginn": "2027-05-07T12:30",
     "ende": "2027-05-07T17:00",
     "spur": "exkursion",
@@ -217,14 +216,6 @@
     "status": "platzhalter",
     "ortId": "novotel",
     "raum": "Raum 3"
-  },
-  {
-    "id": "kaffeepause-samstag",
-    "titel": "Kaffeepause",
-    "zeitHinweis": "während des Studium Generale",
-    "status": "vorlaeufig",
-    "hinweis": "Uhrzeit steht noch nicht fest.",
-    "ortId": "novotel"
   },
   {
     "id": "studium-generale-7",
