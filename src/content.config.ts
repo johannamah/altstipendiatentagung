@@ -137,12 +137,50 @@ const ankuendigungen = defineCollection({
  */
 const kontakte = defineCollection({
   loader: file("src/content/kontakte.json"),
-  schema: z.object({
-    name: z.string().min(1),
-    bereich: z.string().optional(),
-    telefon: z.string().optional(),
-    email: z.string().optional(),
-  }),
+  schema: ({ image }) =>
+    z.object({
+      name: z.string().min(1),
+      /** Kleinere Zahl steht weiter oben. Bewusst gesetzt statt alphabetisch. */
+      reihenfolge: z.number().int(),
+      bereich: z.string().optional(),
+      telefon: z.string().optional(),
+      email: z.string().optional(),
+      /** Portraits werden nachgereicht; bis dahin stehen Initialen. */
+      bild: image().optional(),
+      bildnachweis: z.string().optional(),
+    }),
+});
+
+/**
+ * Grussworte zur Eroeffnung.
+ *
+ * `bild` nutzt den image()-Helfer: Astro optimiert das Bild beim Bauen und
+ * liefert passende Groessen aus - die Vorlage des Landesvorsitzenden hat 1 MB,
+ * unveraendert ausgeliefert waere das auf einem Mobilfunknetz spuerbar.
+ *
+ * `bildnachweis` ist Pflicht, sobald ein Bild gesetzt ist: Portraits sind
+ * urheberrechtlich geschuetzt, und ohne Nachweis laesst sich spaeter nicht mehr
+ * feststellen, woher das Bild stammt und ob wir es zeigen duerfen (F16).
+ */
+const grussworte = defineCollection({
+  loader: file("src/content/grussworte.json"),
+  schema: ({ image }) =>
+    z
+      .object({
+        name: z.string().min(1),
+        rolle: z.string().min(1),
+        bild: image().optional(),
+        bildnachweis: z.string().optional(),
+        /** Ein Eintrag je Absatz. */
+        absaetze: z.array(z.string().min(1)).min(1),
+        /** Kleinere Zahl steht weiter oben. */
+        reihenfolge: z.number().int(),
+        /** Solange der Originaltext fehlt, ist der Text ein Platzhalter. */
+        status: bestaetigung.default("platzhalter"),
+      })
+      .refine((eintrag) => eintrag.bild === undefined || eintrag.bildnachweis !== undefined, {
+        message: "Zu jedem Bild gehoert ein Bildnachweis",
+      }),
 });
 
 const faq = defineCollection({
@@ -153,4 +191,12 @@ const faq = defineCollection({
   }),
 });
 
-export const collections = { programm, exkursionen, unterkuenfte, ankuendigungen, kontakte, faq };
+export const collections = {
+  programm,
+  exkursionen,
+  unterkuenfte,
+  ankuendigungen,
+  kontakte,
+  faq,
+  grussworte,
+};

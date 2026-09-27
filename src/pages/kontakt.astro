@@ -1,15 +1,30 @@
 ---
+import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
 
 import Basis from "../layouts/Basis.astro";
 import Seitenkopf from "../components/Seitenkopf.astro";
-import Platzhalterhinweis from "../components/Platzhalterhinweis.astro";
 import Ikone from "../components/Ikone.astro";
 
-const kontakte = await getCollection("kontakte");
+const eintraege = await getCollection("kontakte");
+const kontakte = eintraege
+  .map((eintrag) => eintrag.data)
+  .sort((a, b) => a.reihenfolge - b.reihenfolge);
 
 /** Platzhalter erkennen, damit sie nicht wie eine echte Angabe aussehen. */
 const istPlatzhalter = (wert?: string) => wert === undefined || wert.startsWith("[");
+
+/** Initialen als Ersatz, solange kein Portrait vorliegt. */
+const initialen = (name: string) =>
+  name
+    .split(/\s+/)
+    .map((teil) => teil[0])
+    .join("")
+    .slice(0, 2);
+
+const alleOhneKontaktdaten = kontakte.filter(
+  (person) => istPlatzhalter(person.telefon) && istPlatzhalter(person.email),
+).length;
 ---
 
 <Basis
@@ -22,32 +37,71 @@ const istPlatzhalter = (wert?: string) => wert === undefined || wert.startsWith(
     einleitung="Bei Fragen rund um die Jahrestagung sind wir gerne für euch da."
   />
 
-  <Platzhalterhinweis>
-    Zuständigkeitsbereiche, Telefonnummern und E-Mail-Adressen sind noch nicht eingetragen. Bis
-    dahin erreicht ihr uns über die bekannten Wege des Vereins.
-  </Platzhalterhinweis>
+  {/* Steht bewusst VOR den Ansprechpersonen: Die meisten Fragen sind dort
+      schon beantwortet, und jede Frage, die gar nicht erst gestellt werden
+      muss, entlastet ein ehrenamtliches Team. */}
+  <aside class="zuerst">
+    <Ikone name="help" />
+    <p>
+      Viele Fragen sind unter <a href="/faq">Häufig gestellte Fragen</a> bereits beantwortet – dort
+      lohnt sich der erste Blick.
+    </p>
+  </aside>
+
+  <h2>Ansprechpersonen</h2>
+
+  {alleOhneKontaktdaten > 0 && (
+    <p class="einleitung">
+      Für {alleOhneKontaktdaten} von {kontakte.length} Personen sind Telefon und E-Mail noch nicht
+      hinterlegt. Wendet euch bis dahin an die beiden oben genannten Ansprechpersonen.
+    </p>
+  )}
 
   <ul class="personen">
-    {kontakte.map(({ data: person }) => (
+    {kontakte.map((person) => (
       <li class="karte">
-        <h2>{person.name}</h2>
-        <p class="bereich">
-          {istPlatzhalter(person.bereich) ? "Zuständigkeit noch offen" : person.bereich}
-        </p>
+        <div class="kopf">
+          {person.bild ? (
+            <Image
+              class="portrait"
+              src={person.bild}
+              alt={`Porträt von ${person.name}`}
+              width={72}
+              height={72}
+              densities={[1, 2]}
+            />
+          ) : (
+            /* aria-hidden: Die Initialen sind eine Platzhaltergrafik, der
+                 Name steht direkt daneben - vorgelesen waere das nur Lärm. */
+            <span class="initialen" aria-hidden="true">
+              {initialen(person.name)}
+            </span>
+          )}
+
+          <div>
+            <h3>{person.name}</h3>
+            <p class="bereich">
+              {istPlatzhalter(person.bereich) ? "Zuständigkeit noch offen" : person.bereich}
+            </p>
+          </div>
+        </div>
 
         <p class="zeile">
           <Ikone name="phone" />
-          <span>{istPlatzhalter(person.telefon) ? "noch nicht hinterlegt" : person.telefon}</span>
+          {istPlatzhalter(person.telefon) ? (
+            <span class="offen">noch nicht hinterlegt</span>
+          ) : (
+            <a href={`tel:${person.telefon!.replace(/\s/g, "")}`}>{person.telefon}</a>
+          )}
         </p>
+
         <p class="zeile">
           <Ikone name="mail" />
-          <span>
-            {istPlatzhalter(person.email) ? (
-              "noch nicht hinterlegt"
-            ) : (
-              <a href={`mailto:${person.email}`}>{person.email}</a>
-            )}
-          </span>
+          {istPlatzhalter(person.email) ? (
+            <span class="offen">noch nicht hinterlegt</span>
+          ) : (
+            <a href={`mailto:${person.email}`}>{person.email}</a>
+          )}
         </p>
       </li>
     ))}
@@ -63,13 +117,36 @@ const istPlatzhalter = (wert?: string) => wert === undefined || wert.startsWith(
       Bahnhofsallee 38, 31134 Hildesheim
     </p>
   </section>
-
-  <p class="karte">
-    Antworten auf häufige Fragen findet ihr unter <a href="/faq">Häufig gestellte Fragen</a>.
-  </p>
 </Basis>
 
 <style>
+  /* Der Verweis auf die FAQ steht oben und hebt sich ab - er soll gelesen
+     werden, bevor jemand zum Telefon greift. */
+  .zuerst {
+    display: flex;
+    gap: var(--raum-3);
+    align-items: flex-start;
+    padding: var(--raum-3) var(--raum-4);
+    margin-bottom: var(--raum-6);
+    color: var(--schlagwort-text);
+    background: var(--schlagwort-flaeche);
+    border: 1px solid var(--schlagwort-rand);
+    border-radius: var(--radius);
+  }
+
+  .zuerst p {
+    margin: 0;
+  }
+
+  .einleitung {
+    font-size: var(--schrift-klein);
+    color: var(--text-leise);
+  }
+
+  h2 {
+    font-size: var(--schrift-h3);
+  }
+
   .personen {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
@@ -83,12 +160,42 @@ const istPlatzhalter = (wert?: string) => wert === undefined || wert.startsWith(
     margin-bottom: 0;
   }
 
-  h2 {
-    font-size: var(--schrift-h3);
+  .kopf {
+    display: flex;
+    gap: var(--raum-3);
+    align-items: center;
+    margin-bottom: var(--raum-3);
+  }
+
+  .portrait,
+  .initialen {
+    flex: none;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+  }
+
+  .portrait {
+    object-fit: cover;
+  }
+
+  .initialen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--kachel-teal-text);
+    background: var(--kachel-teal-von);
+  }
+
+  h3 {
+    margin-bottom: 2px;
+    font-size: 1.05rem;
   }
 
   .bereich {
-    margin-bottom: var(--raum-3);
+    margin: 0;
     font-size: var(--schrift-klein);
     color: var(--text-leise);
   }
@@ -99,6 +206,10 @@ const istPlatzhalter = (wert?: string) => wert === undefined || wert.startsWith(
     align-items: center;
     margin-bottom: var(--raum-1);
     font-size: var(--schrift-klein);
+  }
+
+  .offen {
+    font-style: italic;
     color: var(--text-leise);
   }
 </style>

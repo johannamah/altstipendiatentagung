@@ -90,10 +90,39 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
     await expect(page.locator("input[type='email'], input[type='text']")).toHaveCount(0);
   });
 
-  test("Kontakt zeigt das Orga-Team und den Tagungsort", async ({ page }) => {
+  test("Kontakt zeigt das Orga-Team in der festgelegten Reihenfolge", async ({ page }) => {
     await page.goto("/kontakt");
 
-    await expect(page.locator(".personen > li")).toHaveCount(8);
+    const namen = page.locator(".personen h3");
+    await expect(namen).toHaveCount(8);
+    await expect(namen.nth(0)).toHaveText("Konstantin Gerbrich");
+    await expect(namen.nth(1)).toHaveText("Torben Burdorf");
+    await expect(namen.nth(7)).toHaveText("Ferdinand Meißner");
+  });
+
+  test("Kontakt verlinkt hinterlegte Telefonnummern und E-Mail-Adressen", async ({ page }) => {
+    await page.goto("/kontakt");
+
+    await expect(page.getByRole("link", { name: "+49 1515 6675547" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "t.burdorf@altstipendiaten.de" })).toBeVisible();
+  });
+
+  /**
+   * Der Verweis auf die FAQ steht bewusst VOR den Ansprechpersonen: Jede Frage,
+   * die gar nicht erst gestellt wird, entlastet ein ehrenamtliches Team.
+   */
+  test("Kontakt nennt die FAQ vor den Ansprechpersonen", async ({ page }) => {
+    await page.goto("/kontakt");
+
+    const faqHinweis = await page.locator(".zuerst").boundingBox();
+    const erstePerson = await page.locator(".personen > li").first().boundingBox();
+
+    expect(faqHinweis!.y).toBeLessThan(erstePerson!.y);
+  });
+
+  test("Kontakt zeigt den Tagungsort", async ({ page }) => {
+    await page.goto("/kontakt");
+
     await expect(page.getByRole("heading", { name: "Tagungsort" })).toBeVisible();
     await expect(page.getByText("Bahnhofsallee 38")).toBeVisible();
   });
@@ -122,11 +151,30 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
     await expect(page.locator(".liste > li")).toHaveCount(2);
   });
 
-  test("Begrüßung weist den Text als Platzhalter aus", async ({ page }) => {
+  test("Begrüßung zeigt drei Grußworte in fester Reihenfolge", async ({ page }) => {
     await page.goto("/begruessung");
 
-    await expect(page.getByText(/Platzhaltertext/)).toBeVisible();
-    await expect(page.getByText("Demokratie leben – Europa gestalten")).toBeVisible();
+    const namen = page.getByRole("heading", { level: 2 });
+    await expect(namen).toHaveCount(3);
+    await expect(namen.nth(0)).toContainText("Matthias Wilkes");
+    await expect(namen.nth(1)).toContainText("Annegret Kramp-Karrenbauer");
+    await expect(namen.nth(2)).toContainText("Sebastian Lechner");
+  });
+
+  /**
+   * Solange die Originaltexte fehlen, muss an jedem Grusswort stehen, dass es
+   * ein Beispiel ist - sonst haelt es jemand fuer abgestimmt und zitiert es.
+   */
+  test("Begrüßung weist jeden Text als Beispiel aus", async ({ page }) => {
+    await page.goto("/begruessung");
+
+    await expect(page.getByText("Beispieltext – Originaltext folgt")).toHaveCount(3);
+  });
+
+  test("Begrüßung zeigt zu jedem Grußwort ein Porträt", async ({ page }) => {
+    await page.goto("/begruessung");
+
+    await expect(page.locator(".grusswort img")).toHaveCount(3);
   });
 
   /**
