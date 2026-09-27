@@ -1,4 +1,4 @@
-import { file } from "astro/loaders";
+import { file, glob } from "astro/loaders";
 import { defineCollection } from "astro:content";
 import { z } from "zod";
 
@@ -191,6 +191,41 @@ const faq = defineCollection({
   }),
 });
 
+/**
+ * Die Texte zur Stadt. Markdown statt JSON, weil es hier um Fliesstext mit
+ * Hervorhebungen und Verweisen geht - in JSON waere das eine Zeile voller
+ * Sonderzeichen, die niemand freiwillig pflegt.
+ *
+ * Je Abschnitt eine Datei: So laesst sich einer ueberarbeiten, ohne die
+ * anderen anzufassen, und der Diff im Pull Request bleibt lesbar.
+ */
+const stadt = defineCollection({
+  loader: glob({ pattern: "*.md", base: "src/content/stadt" }),
+  schema: z.object({
+    titel: z.string().min(1),
+    /** Name eines <symbol> ohne das Praefix "i-". */
+    ikone: z.string().min(1),
+    reihenfolge: z.number().int(),
+  }),
+});
+
+/** Eckdaten zur Stadt, als Zahl und Erlaeuterung getrennt. */
+const stadtzahlen = defineCollection({
+  loader: file("src/content/stadtzahlen.json"),
+  schema: z.object({
+    wert: z.string().min(1),
+    was: z.string().min(1),
+  }),
+});
+
+const stadtlinks = defineCollection({
+  loader: file("src/content/stadtlinks.json"),
+  schema: z.object({
+    titel: z.string().min(1),
+    web: z.url(),
+  }),
+});
+
 export const collections = {
   programm,
   exkursionen,
@@ -199,4 +234,7 @@ export const collections = {
   kontakte,
   faq,
   grussworte,
+  stadt,
+  stadtzahlen,
+  stadtlinks,
 };

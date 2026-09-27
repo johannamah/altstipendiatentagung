@@ -137,12 +137,53 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
     await expect(frage).toHaveAttribute("open", "");
   });
 
-  test("Hildesheim zeigt Geschichte, Sehenswürdigkeiten und Restaurants", async ({ page }) => {
+  test("Hildesheim zeigt alle Abschnitte in fester Reihenfolge", async ({ page }) => {
     await page.goto("/hildesheim");
 
-    await expect(page.getByRole("heading", { name: /Geschichte Hildesheims/ })).toBeVisible();
-    await expect(page.getByText("Tausendjährige Rosenstock")).toBeVisible();
-    await expect(page.getByText("Knochenhaueramtshaus").first()).toBeVisible();
+    const ueberschriften = page.getByRole("heading", { level: 2 });
+    await expect(ueberschriften.nth(0)).toContainText("Eine Stadt mit mehr als 1.200 Jahren");
+    await expect(ueberschriften.nth(1)).toContainText("Zerstörung und Wiederaufbau");
+    await expect(ueberschriften.nth(2)).toContainText("UNESCO-Welterbe");
+    await expect(ueberschriften.nth(3)).toContainText("Hildesheim heute");
+    await expect(ueberschriften.nth(4)).toContainText("hiApp");
+    await expect(ueberschriften.nth(5)).toContainText("Lauschtour");
+  });
+
+  test("Hildesheim zeigt die Eckdaten als Wert-Erklärung-Paare", async ({ page }) => {
+    await page.goto("/hildesheim");
+
+    await expect(page.locator(".zahlen dt")).toHaveCount(9);
+    await expect(page.getByText("104.712")).toBeVisible();
+    await expect(page.getByText("92,19 km²")).toBeVisible();
+  });
+
+  test("Hildesheim verlinkt die weiterführenden Quellen", async ({ page }) => {
+    await page.goto("/hildesheim");
+
+    const links = page.locator(".links a");
+    await expect(links).toHaveCount(4);
+    // Verweise auf die Stadt und die UNESCO, ohne Nachverfolgungsparameter.
+    for (const ziel of await links.evaluateAll((a) => a.map((e) => e.getAttribute("href")))) {
+      expect(ziel).not.toContain("utm_source");
+    }
+  });
+
+  test("Hildesheim nennt Geschichte und Wahrzeichen aus der Vorlage", async ({ page }) => {
+    await page.goto("/hildesheim");
+
+    await expect(page.getByText(/Tausendjährige Rosenstock/)).toBeVisible();
+    await expect(page.getByText(/Knochenhauer-Amtshaus/)).toBeVisible();
+    await expect(page.getByText(/22. März 1945/)).toBeVisible();
+  });
+
+  /**
+   * Die Empfehlungen werden nachgereicht. Bis dahin steht dort bewusst keine
+   * Liste - eine ungepruefte Auswahl waere keine Empfehlung.
+   */
+  test("Hildesheim weist die fehlenden Empfehlungen aus", async ({ page }) => {
+    await page.goto("/hildesheim");
+
+    await expect(page.getByText(/Empfehlungen werden noch nachgereicht/)).toBeVisible();
   });
 
   test("Ankündigungen zeigt die Einträge, neueste zuerst", async ({ page }) => {

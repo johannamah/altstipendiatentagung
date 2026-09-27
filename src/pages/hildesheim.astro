@@ -1,118 +1,156 @@
 ---
+import { getCollection, render } from "astro:content";
+
 import Basis from "../layouts/Basis.astro";
 import Seitenkopf from "../components/Seitenkopf.astro";
 import Platzhalterhinweis from "../components/Platzhalterhinweis.astro";
 import Ikone from "../components/Ikone.astro";
 
+const abschnitte = (await getCollection("stadt")).sort(
+  (a, b) => a.data.reihenfolge - b.data.reihenfolge,
+);
+
+/* Die Abschnitte werden vorab gerendert: Astro erlaubt kein await innerhalb
+   des Markups, und ein Aufruf je Abschnitt im Template waere ohnehin
+   schwerer zu lesen. */
+const gerendert = await Promise.all(
+  abschnitte.map(async (abschnitt) => ({
+    ...abschnitt.data,
+    Inhalt: (await render(abschnitt)).Content,
+  })),
+);
+
+const zahlen = (await getCollection("stadtzahlen")).map((eintrag) => eintrag.data);
+const links = (await getCollection("stadtlinks")).map((eintrag) => eintrag.data);
+
 const sehenswuerdigkeiten = [
   "Dom St. Mariae & Domschatz (UNESCO-Welterbe)",
   "St. Michaeliskirche (UNESCO-Welterbe)",
-  "Marktplatz mit Knochenhaueramtshaus",
+  "Marktplatz mit Knochenhauer-Amtshaus",
   "St. Godehard-Basilika",
   "Roemer- und Pelizaeus-Museum",
   "Historische Altstadt und Wallanlagen",
-];
-
-const restaurants = [
-  "Zur Scharfen Ecke – deutsche Küche",
-  "Gasthof Kupferschmiede – deutsche Küche",
-  "Schlegel's Weinstube – regionale Küche",
-  "Amadeus Café & Restaurant",
-  "India Haus Hildesheim – indische Küche",
 ];
 ---
 
 <Basis
   titel="Hildesheim & Umgebung – Jahrestagung 2027"
-  beschreibung="Geschichte, Sehenswürdigkeiten und Tipps für die Zeit neben dem Programm der Jahrestagung 2027."
+  beschreibung="Geschichte, UNESCO-Welterbe und Tipps für die Zeit neben dem Programm der Jahrestagung 2027 in Hildesheim."
 >
   <Seitenkopf
     ikone="landmark"
     titel="Hildesheim & Umgebung"
-    einleitung="Ein paar Tipps für die Zeit neben dem Programm."
+    einleitung="Eine Stadt mit mehr als 1.200 Jahren Geschichte – und ein paar Tipps für die Zeit neben dem Programm."
   />
 
-  <article class="karte">
-    <h2>
-      <Ikone name="book" /> Zur Geschichte Hildesheims
-    </h2>
-
-    <p>
-      Hildesheim zählt zu den ältesten Städten Norddeutschlands: Die Bischofsstadt geht auf eine
-      Gründung Kaiser Ludwigs des Frommen im Jahr 815 zurück. Unter Bischof Bernward (993–1022)
-      erlebte die Stadt eine erste kulturelle Blüte.
-    </p>
-
-    <p>
-      Der Hildesheimer Dom St. Mariae und die Michaeliskirche gehören seit 1985 zum
-      UNESCO-Weltkulturerbe. Am Dom rankt zudem der legendäre „Tausendjährige Rosenstock“, der
-      Zerstörung und Wiederaufbau der Stadt überstanden hat.
-    </p>
-
-    <p>
-      Am 22. März 1945 wurde die historische Altstadt bei einem Luftangriff fast vollständig
-      zerstört. Der originalgetreue Wiederaufbau von Wahrzeichen wie dem Marktplatz mit dem
-      Knochenhaueramtshaus prägt das Stadtbild bis heute.
-    </p>
-  </article>
-
-  <div class="zweispaltig">
-    <div class="spalten">
-      <section class="karte">
-        <h2>
-          <Ikone name="eye" /> Sehenswürdigkeiten
-        </h2>
-        <ul>
-          {sehenswuerdigkeiten.map((eintrag) => (
-            <li>{eintrag}</li>
-          ))}
-        </ul>
-      </section>
-
-      <section class="karte">
-        <h2>
-          <Ikone name="utensils" /> Restaurants
-        </h2>
-        <ul>
-          {restaurants.map((eintrag) => (
-            <li>{eintrag}</li>
-          ))}
-        </ul>
-        <p class="quelle">
-          Auswahl auf Basis öffentlicher Bewertungsportale (Stand: Recherche 2026) – bitte vor der
-          Tagung auf Aktualität prüfen.
-        </p>
-      </section>
-    </div>
-  </div>
+  {gerendert.map(({ titel, ikone, Inhalt }) => (
+    <article class="karte fliesstext">
+      <h2>
+        <Ikone name={ikone} />
+        <span>{titel}</span>
+      </h2>
+      <Inhalt />
+    </article>
+  ))}
 
   <section class="karte">
     <h2>
-      <Ikone name="coffee" /> Cafés
+      <Ikone name="clipboard" /> Hildesheim in Zahlen
+    </h2>
+    {/* <dl>, weil es Paare aus Wert und Erläuterung sind - Screenreader
+        kündigen die Zusammengehörigkeit dann von selbst an. */}
+    <dl class="zahlen">
+      {zahlen.map((zahl) => (
+        <div>
+          <dt>{zahl.wert}</dt>
+          <dd>{zahl.was}</dd>
+        </div>
+      ))}
+    </dl>
+  </section>
+
+  <section class="karte">
+    <h2>
+      <Ikone name="eye" /> Sehenswürdigkeiten
+    </h2>
+    <ul>
+      {sehenswuerdigkeiten.map((eintrag) => (
+        <li>{eintrag}</li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="karte">
+    <h2>
+      <Ikone name="utensils" /> Essen & Trinken
     </h2>
     <p>
-      Café Bar Tasca Arcada, Amadeus Café & Restaurant sowie zahlreiche kleine Cafés rund um den
-      Marktplatz und die Almstraße laden zur Pause zwischen den Programmpunkten ein.
+      Rund um den Marktplatz und die Almstraße liegen zahlreiche Restaurants und Cafés. Eine
+      kuratierte Auswahl mit Empfehlungen des Orga-Teams folgt.
     </p>
   </section>
 
   <Platzhalterhinweis>
-    Diese Liste ist ein erster Entwurf. Bitte durch aktuelle, vom Orga-Team kuratierte Tipps
-    ergänzen oder ersetzen.
+    Restaurant- und Café-Empfehlungen werden noch nachgereicht. Bis dahin steht hier bewusst keine
+    Liste – eine ungeprüfte Auswahl wäre keine Empfehlung.
   </Platzhalterhinweis>
+
+  <section class="karte">
+    <h2>
+      <Ikone name="globe" /> Weiterführende Informationen
+    </h2>
+    <ul class="links">
+      {links.map((eintrag) => (
+        <li>
+          <a href={eintrag.web} target="_blank" rel="noopener">
+            {eintrag.titel}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
 </Basis>
 
 <style>
   h2 {
+    margin-bottom: var(--raum-3);
     font-size: var(--schrift-h3);
   }
 
-  .zweispaltig {
+  /* Die Abschnitte kommen aus Markdown - die Regeln greifen deshalb auf die
+     erzeugten Elemente, nicht auf eigene Klassen. */
+  .fliesstext :global(p) {
     margin-bottom: var(--raum-4);
   }
 
-  .quelle {
+  .fliesstext :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .fliesstext :global(a) {
+    color: var(--akzent);
+  }
+
+  .zahlen {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+    gap: var(--raum-4);
+    margin: 0;
+  }
+
+  .zahlen dt {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--akzent);
+  }
+
+  .zahlen dd {
+    margin: var(--raum-1) 0 0;
     font-size: var(--schrift-klein);
     color: var(--text-leise);
+  }
+
+  .links {
+    padding-left: var(--raum-6);
   }
 </style>
