@@ -1,0 +1,35 @@
+---
+import Ikone from "./Ikone.astro";
+
+interface Props {
+  ikone: string;
+  titel: string;
+  einleitung?: string;
+}
+
+const { ikone, titel, einleitung } = Astro.props;
+---
+
+<div class="seitenkopf">
+  <h1>
+    <Ikone name={ikone} />
+    <span>{titel}</span>
+  </h1>
+  {einleitung && <p>{einleitung}</p>}
+</div>
+
+<style>
+  .seitenkopf {
+    margin-bottom: var(--raum-6);
+  }
+
+  h1 {
+    display: flex;
+    gap: var(--raum-3);
+    align-items: center;
+  }
+
+  p {
+    color: var(--text-leise);
+  }
+</style>

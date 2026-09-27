@@ -1,0 +1,199 @@
+---
+import { getCollection } from "astro:content";
+
+import Basis from "../layouts/Basis.astro";
+import Seitenkopf from "../components/Seitenkopf.astro";
+import Ikone from "../components/Ikone.astro";
+
+const alle = await getCollection("unterkuenfte");
+const mitKontingent = alle.filter((eintrag) => eintrag.data.kontingent);
+const empfehlungen = alle.filter((eintrag) => !eintrag.data.kontingent);
+---
+
+<Basis
+  titel="Unterbringung – Jahrestagung 2027"
+  beschreibung="Hotelkontingente und Übernachtungsempfehlungen für die Altstipendiatentagung 2027 in Hildesheim."
+>
+  <Seitenkopf
+    ikone="bed"
+    titel="Unterbringung"
+    einleitung="Für die Jahrestagung sind Zimmerkontingente reserviert. Bitte bucht frühzeitig – die Kontingente sind begrenzt und werden von den Hotels selbst nach dem Prinzip „first come, first served“ vergeben."
+  />
+
+  <h2>Hotels mit Zimmerkontingent</h2>
+
+  {mitKontingent.map(({ data: haus }) => (
+    <section class="karte">
+      <h3>{haus.name}</h3>
+
+      {haus.stichwort && (
+        <p class="stichwort">
+          Bei der Buchung das Stichwort <b>„{haus.stichwort}“</b> angeben
+          {haus.zeitraum && <> · Zeitraum {haus.zeitraum}</>}
+        </p>
+      )}
+
+      {haus.zimmer.length > 0 && (
+        /* Die Tabelle darf breiter sein als ein schmales Display und scrollt dann
+           in ihrem eigenen Bereich - die Seite nie (Regel 10). tabindex macht den
+           Bereich mit der Tastatur scrollbar. */
+        <div
+          class="tabellenbereich"
+          tabindex="0"
+          role="group"
+          aria-label={`Zimmerkontingent ${haus.name}`}
+        >
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Zimmerart</th>
+                <th scope="col">Reserviert</th>
+                <th scope="col">Preis</th>
+              </tr>
+            </thead>
+            <tbody>
+              {haus.zimmer.map((zimmer) => (
+                <tr>
+                  <th scope="row">{zimmer.typ}</th>
+                  <td>{zimmer.anzahl}</td>
+                  <td>{zimmer.preis}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      <p class="zeile">
+        <Ikone name="pin" /> <span>{haus.adresse}</span>
+      </p>
+      {haus.telefon && (
+        <p class="zeile">
+          <Ikone name="phone" />
+          <a href={`tel:${haus.telefon.replace(/\s/g, "")}`}>{haus.telefon}</a>
+        </p>
+      )}
+      {haus.email && (
+        <p class="zeile">
+          <Ikone name="mail" />
+          <a href={`mailto:${haus.email}`}>{haus.email}</a>
+        </p>
+      )}
+    </section>
+  ))}
+
+  <h2>Weitere Übernachtungsempfehlungen</h2>
+  <p class="einleitung">
+    Diese Hotels haben kein eigenes Zimmerkontingent für die Tagung – die Buchung erfolgt
+    individuell direkt beim Hotel.
+  </p>
+
+  <ul class="empfehlungen">
+    {empfehlungen.map(({ data: haus }) => (
+      <li class="karte">
+        <h3>{haus.name}</h3>
+        <p class="zeile">
+          <Ikone name="pin" /> <span>{haus.adresse}</span>
+        </p>
+        {haus.telefon && (
+          <p class="zeile">
+            <Ikone name="phone" />
+            <a href={`tel:${haus.telefon.replace(/\s/g, "")}`}>{haus.telefon}</a>
+          </p>
+        )}
+        {haus.email && (
+          <p class="zeile">
+            <Ikone name="mail" />
+            <a href={`mailto:${haus.email}`}>{haus.email}</a>
+          </p>
+        )}
+        {haus.web && (
+          <p class="zeile">
+            <Ikone name="globe" />
+            <a href={haus.web} target="_blank" rel="noopener">
+              Website des Hotels
+            </a>
+          </p>
+        )}
+      </li>
+    ))}
+  </ul>
+</Basis>
+
+<style>
+  h2 {
+    margin-top: var(--raum-8);
+  }
+
+  .einleitung {
+    color: var(--text-leise);
+  }
+
+  h3 {
+    font-size: var(--schrift-h3);
+  }
+
+  .stichwort {
+    padding: var(--raum-2) var(--raum-3);
+    color: var(--schlagwort-text);
+    background: var(--schlagwort-flaeche);
+    border: 1px solid var(--schlagwort-rand);
+    border-radius: var(--radius-klein);
+  }
+
+  /* position: relative ist Voraussetzung dafuer, dass der Bereich wirklich alles
+     beschneidet: Ein Scrollcontainer beschneidet absolut positionierte Nachfahren
+     nur, wenn er selbst ihr umschliessender Block ist. Genau daran ist die
+     Zeitachse zuvor gescheitert. */
+  .tabellenbereich {
+    position: relative;
+    margin-bottom: var(--raum-4);
+    overflow-x: auto;
+  }
+
+  .tabellenbereich:focus-visible {
+    outline: 3px solid var(--fokus);
+    outline-offset: 2px;
+  }
+
+  table {
+    width: 100%;
+    /* Nicht unter die Mindestbreite quetschen - dann lieber scrollen. */
+    min-width: 18rem;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    padding: var(--raum-2);
+    text-align: left;
+    border-bottom: 1px solid var(--rand);
+  }
+
+  thead th {
+    font-size: var(--schrift-klein);
+    color: var(--text-leise);
+  }
+
+  .zeile {
+    display: flex;
+    gap: var(--raum-2);
+    align-items: center;
+    margin-bottom: var(--raum-1);
+    font-size: var(--schrift-klein);
+    color: var(--text-leise);
+  }
+
+  .empfehlungen {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: var(--raum-4);
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .empfehlungen .karte {
+    margin-bottom: 0;
+  }
+</style>

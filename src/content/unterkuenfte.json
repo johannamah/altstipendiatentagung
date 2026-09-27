@@ -1,0 +1,33 @@
+[
+  {
+    "id": "novotel-hildesheim",
+    "name": "Novotel Hildesheim",
+    "kontingent": true,
+    "zeitraum": "05.05.2027 – 09.05.2027",
+    "stichwort": "KAS - Holstein",
+    "zimmer": [
+      { "typ": "Einzelzimmer", "anzahl": 20, "preis": "89,00 € / Nacht" },
+      { "typ": "Doppelzimmer", "anzahl": 40, "preis": "103,00 € / Nacht" }
+    ],
+    "adresse": "Bahnhofsallee 38, 31134 Hildesheim",
+    "telefon": "+49 5121 17170",
+    "email": "H5396@accor.com"
+  },
+  {
+    "id": "bb-hotel",
+    "name": "B&B Hotel Hildesheim",
+    "kontingent": false,
+    "adresse": "Pepperworth 6, 31134 Hildesheim",
+    "telefon": "+49 6146 815350-7",
+    "email": "hildesheim@hotelbb.com"
+  },
+  {
+    "id": "hey-lou-hotel",
+    "name": "Hey Lou Hotel Hildesheim",
+    "kontingent": false,
+    "adresse": "Zingel 26, 31134 Hildesheim",
+    "telefon": "+49 (0) 5121 912 870 0",
+    "email": "info.hil@heylouhotels.com",
+    "web": "https://hil.heylouhotels.com/de/"
+  }
+]

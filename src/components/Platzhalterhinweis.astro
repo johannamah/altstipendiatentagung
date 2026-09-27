@@ -1,0 +1,34 @@
+---
+import Ikone from "./Ikone.astro";
+
+/**
+ * Hinweis an das Orga-Team: Hier stehen noch Platzhalter.
+ *
+ * Bewusst sichtbar und nicht als Kommentar im Quelltext: Regel 50 verlangt,
+ * dass Platzhalter als solche erkennbar sind. Wer die Seite liest, soll nicht
+ * annehmen, das sei der endgueltige Stand.
+ */
+---
+
+<p class="platzhalterhinweis">
+  <Ikone name="pencil" />
+  <span>
+    <slot />
+  </span>
+</p>
+
+<style>
+  .platzhalterhinweis {
+    display: flex;
+    gap: var(--raum-2);
+    align-items: flex-start;
+    max-width: none;
+    padding: var(--raum-3);
+    margin: 0 0 var(--raum-4);
+    font-size: var(--schrift-klein);
+    color: var(--hinweis-text);
+    background: var(--hinweis-flaeche);
+    border: 1px solid var(--hinweis-rand);
+    border-radius: var(--radius-klein);
+  }
+</style>

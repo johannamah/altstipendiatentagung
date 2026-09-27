@@ -1,0 +1,207 @@
+---
+import Ikone from "./Ikone.astro";
+import { formatiereZeitraum, STATUS_TEXT, type Programmpunkt as Punkt } from "../lib/programm.ts";
+import { istExportierbar } from "../lib/kalender.ts";
+
+interface Props {
+  punkt: Punkt;
+}
+
+const { punkt } = Astro.props;
+const statusText = STATUS_TEXT[punkt.status];
+const zeit = formatiereZeitraum(punkt);
+const exportierbar = istExportierbar(punkt);
+---
+
+<article
+  class="punkt"
+  data-status={punkt.status}
+  data-id={punkt.id}
+  data-beginn={punkt.beginn}
+  data-ende={punkt.ende}
+>
+  <p class="zeit">
+    <span class="lage" hidden></span>
+    {zeit}
+  </p>
+
+  <h3 class="titel">
+    {punkt.titel}
+    {punkt.optional && <span class="marke marke-optional">freiwillig</span>}
+    {statusText && <span class="marke marke-status">{statusText}</span>}
+  </h3>
+
+  {punkt.beschreibung && <p class="beschreibung">{punkt.beschreibung}</p>}
+
+  {(punkt.ort || punkt.adresse) && (
+    <p class="ort">
+      <Ikone name="pin" />
+      <span>
+        {punkt.ort}
+        {punkt.ort && punkt.adresse && <br />}
+        {punkt.adresse}
+      </span>
+    </p>
+  )}
+
+  {punkt.hinweis && (
+    <p class="hinweis">
+      <Ikone name="alert" />
+      <span>{punkt.hinweis}</span>
+    </p>
+  )}
+
+  {/* Beide Knoepfe brauchen JavaScript und werden erst davon eingeblendet -
+      ein Knopf, der nichts tut, ist schlimmer als keiner. */}
+  <p class="aktionen" hidden>
+    <button class="aktion" type="button" aria-pressed="false" data-merken>
+      <Ikone name="check" />
+      <span data-merken-text>Merken</span>
+      <span class="nur-vorlesen">: {punkt.titel}</span>
+    </button>
+
+    {exportierbar && (
+      <button class="aktion" type="button" data-kalender>
+        <Ikone name="calendar" />
+        <span>Zum Kalender</span>
+        <span class="nur-vorlesen">hinzufügen: {punkt.titel}</span>
+      </button>
+    )}
+  </p>
+</article>
+
+<style>
+  .punkt {
+    padding: var(--raum-4);
+    background: var(--karte);
+    border: 1px solid var(--rand);
+    border-radius: var(--radius-klein);
+    box-shadow: var(--schatten);
+  }
+
+  /* Der Bestaetigungsgrad wird zusaetzlich als Text ausgewiesen (Regel 19) -
+     der linke Balken allein traegt keine Information. */
+  .punkt[data-status="vorlaeufig"],
+  .punkt[data-status="platzhalter"] {
+    border-left: 4px solid var(--hinweis-rand);
+  }
+
+  .zeit {
+    margin: 0 0 var(--raum-1);
+    font-size: var(--schrift-klein);
+    font-weight: 700;
+    color: var(--akzent);
+  }
+
+  .titel {
+    margin: 0;
+    font-size: 1.05rem;
+    color: var(--text);
+  }
+
+  .marke {
+    display: inline-block;
+    padding: 2px var(--raum-2);
+    margin-left: var(--raum-2);
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+    vertical-align: middle;
+    border-radius: 999px;
+  }
+
+  .marke-status {
+    color: var(--hinweis-text);
+    background: var(--hinweis-flaeche);
+    border: 1px solid var(--hinweis-rand);
+  }
+
+  .marke-optional {
+    color: var(--schlagwort-text);
+    background: var(--schlagwort-flaeche);
+    border: 1px solid var(--schlagwort-rand);
+  }
+
+  .beschreibung,
+  .ort,
+  .hinweis {
+    margin: var(--raum-2) 0 0;
+    font-size: var(--schrift-klein);
+    color: var(--text-leise);
+  }
+
+  .ort,
+  .hinweis {
+    display: flex;
+    gap: var(--raum-2);
+    align-items: flex-start;
+  }
+
+  .hinweis {
+    padding: var(--raum-2);
+    color: var(--hinweis-text);
+    background: var(--hinweis-flaeche);
+    border-radius: var(--radius-klein);
+  }
+
+  /* ===== Zeitliche Lage: jetzt / danach ===== */
+
+  .lage {
+    display: inline-block;
+    padding: 2px var(--raum-2);
+    margin-right: var(--raum-2);
+    font-size: 0.75rem;
+    color: var(--kachel-pink-text);
+    text-transform: uppercase;
+    background: var(--kachel-pink-von);
+    border-radius: 999px;
+  }
+
+  .punkt[data-lage="danach"] .lage {
+    color: var(--toast-text);
+    background: var(--toast-flaeche);
+  }
+
+  .punkt[data-lage="jetzt"] {
+    border-color: var(--kachel-pink-von);
+    border-left: 4px solid var(--kachel-pink-von);
+  }
+
+  /* ===== Aktionen ===== */
+
+  .aktionen {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--raum-2);
+    margin: var(--raum-3) 0 0;
+  }
+
+  .aktion {
+    display: inline-flex;
+    gap: var(--raum-2);
+    align-items: center;
+    /* Mindestgroesse fuer Beruehrung (Regel 7). */
+    min-height: 44px;
+    padding: var(--raum-2) var(--raum-3);
+    font: inherit;
+    font-size: var(--schrift-klein);
+    font-weight: 600;
+    color: var(--akzent);
+    cursor: pointer;
+    background: var(--karte);
+    border: 1px solid var(--feldrand);
+    border-radius: 999px;
+  }
+
+  .aktion:hover {
+    background: var(--hover);
+  }
+
+  /* Der gemerkte Zustand wird zusaetzlich ueber aria-pressed und den
+     Beschriftungswechsel mitgeteilt - nicht allein ueber Farbe (Regel 19). */
+  .aktion[aria-pressed="true"] {
+    color: var(--kachel-gruen-text);
+    background: var(--kachel-gruen-von);
+    border-color: var(--kachel-gruen-von);
+  }
+</style>

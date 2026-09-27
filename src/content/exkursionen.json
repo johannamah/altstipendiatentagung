@@ -1,0 +1,101 @@
+[
+  {
+    "id": "dom-und-michaeliskirche",
+    "titel": "Dom St. Mariae & St. Michaeliskirche – Werte, Religion & europäische Identität",
+    "plaetze": 50,
+    "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
+    "treffpunkt": "[Treffpunkt einfügen, z. B. Lobby Novotel Hildesheim, 12:15 Uhr]",
+    "anreise": "[Anreiseinfo einfügen, z. B. gemeinsamer Fußweg/Bustransfer ab Novotel]",
+    "verantwortlich": "[Name Verantwortliche:r Orga-Team]",
+    "telefon": "[Telefonnummer einfügen]",
+    "info": "Gemeinsamer Rundgang durch die beiden UNESCO-Welterbekirchen mit Schwerpunkt auf ihrer Bedeutung für Werte, Religion und europäische Identität."
+  },
+  {
+    "id": "landwirtschaft",
+    "titel": "Europäische Landwirtschaftspolitik beim Hof Riepl-Bauer",
+    "plaetze": 50,
+    "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
+    "treffpunkt": "[Treffpunkt einfügen, z. B. Lobby Novotel Hildesheim, 12:15 Uhr]",
+    "anreise": "[Anreiseinfo einfügen, z. B. gemeinsamer Bustransfer ab Novotel]",
+    "verantwortlich": "[Name Verantwortliche:r Orga-Team]",
+    "telefon": "[Telefonnummer einfügen]",
+    "info": "Einblick in einen landwirtschaftlichen Betrieb der Region mit Fokus auf europäische Agrarpolitik und ihre praktische Umsetzung vor Ort."
+  },
+  {
+    "id": "stadtfuehrungen",
+    "titel": "Eine Vielfalt an Stadtführungen in Hildesheim",
+    "plaetze": 50,
+    "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
+    "treffpunkt": "[Treffpunkt einfügen, z. B. Marktplatz Hildesheim, 12:30 Uhr]",
+    "anreise": "[Anreiseinfo einfügen, z. B. Fußweg vom Novotel]",
+    "verantwortlich": "[Name Verantwortliche:r Orga-Team]",
+    "telefon": "[Telefonnummer einfügen]",
+    "info": "Verschiedene thematische Stadtführungen durch die Hildesheimer Altstadt zur Auswahl (z. B. Geschichte, Wiederaufbau, UNESCO-Welterbe)."
+  },
+  {
+    "id": "ndr-funkhaus",
+    "titel": "NDR Landesfunkhaus Hannover",
+    "plaetze": 50,
+    "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
+    "treffpunkt": "[Treffpunkt einfügen, z. B. Lobby Novotel Hildesheim, 12:00 Uhr]",
+    "anreise": "[Anreiseinfo einfügen, z. B. gemeinsamer Bustransfer nach Hannover, ca. 45 Min.]",
+    "verantwortlich": "[Name Verantwortliche:r Orga-Team]",
+    "telefon": "[Telefonnummer einfügen]",
+    "info": "Blick hinter die Kulissen des NDR Landesfunkhauses Niedersachsen in Hannover – Medien, Journalismus und öffentlich-rechtlicher Rundfunk in Europa."
+  },
+  {
+    "id": "exkursion-5",
+    "titel": "Exkursion 5 – Thema wird noch bekannt gegeben",
+    "plaetze": 50,
+    "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
+    "treffpunkt": "[Treffpunkt einfügen]",
+    "anreise": "[Anreiseinfo einfügen]",
+    "verantwortlich": "[Name Verantwortliche:r Orga-Team]",
+    "telefon": "[Telefonnummer einfügen]",
+    "info": "Weitere Informationen folgen."
+  },
+  {
+    "id": "exkursion-6",
+    "titel": "Exkursion 6 – Thema wird noch bekannt gegeben",
+    "plaetze": 50,
+    "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
+    "treffpunkt": "[Treffpunkt einfügen]",
+    "anreise": "[Anreiseinfo einfügen]",
+    "verantwortlich": "[Name Verantwortliche:r Orga-Team]",
+    "telefon": "[Telefonnummer einfügen]",
+    "info": "Weitere Informationen folgen."
+  },
+  {
+    "id": "exkursion-7",
+    "titel": "Exkursion 7 – Thema wird noch bekannt gegeben",
+    "plaetze": 50,
+    "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
+    "treffpunkt": "[Treffpunkt einfügen]",
+    "anreise": "[Anreiseinfo einfügen]",
+    "verantwortlich": "[Name Verantwortliche:r Orga-Team]",
+    "telefon": "[Telefonnummer einfügen]",
+    "info": "Weitere Informationen folgen."
+  },
+  {
+    "id": "exkursion-8",
+    "titel": "Exkursion 8 – Thema wird noch bekannt gegeben",
+    "plaetze": 50,
+    "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
+    "treffpunkt": "[Treffpunkt einfügen]",
+    "anreise": "[Anreiseinfo einfügen]",
+    "verantwortlich": "[Name Verantwortliche:r Orga-Team]",
+    "telefon": "[Telefonnummer einfügen]",
+    "info": "Weitere Informationen folgen."
+  },
+  {
+    "id": "exkursion-9",
+    "titel": "Exkursion 9 – Thema wird noch bekannt gegeben",
+    "plaetze": 50,
+    "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
+    "treffpunkt": "[Treffpunkt einfügen]",
+    "anreise": "[Anreiseinfo einfügen]",
+    "verantwortlich": "[Name Verantwortliche:r Orga-Team]",
+    "telefon": "[Telefonnummer einfügen]",
+    "info": "Weitere Informationen folgen."
+  }
+]

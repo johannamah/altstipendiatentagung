@@ -1,0 +1,204 @@
+---
+import { getCollection } from "astro:content";
+
+import Basis from "../layouts/Basis.astro";
+import Seitenkopf from "../components/Seitenkopf.astro";
+import Ikone from "../components/Ikone.astro";
+
+/**
+ * Warum hier KEIN Anmeldeformular steht.
+ *
+ * Der Einzeldatei-Entwurf hatte eines, ausdruecklich im Testmodus: Die Eingaben
+ * lagen nur im Arbeitsspeicher der Sitzung, und nach dem Absenden erschien eine
+ * Erfolgsmeldung. Auf einer oeffentlich erreichbaren Seite waere das gefaehrlich:
+ * Jemand traegt Name, E-Mail, Telefon und Ernaehrungswuensche ein, liest "Anmeldung
+ * erfolgreich" - und ist nicht angemeldet. Produktprinzip 1 sagt dazu alles.
+ *
+ * Dazu kommt, dass ADR-0004 die Anmeldung serverseitig vorsieht und die offene
+ * Frage F4 (welche Felder, welche Fristen, wer ist Verantwortlicher) noch nicht
+ * beantwortet ist. Solange das so ist, duerfen wir keine personenbezogenen Daten
+ * entgegennehmen - auch nicht scheinbar.
+ *
+ * Was bleibt, ist der INHALT: welche Exkursionen zur Wahl stehen, wie viele
+ * Plaetze es gibt, was abgefragt werden wird. Das ist der Teil, der jetzt schon
+ * nuetzt. Das Formular folgt, sobald F4 geklaert und der Dienst da ist.
+ */
+
+const exkursionen = await getCollection("exkursionen");
+
+/** Angaben mit eckigen Klammern sind Platzhalter des Orga-Teams. */
+const istPlatzhalter = (wert?: string) => wert === undefined || wert.startsWith("[");
+
+const abgefragteAngaben = [
+  "Vor- und Nachname",
+  "E-Mail-Adresse",
+  "Telefonnummer (freiwillig)",
+  "Regionalgruppe oder Landesverband (freiwillig)",
+  "Teilnahme am Get Together, am Festabend und am ökumenischen Gottesdienst",
+  "Wunsch-Exkursion für den Freitagnachmittag",
+  "Ernährungswünsche und Allergien (freiwillig)",
+  "Anmerkungen (freiwillig)",
+];
+---
+
+<Basis
+  titel="Anmeldung – Jahrestagung 2027"
+  beschreibung="Informationen zur Anmeldung und zu den Exkursionen der Altstipendiatentagung 2027 in Hildesheim."
+>
+  <Seitenkopf
+    ikone="edit"
+    titel="Anmeldung zur Jahrestagung"
+    einleitung="Hier meldet ihr euch zur Jahrestagung an und wählt eure Exkursion am Freitagnachmittag."
+  />
+
+  <div class="hinweis" role="note">
+    <Ikone name="alert" />
+    <div>
+      <p class="hinweis-titel">Die Anmeldung ist noch nicht geöffnet.</p>
+      <p>
+        Sobald es losgeht, erfahrt ihr es über die <a href="/ankuendigungen">Ankündigungen</a>
+        und auf dem üblichen Weg des Vereins. Bis dahin findet ihr hier schon die Exkursionen zur
+        Auswahl und eine Übersicht, was abgefragt werden wird.
+      </p>
+    </div>
+  </div>
+
+  <section class="karte">
+    <h2>Was bei der Anmeldung abgefragt wird</h2>
+    <ul>
+      {abgefragteAngaben.map((angabe) => (
+        <li>{angabe}</li>
+      ))}
+    </ul>
+  </section>
+
+  <h2 class="abschnitt">Exkursionen am Freitagnachmittag</h2>
+  <p class="einleitung">
+    Am Freitag, 7. Mai 2027, stehen mehrere Exkursionen zur Wahl – ihr entscheidet euch für
+    <b>eine</b>. Die Plätze sind begrenzt und werden nach dem Prinzip „first come, first served“
+    vergeben.
+  </p>
+
+  <ul class="exkursionen">
+    {exkursionen.map(({ data: exkursion }) => (
+      <li class="karte">
+        <h3>{exkursion.titel}</h3>
+
+        <p class="plaetze">
+          <Ikone name="check" />
+          <span>{exkursion.plaetze} Plätze</span>
+        </p>
+
+        {exkursion.info && <p>{exkursion.info}</p>}
+
+        <dl>
+          <dt>Zeitrahmen</dt>
+          <dd>{exkursion.zeitrahmen}</dd>
+
+          <dt>Treffpunkt</dt>
+          <dd class:list={[istPlatzhalter(exkursion.treffpunkt) && "offen"]}>
+            {istPlatzhalter(exkursion.treffpunkt) ? "steht noch nicht fest" : exkursion.treffpunkt}
+          </dd>
+
+          <dt>Anreise</dt>
+          <dd class:list={[istPlatzhalter(exkursion.anreise) && "offen"]}>
+            {istPlatzhalter(exkursion.anreise) ? "steht noch nicht fest" : exkursion.anreise}
+          </dd>
+
+          <dt>Ansprechperson</dt>
+          <dd class:list={[istPlatzhalter(exkursion.verantwortlich) && "offen"]}>
+            {istPlatzhalter(exkursion.verantwortlich)
+              ? "steht noch nicht fest"
+              : exkursion.verantwortlich}
+          </dd>
+        </dl>
+      </li>
+    ))}
+  </ul>
+</Basis>
+
+<style>
+  .hinweis {
+    display: flex;
+    gap: var(--raum-3);
+    align-items: flex-start;
+    padding: var(--raum-4);
+    margin-bottom: var(--raum-6);
+    color: var(--hinweis-text);
+    background: var(--hinweis-flaeche);
+    border: 1px solid var(--hinweis-rand);
+    border-radius: var(--radius);
+  }
+
+  .hinweis p {
+    margin-bottom: var(--raum-2);
+  }
+
+  .hinweis p:last-child {
+    margin-bottom: 0;
+  }
+
+  .hinweis-titel {
+    font-weight: 700;
+  }
+
+  .abschnitt {
+    margin-top: var(--raum-8);
+  }
+
+  .einleitung {
+    color: var(--text-leise);
+  }
+
+  h2 {
+    font-size: var(--schrift-h3);
+  }
+
+  h3 {
+    font-size: 1.05rem;
+  }
+
+  .plaetze {
+    display: flex;
+    gap: var(--raum-2);
+    align-items: center;
+    margin-bottom: var(--raum-3);
+    font-size: var(--schrift-klein);
+    font-weight: 600;
+    color: var(--akzent);
+  }
+
+  .exkursionen {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+    gap: var(--raum-4);
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .exkursionen .karte {
+    margin-bottom: 0;
+  }
+
+  dl {
+    margin: 0;
+    font-size: var(--schrift-klein);
+  }
+
+  dt {
+    font-weight: 600;
+    color: var(--text-leise);
+  }
+
+  dd {
+    margin: 0 0 var(--raum-2);
+  }
+
+  /* Offene Angaben werden als solche gekennzeichnet, statt zu fehlen -
+     "steht noch nicht fest" ist eine Information, eine Leerstelle nicht. */
+  .offen {
+    font-style: italic;
+    color: var(--text-leise);
+  }
+</style>

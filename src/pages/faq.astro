@@ -1,0 +1,61 @@
+---
+import { getCollection } from "astro:content";
+
+import Basis from "../layouts/Basis.astro";
+import Seitenkopf from "../components/Seitenkopf.astro";
+
+const eintraege = await getCollection("faq");
+---
+
+<Basis
+  titel="Häufige Fragen – Jahrestagung 2027"
+  beschreibung="Antworten auf häufige Fragen zur Altstipendiatentagung 2027 in Hildesheim."
+>
+  <Seitenkopf
+    ikone="help"
+    titel="Häufig gestellte Fragen"
+    einleitung="Tippt auf eine Frage, um die Antwort zu sehen."
+  />
+
+  {/* <details> statt eigenem Aufklapp-Skript: funktioniert ohne JavaScript,
+      ist von Haus aus mit der Tastatur bedienbar und wird von Screenreadern
+      korrekt als auf- und zuklappbar angekündigt (Regel 42). */}
+  <div class="fragen">
+    {eintraege.map((eintrag) => (
+      <details class="karte" name="faq">
+        <summary>{eintrag.data.frage}</summary>
+        <p>{eintrag.data.antwort}</p>
+      </details>
+    ))}
+  </div>
+</Basis>
+
+<style>
+  details {
+    padding: 0;
+  }
+
+  summary {
+    /* Mindestgroesse fuer Beruehrung (Regel 7). */
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: var(--raum-3) var(--raum-4);
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  summary:hover {
+    background: var(--hover);
+  }
+
+  details[open] summary {
+    border-bottom: 1px solid var(--rand);
+  }
+
+  details p {
+    margin: 0;
+    padding: var(--raum-4);
+    color: var(--text-leise);
+  }
+</style>
