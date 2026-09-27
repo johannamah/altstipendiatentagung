@@ -1,101 +1,85 @@
 [
   {
-    "id": "dom-und-michaeliskirche",
-    "titel": "Dom St. Mariae & St. Michaeliskirche – Werte, Religion & europäische Identität",
+    "id": "exkursion-dom",
+    "titel": "Glaube, Werte, Europa – Auf den Spuren europäischer Identität",
     "plaetze": 50,
     "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
-    "treffpunkt": "[Treffpunkt einfügen, z. B. Lobby Novotel Hildesheim, 12:15 Uhr]",
-    "anreise": "[Anreiseinfo einfügen, z. B. gemeinsamer Fußweg/Bustransfer ab Novotel]",
+    "ortId": "dom",
+    "treffpunkt": "[Treffpunkt einfügen]",
+    "anreise": "[Anreiseinfo einfügen]",
     "verantwortlich": "[Name Verantwortliche:r Orga-Team]",
     "telefon": "[Telefonnummer einfügen]",
-    "info": "Gemeinsamer Rundgang durch die beiden UNESCO-Welterbekirchen mit Schwerpunkt auf ihrer Bedeutung für Werte, Religion und europäische Identität."
+    "info": "Die Exkursion beleuchtet, wie Glaube, Werte und religiöses Erbe die europäische Identität geprägt haben und bis heute gesellschaftliche Debatten beeinflussen. Führungen und Gespräche an den historischen Orten eröffnen unterschiedliche Perspektiven auf Verantwortung, Zusammenhalt und gelebte Demokratie. Das konkrete Programm und die Gesprächspartner:innen werden ergänzt."
   },
   {
-    "id": "landwirtschaft",
-    "titel": "Europäische Landwirtschaftspolitik beim Hof Riepl-Bauer",
+    "id": "exkursion-landwirtschaft",
+    "titel": "Europa auf dem Acker – Landwirtschaft zwischen Politik, Markt und Verantwortung",
     "plaetze": 50,
     "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
-    "treffpunkt": "[Treffpunkt einfügen, z. B. Lobby Novotel Hildesheim, 12:15 Uhr]",
-    "anreise": "[Anreiseinfo einfügen, z. B. gemeinsamer Bustransfer ab Novotel]",
+    "ortId": "hof-riepl-bauer",
+    "treffpunkt": "[Treffpunkt einfügen]",
+    "anreise": "[Anreiseinfo einfügen]",
     "verantwortlich": "[Name Verantwortliche:r Orga-Team]",
     "telefon": "[Telefonnummer einfügen]",
-    "info": "Einblick in einen landwirtschaftlichen Betrieb der Region mit Fokus auf europäische Agrarpolitik und ihre praktische Umsetzung vor Ort."
+    "info": "Die Exkursion vermittelt Einblicke in die Praxis eines landwirtschaftlichen Betriebs und diskutiert das Spannungsfeld zwischen europäischer Agrarpolitik, wirtschaftlichen Rahmenbedingungen und gesellschaftlicher Verantwortung. Im Austausch vor Ort werden aktuelle Herausforderungen und Zukunftsperspektiven der Landwirtschaft aufgegriffen. Das konkrete Programm und die Gesprächspartner:innen werden ergänzt."
   },
   {
-    "id": "stadtfuehrungen",
-    "titel": "Eine Vielfalt an Stadtführungen in Hildesheim",
-    "plaetze": 50,
-    "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
-    "treffpunkt": "[Treffpunkt einfügen, z. B. Marktplatz Hildesheim, 12:30 Uhr]",
-    "anreise": "[Anreiseinfo einfügen, z. B. Fußweg vom Novotel]",
-    "verantwortlich": "[Name Verantwortliche:r Orga-Team]",
-    "telefon": "[Telefonnummer einfügen]",
-    "info": "Verschiedene thematische Stadtführungen durch die Hildesheimer Altstadt zur Auswahl (z. B. Geschichte, Wiederaufbau, UNESCO-Welterbe)."
-  },
-  {
-    "id": "ndr-funkhaus",
-    "titel": "NDR Landesfunkhaus Hannover",
-    "plaetze": 50,
-    "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
-    "treffpunkt": "[Treffpunkt einfügen, z. B. Lobby Novotel Hildesheim, 12:00 Uhr]",
-    "anreise": "[Anreiseinfo einfügen, z. B. gemeinsamer Bustransfer nach Hannover, ca. 45 Min.]",
-    "verantwortlich": "[Name Verantwortliche:r Orga-Team]",
-    "telefon": "[Telefonnummer einfügen]",
-    "info": "Blick hinter die Kulissen des NDR Landesfunkhauses Niedersachsen in Hannover – Medien, Journalismus und öffentlich-rechtlicher Rundfunk in Europa."
-  },
-  {
-    "id": "exkursion-5",
-    "titel": "Exkursion 5 – Thema wird noch bekannt gegeben",
+    "id": "exkursion-stadt",
+    "titel": "Hildesheim entdecken – Geschichte, Gesellschaft und Stadtleben aus neuen Perspektiven",
     "plaetze": 50,
     "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
     "treffpunkt": "[Treffpunkt einfügen]",
     "anreise": "[Anreiseinfo einfügen]",
     "verantwortlich": "[Name Verantwortliche:r Orga-Team]",
     "telefon": "[Telefonnummer einfügen]",
-    "info": "Weitere Informationen folgen."
+    "info": "Die Exkursion führt zu ausgewählten Orten in Hildesheim und verbindet historische Entwicklungen mit Fragen des heutigen gesellschaftlichen Zusammenlebens. Begegnungen und Beobachtungen im Stadtraum laden dazu ein, bekannte und weniger bekannte Perspektiven auf Demokratie, Teilhabe und urbanes Leben zu entdecken. Das konkrete Programm und die Gesprächspartner:innen werden ergänzt."
   },
   {
-    "id": "exkursion-6",
-    "titel": "Exkursion 6 – Thema wird noch bekannt gegeben",
+    "id": "exkursion-ndr",
+    "titel": "Öffentlichkeit und Demokratie – Einblicke in den öffentlich-rechtlichen Rundfunk",
     "plaetze": 50,
     "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
+    "ortId": "ndr-hannover",
     "treffpunkt": "[Treffpunkt einfügen]",
     "anreise": "[Anreiseinfo einfügen]",
     "verantwortlich": "[Name Verantwortliche:r Orga-Team]",
     "telefon": "[Telefonnummer einfügen]",
-    "info": "Weitere Informationen folgen."
+    "info": "Die Exkursion gibt Einblicke in Auftrag, Arbeitsweise und gesellschaftliche Verantwortung des öffentlich-rechtlichen Rundfunks. Im Gespräch mit Mitarbeitenden werden unter anderem journalistische Standards, Meinungsvielfalt, digitale Transformation und die Rolle verlässlicher Informationen für eine demokratische Öffentlichkeit thematisiert. Das konkrete Programm und die Gesprächspartner:innen werden ergänzt."
   },
   {
-    "id": "exkursion-7",
-    "titel": "Exkursion 7 – Thema wird noch bekannt gegeben",
+    "id": "exkursion-mittelstand",
+    "titel": "Mittelstand mit Weitblick – Unternehmertum und Verantwortung aus Hildesheim",
     "plaetze": 50,
     "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
+    "ortId": "helo-sports",
     "treffpunkt": "[Treffpunkt einfügen]",
     "anreise": "[Anreiseinfo einfügen]",
     "verantwortlich": "[Name Verantwortliche:r Orga-Team]",
     "telefon": "[Telefonnummer einfügen]",
-    "info": "Weitere Informationen folgen."
+    "info": "Die Exkursion zeigt am Beispiel eines mittelständischen Unternehmens, wie Unternehmertum, Innovation und gesellschaftliche Verantwortung miteinander verbunden werden können. Im Mittelpunkt stehen unternehmerische Entscheidungen, regionale Verwurzelung, Arbeitswelt und nachhaltige Zukunftsstrategien. Das konkrete Programm und die Gesprächspartner:innen werden ergänzt."
   },
   {
-    "id": "exkursion-8",
-    "titel": "Exkursion 8 – Thema wird noch bekannt gegeben",
+    "id": "exkursion-fagus",
+    "titel": "Industriekultur trifft Zukunft – Arbeit, Architektur und Wandel im Fagus-Werk",
     "plaetze": 50,
     "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
+    "ortId": "fagus-werk",
     "treffpunkt": "[Treffpunkt einfügen]",
     "anreise": "[Anreiseinfo einfügen]",
     "verantwortlich": "[Name Verantwortliche:r Orga-Team]",
     "telefon": "[Telefonnummer einfügen]",
-    "info": "Weitere Informationen folgen."
+    "info": "Die Exkursion verbindet die besondere Architektur und Industriegeschichte des Fagus-Werks mit Fragen nach dem Wandel von Arbeit, Produktion und Unternehmenskultur. Der Besuch eröffnet Perspektiven auf den Umgang mit industriellem Erbe sowie auf Innovation und Zukunftsfähigkeit in Europa. Das konkrete Programm und die Gesprächspartner:innen werden ergänzt."
   },
   {
-    "id": "exkursion-9",
-    "titel": "Exkursion 9 – Thema wird noch bekannt gegeben",
+    "id": "exkursion-bosch",
+    "titel": "Technologie im Wandel – Innovation, Industrie und Europas Wettbewerbsfähigkeit",
     "plaetze": 50,
     "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
+    "ortId": "bosch",
     "treffpunkt": "[Treffpunkt einfügen]",
     "anreise": "[Anreiseinfo einfügen]",
     "verantwortlich": "[Name Verantwortliche:r Orga-Team]",
     "telefon": "[Telefonnummer einfügen]",
-    "info": "Weitere Informationen folgen."
+    "info": "Die Exkursion gibt Einblicke in technologische Transformation, industrielle Innovation und die Herausforderungen internationaler Wettbewerbsfähigkeit. Am Standort Bosch Hildesheim werden Entwicklungen in Produktion und Arbeitswelt sowie ihre Bedeutung für den Wirtschaftsstandort Europa diskutiert. Das konkrete Programm und die Gesprächspartner:innen werden ergänzt."
   }
 ]

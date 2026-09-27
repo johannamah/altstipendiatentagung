@@ -15,7 +15,7 @@
  */
 
 export type Kachelfarbe =
-  "blau" | "pink" | "gruen" | "teal" | "lila" | "rot" | "braun" | "gold" | "orange";
+  "blau" | "pink" | "gruen" | "teal" | "lila" | "rot" | "braun" | "gold" | "orange" | "schiefer";
 
 export interface Bereich {
   /** Adressfragment, z. B. "programm" fuer /programm. */
@@ -73,8 +73,8 @@ export const BEREICHE: readonly Bereich[] = [
   },
   {
     slug: "hildesheim",
-    titel: "Hildesheim & Umgebung",
-    unterzeile: "Sightseeing, Essen & Geschichte",
+    titel: "Hildesheim",
+    unterzeile: "Geschichte, Sehenswürdigkeiten & Tipps",
     ikone: "landmark",
     farbe: "orange",
   },
@@ -84,6 +84,13 @@ export const BEREICHE: readonly Bereich[] = [
     unterzeile: "Häufige Fragen",
     ikone: "help",
     farbe: "braun",
+  },
+  {
+    slug: "orte",
+    titel: "Orte & Anfahrt",
+    unterzeile: "Übersichtskarte & Wegbeschreibungen",
+    ikone: "pin",
+    farbe: "schiefer",
   },
   {
     slug: "kontakt",

@@ -2,7 +2,7 @@
 
 - **Status:** Vorgeschlagen
 - **Datum:** JJJJ-MM-TT
-- **Beteiligt:** 
+- **Beteiligt:**
 - **Bezug:** verwandte ADRs, offene Fragen aus `docs/offene-fragen.md`
 
 ## Kontext

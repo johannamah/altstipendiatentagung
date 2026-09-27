@@ -7,6 +7,7 @@
  */
 
 import type { Programmpunkt } from "./programm.ts";
+import { vollstaendigeAdresse, type Ort } from "./orte.ts";
 import { ortszeitZuUtc } from "./zeit.ts";
 
 /** Namensraum fuer die UIDs. Muss stabil bleiben, sonst entstehen Doppeleintraege. */
@@ -82,8 +83,17 @@ function falte(zeile: string): string[] {
   return teile;
 }
 
-/** Erzeugt einen vollstaendigen Kalender aus den exportierbaren Punkten. */
-export function alsKalender(punkte: readonly Programmpunkt[]): string {
+/**
+ * Erzeugt einen vollstaendigen Kalender aus den exportierbaren Punkten.
+ *
+ * `orte` wird gebraucht, seit die Programmdaten nur noch die Kennung eines
+ * Ortes tragen. Fehlt die Sammlung, entsteht ein Eintrag ohne Ortsangabe -
+ * das ist unschoen, aber besser als ein Eintrag mit falschem Ort.
+ */
+export function alsKalender(
+  punkte: readonly Programmpunkt[],
+  orte?: ReadonlyMap<string, Ort>,
+): string {
   const zeilen: string[] = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
@@ -95,7 +105,10 @@ export function alsKalender(punkte: readonly Programmpunkt[]): string {
   for (const punkt of punkte) {
     if (!istExportierbar(punkt)) continue;
 
-    const ort = [punkt.ort, punkt.adresse].filter(Boolean).join(", ");
+    const ortsdaten = punkt.ortId ? orte?.get(punkt.ortId) : undefined;
+    const ort = ortsdaten
+      ? [ortsdaten.name, vollstaendigeAdresse(ortsdaten)].filter(Boolean).join(", ")
+      : "";
     const beschreibung = [punkt.beschreibung, punkt.hinweis].filter(Boolean).join(" ");
 
     zeilen.push(
