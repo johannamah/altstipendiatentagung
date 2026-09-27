@@ -5,11 +5,17 @@ import Platzhalterhinweis from "../components/Platzhalterhinweis.astro";
 import Ikone from "../components/Ikone.astro";
 
 /**
- * Der Link ist ein Platzhalter. Er wird bewusst NICHT als Knopf dargestellt,
- * solange er ins Leere fuehrt - ein Knopf, der nichts tut, ist schlimmer als
- * keiner (dieselbe Regel wie bei den Bedienelementen im Programm).
+ * Fotoalbum auf dem SharePoint des Vereins (Entscheidung vom 27.09.2026).
+ *
+ * Die App verlinkt nur - sie nimmt selbst keine Bilder entgegen. Das haelt die
+ * offene Rechtsfrage F5 (Einwilligung, Widerruf, Loeschung bei Personenbildern)
+ * ausserhalb der Anwendung: Wir speichern keine Fotos und muessen keine
+ * loeschen.
+ *
+ * Sobald die Adresse feststeht, wird sie hier eingetragen - eine Zeile. Bis
+ * dahin steht KEIN Knopf da, der ins Leere fuehrt.
  */
-const FOTOALBUM_URL: string | null = null;
+const SHAREPOINT_URL: string | null = null;
 ---
 
 <Basis
@@ -33,12 +39,12 @@ const FOTOALBUM_URL: string | null = null;
       <Ikone name="camera" /> Gemeinsames Fotoalbum
     </h2>
 
-    {FOTOALBUM_URL ? (
+    {SHAREPOINT_URL ? (
       <>
         <p>
           Über den Link könnt ihr eigene Fotos hochladen und die Fotos aller Teilnehmenden ansehen.
         </p>
-        <a class="knopf" href={FOTOALBUM_URL} target="_blank" rel="noopener">
+        <a class="knopf" href={SHAREPOINT_URL} target="_blank" rel="noopener">
           <Ikone name="upload" />
           <span>Fotos ansehen & hochladen</span>
         </a>
