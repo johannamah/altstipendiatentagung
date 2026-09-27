@@ -180,10 +180,23 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
    * Die Empfehlungen werden nachgereicht. Bis dahin steht dort bewusst keine
    * Liste - eine ungepruefte Auswahl waere keine Empfehlung.
    */
-  test("Hildesheim weist die fehlenden Empfehlungen aus", async ({ page }) => {
+  test("Hildesheim listet die Lokale mit Weiterleitung an Karten-Apps", async ({ page }) => {
     await page.goto("/hildesheim");
 
-    await expect(page.getByText(/Empfehlungen werden noch nachgereicht/)).toBeVisible();
+    const lokale = page.locator(".lokale > li");
+    await expect(lokale).toHaveCount(6);
+    await expect(lokale.first().getByRole("link", { name: /Google Maps/ })).toBeVisible();
+    await expect(lokale.first().getByRole("link", { name: /Apple Karten/ })).toBeVisible();
+  });
+
+  /**
+   * Die Adressen fehlen - dann muss dastehen, dass die Verweise nur suchen.
+   * Sonst hält man den Treffer für geprüft.
+   */
+  test("Hildesheim sagt, dass die Verweise ohne Adresse nur suchen", async ({ page }) => {
+    await page.goto("/hildesheim");
+
+    await expect(page.getByText(/die Verweise suchen nach dem Namen/).first()).toBeVisible();
   });
 
   test("Ankündigungen zeigt die Einträge, neueste zuerst", async ({ page }) => {

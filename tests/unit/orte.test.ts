@@ -7,7 +7,7 @@ import {
   alsKartenpunkte,
   appleKartenVerweis,
   googleMapsVerweis,
-  hatKartenverweis,
+  istGenauBestimmt,
   vollstaendigeAdresse,
   type Ort,
 } from "../../src/lib/orte.ts";
@@ -38,15 +38,37 @@ describe("vollstaendigeAdresse", () => {
   });
 });
 
-describe("hatKartenverweis", () => {
+describe("istGenauBestimmt", () => {
   /**
-   * Ein Verweis auf "Bosch Hildesheim" ohne Strasse fuehrt in einer Karten-App
-   * irgendwohin - und irgendwohin ist schlimmer als nirgendwohin.
+   * Der Unterschied entscheidet, ob die Weiterleitung einen Punkt trifft oder
+   * nach dem Namen sucht. Beides ist brauchbar - aber die Oberflaeche muss
+   * sagen, was von beidem sie tut.
    */
   it("verlangt Adresse oder Koordinaten", () => {
-    expect(hatKartenverweis(novotel)).toBe(true);
-    expect(hatKartenverweis(ohneAdresse)).toBe(false);
-    expect(hatKartenverweis({ ...ohneAdresse, koordinaten: { breite: 52, laenge: 9 } })).toBe(true);
+    expect(istGenauBestimmt(novotel)).toBe(true);
+    expect(istGenauBestimmt(ohneAdresse)).toBe(false);
+    expect(istGenauBestimmt({ ...ohneAdresse, koordinaten: { breite: 52, laenge: 9 } })).toBe(true);
+  });
+});
+
+describe("Verweise ohne Strasse", () => {
+  /**
+   * Fuer einen benannten Betrieb ist die Namenssuche zuverlaessig genug:
+   * "Zur Scharfen Ecke, Hildesheim" findet jede Karten-App. Frueher gab es
+   * hier gar keinen Verweis - das war zu streng.
+   */
+  it("sucht nach Name und Stadt", () => {
+    const lokal: Ort = {
+      id: "scharfe-ecke",
+      name: "Zur Scharfen Ecke",
+      stadt: "Hildesheim",
+      art: "gastronomie",
+    };
+
+    expect(decodeURIComponent(googleMapsVerweis(lokal).split("query=")[1]!)).toBe(
+      "Zur Scharfen Ecke, Hildesheim",
+    );
+    expect(new URL(appleKartenVerweis(lokal)).searchParams.get("address")).toBe("Hildesheim");
   });
 });
 
@@ -130,14 +152,25 @@ describe("Ortsverweise in den Inhaltsdaten", () => {
     },
   );
 
-  it("jeder Ort wird mindestens einmal verwendet", () => {
+  /**
+   * Gastronomie ist ausgenommen: Diese Orte werden nicht ueber ortId
+   * verknuepft, sondern auf der Hildesheim-Seite nach Art ausgegeben.
+   */
+  it("jeder tagungsrelevante Ort wird mindestens einmal verwendet", () => {
     const verwendet = new Set(
       ["programm.json", "exkursionen.json", "unterkuenfte.json"]
         .flatMap(lies)
         .map((eintrag) => eintrag.ortId as string | undefined)
         .filter(Boolean),
     );
-    const verwaist = [...bekannteOrte].filter((kennung) => !verwendet.has(kennung));
+    const nurGastronomie = new Set(
+      lies("orte.json")
+        .filter((ort) => ort.art === "gastronomie")
+        .map((ort) => ort.id as string),
+    );
+    const verwaist = [...bekannteOrte].filter(
+      (kennung) => !verwendet.has(kennung) && !nurGastronomie.has(kennung),
+    );
 
     expect(verwaist, `nirgends verwendet: ${verwaist.join(", ")}`).toEqual([]);
   });

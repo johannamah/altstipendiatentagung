@@ -93,5 +93,47 @@
     "plz": "31134",
     "stadt": "Hildesheim",
     "art": "uebernachtung"
+  },
+  {
+    "id": "scharfe-ecke",
+    "name": "Zur Scharfen Ecke",
+    "stadt": "Hildesheim",
+    "art": "gastronomie",
+    "hinweis": "deutsche Küche"
+  },
+  {
+    "id": "kupferschmiede",
+    "name": "Gasthof Kupferschmiede",
+    "stadt": "Hildesheim",
+    "art": "gastronomie",
+    "hinweis": "deutsche Küche"
+  },
+  {
+    "id": "schlegels-weinstube",
+    "name": "Schlegel's Weinstube",
+    "stadt": "Hildesheim",
+    "art": "gastronomie",
+    "hinweis": "regionale Küche"
+  },
+  {
+    "id": "amadeus",
+    "name": "Amadeus Café & Restaurant",
+    "stadt": "Hildesheim",
+    "art": "gastronomie",
+    "hinweis": "Café und Restaurant"
+  },
+  {
+    "id": "india-haus",
+    "name": "India Haus Hildesheim",
+    "stadt": "Hildesheim",
+    "art": "gastronomie",
+    "hinweis": "indische Küche"
+  },
+  {
+    "id": "tasca-arcada",
+    "name": "Café Bar Tasca Arcada",
+    "stadt": "Hildesheim",
+    "art": "gastronomie",
+    "hinweis": "Café und Bar"
   }
 ]

@@ -3,7 +3,7 @@ import Ikone from "./Ikone.astro";
 import {
   appleKartenVerweis,
   googleMapsVerweis,
-  hatKartenverweis,
+  istGenauBestimmt,
   vollstaendigeAdresse,
   type Ort,
 } from "../lib/orte.ts";
@@ -25,7 +25,7 @@ interface Props {
 
 const { ort, raum, knapp = false } = Astro.props;
 const adresse = vollstaendigeAdresse(ort);
-const verweisbar = hatKartenverweis(ort);
+const genau = istGenauBestimmt(ort);
 ---
 
 <div class="ortsangabe">
@@ -43,7 +43,7 @@ const verweisbar = hatKartenverweis(ort);
     </span>
   </p>
 
-  {!knapp && verweisbar && (
+  {!knapp && (
     <p class="verweise">
       <a href={googleMapsVerweis(ort)} target="_blank" rel="noopener">
         <Ikone name="globe" />
@@ -65,9 +65,9 @@ const verweisbar = hatKartenverweis(ort);
     </p>
   )}
 
-  {!knapp && !verweisbar && (
+  {!knapp && !genau && (
     <p class="offen">
-      Die genaue Adresse steht noch nicht fest – deshalb gibt es hier noch keine Wegbeschreibung.
+      Die genaue Adresse ist noch nicht hinterlegt – die Verweise suchen nach dem Namen.
     </p>
   )}
 </div>

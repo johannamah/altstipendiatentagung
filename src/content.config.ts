@@ -49,7 +49,7 @@ const orte = defineCollection({
     adresse: z.string().optional(),
     plz: z.string().optional(),
     stadt: z.string().min(1),
-    art: z.enum(["tagungsort", "exkursion", "uebernachtung", "rahmenprogramm"]),
+    art: z.enum(["tagungsort", "exkursion", "uebernachtung", "rahmenprogramm", "gastronomie"]),
     hinweis: z.string().optional(),
     koordinaten: z
       .object({

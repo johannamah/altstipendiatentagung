@@ -26,4 +26,4 @@ preußisch. Im Zuge der Industrialisierung entwickelte sich die Stadt zunehmend 
 modernen Verwaltungs-, Wirtschafts- und Bildungsstandort.
 
 Mehr zur Geschichte:
-[Stadtarchiv Hildesheim – Stadtgeschichte](https://stadtarchiv.stadt-hildesheim.de/portal/seiten/stadtgeschichte-900001515-33610.html)
+[Stadtarchiv Hildesheim – Stadtgeschichte](https://stadtarchiv.stadt-hildesheim.de/portal/seiten/stadtgeschichte-900000106-33610.html?naviID=900000722&brotID=900000722&rubrik=900000046)

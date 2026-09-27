@@ -73,8 +73,8 @@ export const BEREICHE: readonly Bereich[] = [
   },
   {
     slug: "hildesheim",
-    titel: "Hildesheim & Umgebung",
-    unterzeile: "Sightseeing, Essen & Geschichte",
+    titel: "Hildesheim",
+    unterzeile: "Geschichte, Sehenswürdigkeiten & Tipps",
     ikone: "landmark",
     farbe: "orange",
   },

@@ -5,6 +5,8 @@ import Basis from "../layouts/Basis.astro";
 import Seitenkopf from "../components/Seitenkopf.astro";
 import Platzhalterhinweis from "../components/Platzhalterhinweis.astro";
 import Ikone from "../components/Ikone.astro";
+import Ortsangabe from "../components/Ortsangabe.astro";
+import type { Ort } from "../lib/orte.ts";
 
 const abschnitte = (await getCollection("stadt")).sort(
   (a, b) => a.data.reihenfolge - b.data.reihenfolge,
@@ -21,6 +23,10 @@ const gerendert = await Promise.all(
 );
 
 const zahlen = (await getCollection("stadtzahlen")).map((eintrag) => eintrag.data);
+
+const gastronomie: Ort[] = (await getCollection("orte"))
+  .map((eintrag) => ({ id: eintrag.id, ...eintrag.data }))
+  .filter((ort) => ort.art === "gastronomie");
 const links = (await getCollection("stadtlinks")).map((eintrag) => eintrag.data);
 
 const sehenswuerdigkeiten = [
@@ -34,12 +40,12 @@ const sehenswuerdigkeiten = [
 ---
 
 <Basis
-  titel="Hildesheim & Umgebung – Jahrestagung 2027"
+  titel="Hildesheim – Jahrestagung 2027"
   beschreibung="Geschichte, UNESCO-Welterbe und Tipps für die Zeit neben dem Programm der Jahrestagung 2027 in Hildesheim."
 >
   <Seitenkopf
     ikone="landmark"
-    titel="Hildesheim & Umgebung"
+    titel="Hildesheim"
     einleitung="Eine Stadt mit mehr als 1.200 Jahren Geschichte – und ein paar Tipps für die Zeit neben dem Programm."
   />
 
@@ -85,14 +91,25 @@ const sehenswuerdigkeiten = [
       <Ikone name="utensils" /> Essen & Trinken
     </h2>
     <p>
-      Rund um den Marktplatz und die Almstraße liegen zahlreiche Restaurants und Cafés. Eine
-      kuratierte Auswahl mit Empfehlungen des Orga-Teams folgt.
+      Rund um den Marktplatz und die Almstraße liegen zahlreiche Restaurants und Cafés. Diese
+      Auswahl stammt aus einer ersten Recherche – tippt auf Google Maps oder Apple Karten, um euch
+      hinführen zu lassen.
     </p>
+
+    <ul class="lokale">
+      {gastronomie.map((lokal) => (
+        <li>
+          {lokal.hinweis && <p class="kueche">{lokal.hinweis}</p>}
+          <Ortsangabe ort={lokal} />
+        </li>
+      ))}
+    </ul>
   </section>
 
   <Platzhalterhinweis>
-    Restaurant- und Café-Empfehlungen werden noch nachgereicht. Bis dahin steht hier bewusst keine
-    Liste – eine ungeprüfte Auswahl wäre keine Empfehlung.
+    Diese Liste stammt aus öffentlichen Bewertungsportalen (Stand: Recherche 2026) und ist noch
+    nicht vom Orga-Team geprüft. Die Straßenadressen fehlen – die Verweise suchen deshalb nach dem
+    Namen. Eine kuratierte Auswahl mit vollständigen Adressen wird nachgereicht.
   </Platzhalterhinweis>
 
   <section class="karte">
@@ -152,5 +169,27 @@ const sehenswuerdigkeiten = [
 
   .links {
     padding-left: var(--raum-6);
+  }
+
+  .lokale {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    gap: var(--raum-4);
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .lokale li {
+    padding: var(--raum-3);
+    background: var(--flaeche);
+    border-radius: var(--radius-klein);
+  }
+
+  .kueche {
+    margin: 0 0 var(--raum-2);
+    font-size: var(--schrift-klein);
+    font-weight: 600;
+    color: var(--akzent);
   }
 </style>

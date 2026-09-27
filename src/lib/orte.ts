@@ -7,7 +7,8 @@
  * tippt - deshalb braucht es dafuer auch keine Einwilligung.
  */
 
-export type Ortsart = "tagungsort" | "exkursion" | "uebernachtung" | "rahmenprogramm";
+export type Ortsart =
+  "tagungsort" | "exkursion" | "uebernachtung" | "rahmenprogramm" | "gastronomie";
 
 export interface Ort {
   id: string;
@@ -26,9 +27,16 @@ export const ARTBEZEICHNUNG: Record<Ortsart, string> = {
   exkursion: "Exkursionsziele",
   uebernachtung: "Unterkünfte",
   rahmenprogramm: "Rahmenprogramm",
+  gastronomie: "Essen & Trinken",
 };
 
-/** Reihenfolge der Gruppen: erst, wo alle hinmüssen. */
+/**
+ * Reihenfolge der Gruppen auf der Ortsseite: erst, wo alle hinmuessen.
+ *
+ * Gastronomie fehlt bewusst - die Empfehlungen stehen unter "Hildesheim", wo
+ * sie inhaltlich hingehoeren. Zweimal dieselbe Liste zu zeigen hiesse, sie
+ * zweimal pflegen zu muessen.
+ */
 export const ARTREIHENFOLGE: Ortsart[] = [
   "tagungsort",
   "exkursion",
@@ -54,11 +62,18 @@ function suchbegriff(ort: Ort): string {
 }
 
 /**
- * Nur Orte mit Adresse bekommen eine Weiterleitung. Ein Verweis auf
- * "Bosch Hildesheim" ohne Strasse fuehrt in einer Karten-App irgendwohin -
- * und irgendwohin ist schlimmer als nirgendwohin (Produktprinzip 1).
+ * Ist der Ort eindeutig bestimmt - also ueber Strasse oder Koordinaten?
+ *
+ * Ohne das bleibt die Weiterleitung eine SUCHE nach dem Namen. Fuer einen
+ * benannten Betrieb in einer bestimmten Stadt ("Zur Scharfen Ecke,
+ * Hildesheim") ist das zuverlaessig; fuer eine Ortsangabe wie "Marktplatz"
+ * kann sie danebenliegen. Die Oberflaeche sagt den Unterschied, statt ihn zu
+ * verschweigen.
+ *
+ * Zuvor gab es fuer solche Orte gar keinen Verweis. Das war zu streng: Eine
+ * Suche, die als Suche gekennzeichnet ist, nuetzt mehr als gar nichts.
  */
-export function hatKartenverweis(ort: Ort): boolean {
+export function istGenauBestimmt(ort: Ort): boolean {
   return ort.adresse !== undefined || ort.koordinaten !== undefined;
 }
 
