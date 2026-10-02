@@ -1,4 +1,4 @@
-import { file } from "astro/loaders";
+import { file, glob } from "astro/loaders";
 import { defineCollection } from "astro:content";
 import { z } from "zod";
 
@@ -29,6 +29,37 @@ const ortszeit = z
   .string()
   .regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/, "Erwartet wird JJJJ-MM-TTTHH:MM (Ortszeit)");
 
+/**
+ * Die Orte der Tagung, an EINER Stelle gepflegt.
+ *
+ * Vorher standen Ort und Adresse als Freitext in drei Sammlungen - mit
+ * 17 Schreibweisen fuer 12 Orte. "Novotel", "Novotel Hildesheim" und
+ * "Novotel, Raum 2" waren dasselbe Haus, und die Adresse stand genau einmal
+ * da, obwohl das Haus 36-mal im Programm vorkommt. Das verstiess gegen
+ * Produktprinzip 2 und machte jede Kartenverknuepfung zum Gluecksspiel.
+ *
+ * Koordinaten sind freiwillig: Fuer die Weiterleitung an Karten-Apps genuegt
+ * die Adresse. Erst die Uebersichtskarte braucht sie - fehlen sie, zeigt die
+ * Seite die Liste und sagt, dass die Karte noch fehlt.
+ */
+const orte = defineCollection({
+  loader: file("src/content/orte.json"),
+  schema: z.object({
+    name: z.string().min(1),
+    adresse: z.string().optional(),
+    plz: z.string().optional(),
+    stadt: z.string().min(1),
+    art: z.enum(["tagungsort", "exkursion", "uebernachtung", "rahmenprogramm", "gastronomie"]),
+    hinweis: z.string().optional(),
+    koordinaten: z
+      .object({
+        breite: z.number().min(-90).max(90),
+        laenge: z.number().min(-180).max(180),
+      })
+      .optional(),
+  }),
+});
+
 const programm = defineCollection({
   loader: file("src/content/programm.json"),
   schema: z
@@ -43,8 +74,10 @@ const programm = defineCollection({
       ende: ortszeit.optional(),
       /** Wenn es keine feste Zeit gibt, z. B. "ab 19:00 Uhr". */
       zeitHinweis: z.string().optional(),
-      ort: z.string().optional(),
-      adresse: z.string().optional(),
+      /** Verweist auf einen Eintrag in orte.json. */
+      ortId: z.string().optional(),
+      /** Raum innerhalb des Ortes, z. B. "Raum 2". */
+      raum: z.string().optional(),
       beschreibung: z.string().optional(),
       spur: spur.default("haupt"),
       status: bestaetigung.default("bestaetigt"),
@@ -89,6 +122,8 @@ const exkursionen = defineCollection({
     /** Plaetze insgesamt. Die Vergabe braucht einen Server (ADR-0004). */
     plaetze: z.number().int().positive(),
     zeitrahmen: z.string().min(1),
+    /** Verweist auf einen Eintrag in orte.json. */
+    ortId: z.string().optional(),
     treffpunkt: z.string().optional(),
     anreise: z.string().optional(),
     verantwortlich: z.string().optional(),
@@ -102,6 +137,8 @@ const unterkuenfte = defineCollection({
   loader: file("src/content/unterkuenfte.json"),
   schema: z.object({
     name: z.string().min(1),
+    /** Verweist auf einen Eintrag in orte.json. */
+    ortId: z.string().optional(),
     /** true = eigenes Kontingent fuer die Tagung, false = blosse Empfehlung. */
     kontingent: z.boolean().default(false),
     zeitraum: z.string().optional(),
@@ -137,12 +174,50 @@ const ankuendigungen = defineCollection({
  */
 const kontakte = defineCollection({
   loader: file("src/content/kontakte.json"),
-  schema: z.object({
-    name: z.string().min(1),
-    bereich: z.string().optional(),
-    telefon: z.string().optional(),
-    email: z.string().optional(),
-  }),
+  schema: ({ image }) =>
+    z.object({
+      name: z.string().min(1),
+      /** Kleinere Zahl steht weiter oben. Bewusst gesetzt statt alphabetisch. */
+      reihenfolge: z.number().int(),
+      bereich: z.string().optional(),
+      telefon: z.string().optional(),
+      email: z.string().optional(),
+      /** Portraits werden nachgereicht; bis dahin stehen Initialen. */
+      bild: image().optional(),
+      bildnachweis: z.string().optional(),
+    }),
+});
+
+/**
+ * Grussworte zur Eroeffnung.
+ *
+ * `bild` nutzt den image()-Helfer: Astro optimiert das Bild beim Bauen und
+ * liefert passende Groessen aus - die Vorlage des Landesvorsitzenden hat 1 MB,
+ * unveraendert ausgeliefert waere das auf einem Mobilfunknetz spuerbar.
+ *
+ * `bildnachweis` ist Pflicht, sobald ein Bild gesetzt ist: Portraits sind
+ * urheberrechtlich geschuetzt, und ohne Nachweis laesst sich spaeter nicht mehr
+ * feststellen, woher das Bild stammt und ob wir es zeigen duerfen (F16).
+ */
+const grussworte = defineCollection({
+  loader: file("src/content/grussworte.json"),
+  schema: ({ image }) =>
+    z
+      .object({
+        name: z.string().min(1),
+        rolle: z.string().min(1),
+        bild: image().optional(),
+        bildnachweis: z.string().optional(),
+        /** Ein Eintrag je Absatz. */
+        absaetze: z.array(z.string().min(1)).min(1),
+        /** Kleinere Zahl steht weiter oben. */
+        reihenfolge: z.number().int(),
+        /** Solange der Originaltext fehlt, ist der Text ein Platzhalter. */
+        status: bestaetigung.default("platzhalter"),
+      })
+      .refine((eintrag) => eintrag.bild === undefined || eintrag.bildnachweis !== undefined, {
+        message: "Zu jedem Bild gehoert ein Bildnachweis",
+      }),
 });
 
 const faq = defineCollection({
@@ -150,7 +225,62 @@ const faq = defineCollection({
   schema: z.object({
     frage: z.string().min(1),
     antwort: z.string().min(1),
+    /**
+     * Nummerierte Schritte fuer Fragen, die eine Anleitung sind. Fliesstext
+     * taugt dafuer nicht: Am Geraet arbeitet man eine Anleitung ab und hebt
+     * dabei den Blick - in einem Absatz verliert man die Stelle.
+     */
+    schritte: z.array(z.string().min(1)).min(2).optional(),
+    /** Nachgestellte Einordnung, z. B. warum ein Schritt fehlschlagen kann. */
+    hinweis: z.string().min(1).optional(),
   }),
 });
 
-export const collections = { programm, exkursionen, unterkuenfte, ankuendigungen, kontakte, faq };
+/**
+ * Die Texte zur Stadt. Markdown statt JSON, weil es hier um Fliesstext mit
+ * Hervorhebungen und Verweisen geht - in JSON waere das eine Zeile voller
+ * Sonderzeichen, die niemand freiwillig pflegt.
+ *
+ * Je Abschnitt eine Datei: So laesst sich einer ueberarbeiten, ohne die
+ * anderen anzufassen, und der Diff im Pull Request bleibt lesbar.
+ */
+const stadt = defineCollection({
+  loader: glob({ pattern: "*.md", base: "src/content/stadt" }),
+  schema: z.object({
+    titel: z.string().min(1),
+    /** Name eines <symbol> ohne das Praefix "i-". */
+    ikone: z.string().min(1),
+    reihenfolge: z.number().int(),
+  }),
+});
+
+/** Eckdaten zur Stadt, als Zahl und Erlaeuterung getrennt. */
+const stadtzahlen = defineCollection({
+  loader: file("src/content/stadtzahlen.json"),
+  schema: z.object({
+    wert: z.string().min(1),
+    was: z.string().min(1),
+  }),
+});
+
+const stadtlinks = defineCollection({
+  loader: file("src/content/stadtlinks.json"),
+  schema: z.object({
+    titel: z.string().min(1),
+    web: z.url(),
+  }),
+});
+
+export const collections = {
+  orte,
+  programm,
+  exkursionen,
+  unterkuenfte,
+  ankuendigungen,
+  kontakte,
+  faq,
+  grussworte,
+  stadt,
+  stadtzahlen,
+  stadtlinks,
+};

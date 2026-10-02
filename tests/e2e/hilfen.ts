@@ -87,3 +87,20 @@ export async function erwarteKeinSeitenScroll(page: Page): Promise<void> {
     `Die Seite liess sich um ${verschoben}px seitwaerts schieben.\n  ${spur.join("\n  ")}`,
   ).toBe(0);
 }
+
+/**
+ * Klappt einen Programmpunkt auf.
+ *
+ * Seit die Punkte <details> sind, liegen Beschreibung, Adresse und die
+ * Bedienelemente hinter einem Klick - genauso wie fuer Nutzende. Der Helfer
+ * klickt deshalb auf die Zusammenfassung und nicht auf das open-Attribut:
+ * Getestet werden soll der Weg, den ein Mensch nimmt.
+ */
+export async function oeffneProgrammpunkt(page: Page, kennung: string): Promise<void> {
+  const punkt = page.locator(`.punkt[data-id="${kennung}"]`);
+
+  if (await punkt.evaluate((element) => (element as HTMLDetailsElement).open)) return;
+
+  await punkt.locator("summary").click();
+  await expect(punkt).toHaveAttribute("open", "");
+}

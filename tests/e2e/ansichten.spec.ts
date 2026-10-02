@@ -90,10 +90,39 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
     await expect(page.locator("input[type='email'], input[type='text']")).toHaveCount(0);
   });
 
-  test("Kontakt zeigt das Orga-Team und den Tagungsort", async ({ page }) => {
+  test("Kontakt zeigt das Orga-Team in der festgelegten Reihenfolge", async ({ page }) => {
     await page.goto("/kontakt");
 
-    await expect(page.locator(".personen > li")).toHaveCount(8);
+    const namen = page.locator(".personen h3");
+    await expect(namen).toHaveCount(8);
+    await expect(namen.nth(0)).toHaveText("Konstantin Gerbrich");
+    await expect(namen.nth(1)).toHaveText("Torben Burdorf");
+    await expect(namen.nth(7)).toHaveText("Ferdinand Meißner");
+  });
+
+  test("Kontakt verlinkt hinterlegte Telefonnummern und E-Mail-Adressen", async ({ page }) => {
+    await page.goto("/kontakt");
+
+    await expect(page.getByRole("link", { name: "+49 1515 6675547" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "t.burdorf@altstipendiaten.de" })).toBeVisible();
+  });
+
+  /**
+   * Der Verweis auf die FAQ steht bewusst VOR den Ansprechpersonen: Jede Frage,
+   * die gar nicht erst gestellt wird, entlastet ein ehrenamtliches Team.
+   */
+  test("Kontakt nennt die FAQ vor den Ansprechpersonen", async ({ page }) => {
+    await page.goto("/kontakt");
+
+    const faqHinweis = await page.locator(".zuerst").boundingBox();
+    const erstePerson = await page.locator(".personen > li").first().boundingBox();
+
+    expect(faqHinweis!.y).toBeLessThan(erstePerson!.y);
+  });
+
+  test("Kontakt zeigt den Tagungsort", async ({ page }) => {
+    await page.goto("/kontakt");
+
     await expect(page.getByRole("heading", { name: "Tagungsort" })).toBeVisible();
     await expect(page.getByText("Bahnhofsallee 38")).toBeVisible();
   });
@@ -108,12 +137,66 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
     await expect(frage).toHaveAttribute("open", "");
   });
 
-  test("Hildesheim zeigt Geschichte, Sehenswürdigkeiten und Restaurants", async ({ page }) => {
+  test("Hildesheim zeigt alle Abschnitte in fester Reihenfolge", async ({ page }) => {
     await page.goto("/hildesheim");
 
-    await expect(page.getByRole("heading", { name: /Geschichte Hildesheims/ })).toBeVisible();
-    await expect(page.getByText("Tausendjährige Rosenstock")).toBeVisible();
-    await expect(page.getByText("Knochenhaueramtshaus").first()).toBeVisible();
+    const ueberschriften = page.getByRole("heading", { level: 2 });
+    await expect(ueberschriften.nth(0)).toContainText("Eine Stadt mit mehr als 1.200 Jahren");
+    await expect(ueberschriften.nth(1)).toContainText("Zerstörung und Wiederaufbau");
+    await expect(ueberschriften.nth(2)).toContainText("UNESCO-Welterbe");
+    await expect(ueberschriften.nth(3)).toContainText("Hildesheim heute");
+    await expect(ueberschriften.nth(4)).toContainText("hiApp");
+    await expect(ueberschriften.nth(5)).toContainText("Lauschtour");
+  });
+
+  test("Hildesheim zeigt die Eckdaten als Wert-Erklärung-Paare", async ({ page }) => {
+    await page.goto("/hildesheim");
+
+    await expect(page.locator(".zahlen dt")).toHaveCount(9);
+    await expect(page.getByText("104.712")).toBeVisible();
+    await expect(page.getByText("92,19 km²")).toBeVisible();
+  });
+
+  test("Hildesheim verlinkt die weiterführenden Quellen", async ({ page }) => {
+    await page.goto("/hildesheim");
+
+    const links = page.locator(".links a");
+    await expect(links).toHaveCount(4);
+    // Verweise auf die Stadt und die UNESCO, ohne Nachverfolgungsparameter.
+    for (const ziel of await links.evaluateAll((a) => a.map((e) => e.getAttribute("href")))) {
+      expect(ziel).not.toContain("utm_source");
+    }
+  });
+
+  test("Hildesheim nennt Geschichte und Wahrzeichen aus der Vorlage", async ({ page }) => {
+    await page.goto("/hildesheim");
+
+    await expect(page.getByText(/Tausendjährige Rosenstock/)).toBeVisible();
+    await expect(page.getByText(/Knochenhauer-Amtshaus/)).toBeVisible();
+    await expect(page.getByText(/22. März 1945/)).toBeVisible();
+  });
+
+  /**
+   * Die Empfehlungen werden nachgereicht. Bis dahin steht dort bewusst keine
+   * Liste - eine ungepruefte Auswahl waere keine Empfehlung.
+   */
+  test("Hildesheim listet die Lokale mit Weiterleitung an Karten-Apps", async ({ page }) => {
+    await page.goto("/hildesheim");
+
+    const lokale = page.locator(".lokale > li");
+    await expect(lokale).toHaveCount(6);
+    await expect(lokale.first().getByRole("link", { name: /Google Maps/ })).toBeVisible();
+    await expect(lokale.first().getByRole("link", { name: /Apple Karten/ })).toBeVisible();
+  });
+
+  /**
+   * Die Adressen fehlen - dann muss dastehen, dass die Verweise nur suchen.
+   * Sonst hält man den Treffer für geprüft.
+   */
+  test("Hildesheim sagt, dass die Verweise ohne Adresse nur suchen", async ({ page }) => {
+    await page.goto("/hildesheim");
+
+    await expect(page.getByText(/die Verweise suchen nach dem Namen/).first()).toBeVisible();
   });
 
   test("Ankündigungen zeigt die Einträge, neueste zuerst", async ({ page }) => {
@@ -122,11 +205,30 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
     await expect(page.locator(".liste > li")).toHaveCount(2);
   });
 
-  test("Begrüßung weist den Text als Platzhalter aus", async ({ page }) => {
+  test("Begrüßung zeigt drei Grußworte in fester Reihenfolge", async ({ page }) => {
     await page.goto("/begruessung");
 
-    await expect(page.getByText(/Platzhaltertext/)).toBeVisible();
-    await expect(page.getByText("Demokratie leben – Europa gestalten")).toBeVisible();
+    const namen = page.getByRole("heading", { level: 2 });
+    await expect(namen).toHaveCount(3);
+    await expect(namen.nth(0)).toContainText("Matthias Wilkes");
+    await expect(namen.nth(1)).toContainText("Annegret Kramp-Karrenbauer");
+    await expect(namen.nth(2)).toContainText("Sebastian Lechner");
+  });
+
+  /**
+   * Solange die Originaltexte fehlen, muss an jedem Grusswort stehen, dass es
+   * ein Beispiel ist - sonst haelt es jemand fuer abgestimmt und zitiert es.
+   */
+  test("Begrüßung weist jeden Text als Beispiel aus", async ({ page }) => {
+    await page.goto("/begruessung");
+
+    await expect(page.getByText("Beispieltext – Originaltext folgt")).toHaveCount(3);
+  });
+
+  test("Begrüßung zeigt zu jedem Grußwort ein Porträt", async ({ page }) => {
+    await page.goto("/begruessung");
+
+    await expect(page.locator(".grusswort img")).toHaveCount(3);
   });
 
   /**

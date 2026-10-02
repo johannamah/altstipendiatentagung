@@ -14,6 +14,9 @@ import {
 } from "../lib/programm.ts";
 import { alsAchse, RASTER_MINUTEN, stundenMarken } from "../lib/zeitachse.ts";
 
+const orte = new Map(
+  (await getCollection("orte")).map((eintrag) => [eintrag.id, { id: eintrag.id, ...eintrag.data }]),
+);
 const eintraege = await getCollection("programm");
 const punkte: Punkt[] = eintraege.map((eintrag) => ({ id: eintrag.id, ...eintrag.data }));
 const { tage, ohneZeit } = nachTagenGruppieren(punkte);
@@ -33,7 +36,11 @@ function gruppiere(punkteDesTages: Punkt[]): Gruppe[] {
     const schluessel = `${punkt.spur}|${punkt.beginn ?? ""}|${punkt.ende ?? ""}`;
     const letzte = gruppen.at(-1);
 
-    if (letzte?.schluessel === schluessel && punkt.spur !== "haupt" && punkt.spur !== "rahmen") {
+    /* Gleiche Spur und gleiche Zeit heisst: Man muss sich entscheiden. Das gilt
+       nicht nur fuer Exkursionen und Vortraege - am Donnerstag laufen
+       Mitgliederversammlung und Partnerprogramm beide von 15:00 bis 17:00.
+       Die Einschraenkung auf bestimmte Spuren hat genau das verschwiegen. */
+    if (letzte?.schluessel === schluessel) {
       letzte.punkte.push(punkt);
     } else {
       gruppen.push({ schluessel, spur: punkt.spur, punkte: [punkt] });
@@ -72,9 +79,9 @@ const tageAufbereitet = tage.map((tag) => {
       <Ikone name="clipboard" /> Programm
     </h1>
     <p>
-      Hier findet ihr alle Programmpunkte, Tag für Tag. Der Stand ist noch nicht vollständig —
-      einzelne Punkte sind als <strong>noch nicht bestätigt</strong> oder als{" "}
-      <strong>Platzhalter</strong> gekennzeichnet.
+      Hier findet ihr alle Programmpunkte, Tag für Tag. Tippt auf einen Punkt für Beschreibung,
+      Adresse und Wegbeschreibung. Der Stand ist noch nicht vollständig — einzelne Punkte sind als{" "}
+      <strong>noch nicht bestätigt</strong> oder als <strong>Platzhalter</strong> gekennzeichnet.
     </p>
   </div>
 
@@ -137,26 +144,60 @@ const tageAufbereitet = tage.map((tag) => {
             </li>
           ))}
 
-          {tag.gruppen.map((gruppe) => (
-            <>
-              {gruppe.punkte.length > 1 && (
-                <li class="gruppenkopf">
-                  {SPUR_TEXT[gruppe.spur] ?? "Gleichzeitig"} · {gruppe.punkte.length} zur Wahl
-                </li>
-              )}
-              {gruppe.punkte.map((punkt) => {
-                const lage = tag.lage.get(punkt.id);
-                return (
-                  <li
-                    class="eintrag"
-                    style={`--zeile-von:${lage?.zeileVon ?? 1}; --zeile-bis:${lage?.zeileBis ?? 2}; --spalte:${lage?.spalte ?? 1}`}
-                  >
-                    <Programmpunkt punkt={punkt} />
+          {tag.gruppen.map((gruppe, nummer) => {
+            /* Gleichzeitige Punkte gehoeren zusammen und schliessen einander
+               aus. Sie bleiben aber flach in der Liste, weil die Zeitachse
+               jeden Eintrag einzeln im Raster platziert - eine Verschachtelung
+               wuerde das zerstoeren. Zusammengehalten werden sie deshalb ueber
+               data-gruppe: Einrueckung und Verbindungslinie im CSS, Auf- und
+               Zuklappen im Skript. */
+            const gruppenKennung = gruppe.punkte.length > 1 ? `${tag.datum}-${nummer}` : undefined;
+
+            return (
+              <>
+                {gruppenKennung && (
+                  <li class="gruppenkopf" data-gruppenkopf={gruppenKennung}>
+                    <span>
+                      <b>
+                        {SPUR_TEXT[gruppe.spur] ?? "Gleichzeitig"} · {gruppe.punkte.length} zur Wahl
+                      </b>
+                      <br />
+                      Diese Punkte laufen parallel – ihr entscheidet euch für einen.
+                    </span>
+
+                    {/* Braucht JavaScript und wird erst davon eingeblendet. */}
+                    <button
+                      class="gruppe-umschalter"
+                      type="button"
+                      aria-expanded="true"
+                      data-gruppe={gruppenKennung}
+                      hidden
+                    >
+                      <span data-umschalter-text>Einklappen</span>
+                      <span class="nur-vorlesen">
+                        : {gruppe.punkte.length} gleichzeitige Punkte
+                      </span>
+                    </button>
                   </li>
-                );
-              })}
-            </>
-          ))}
+                )}
+                {gruppe.punkte.map((punkt) => {
+                  const lage = tag.lage.get(punkt.id);
+                  return (
+                    <li
+                      class="eintrag"
+                      data-gruppe={gruppenKennung}
+                      style={`--zeile-von:${lage?.zeileVon ?? 1}; --zeile-bis:${lage?.zeileBis ?? 2}; --spalte:${lage?.spalte ?? 1}`}
+                    >
+                      <Programmpunkt
+                        punkt={punkt}
+                        ort={punkt.ortId ? orte.get(punkt.ortId) : undefined}
+                      />
+                    </li>
+                  );
+                })}
+              </>
+            );
+          })}
         </ol>
       </div>
     </section>
@@ -167,24 +208,33 @@ const tageAufbereitet = tage.map((tag) => {
       <h2 id="ueberschrift-ohne-zeit">Noch ohne Termin</h2>
       <p class="einleitung">Diese Punkte sind geplant, stehen aber noch nicht fest im Ablauf.</p>
       {ohneZeit.map((punkt) => (
-        <Programmpunkt punkt={punkt} />
+        <Programmpunkt punkt={punkt} ort={punkt.ortId ? orte.get(punkt.ortId) : undefined} />
       ))}
     </section>
   )}
   {/* Die Daten, die das Skript braucht - als JSON statt in jedem Element
       verteilt, damit die Seite nicht mit Attributen zugestellt wird. */}
-  <script type="application/json" id="programmdaten" set:html={JSON.stringify(punkte)} />
+  <script
+    type="application/json"
+    id="programmdaten"
+    set:html={JSON.stringify({ punkte, orte: [...orte.values()] })}
+  />
 </Basis>
 
 <script>
   import { alsKalender, dateiname, istExportierbar } from "../lib/kalender.ts";
   import type { Programmpunkt } from "../lib/programm.ts";
+  import type { Ort } from "../lib/orte.ts";
   import { browserSpeicher, ladeAuswahl, speichereAuswahl, umschalten } from "../lib/merkliste.ts";
   import { jetztAlsOrtszeit, laufendUm } from "../lib/zeit.ts";
 
   const datenElement = document.getElementById("programmdaten");
-  const punkte: Programmpunkt[] = datenElement ? JSON.parse(datenElement.textContent ?? "[]") : [];
+  const daten: { punkte: Programmpunkt[]; orte: Ort[] } = datenElement
+    ? JSON.parse(datenElement.textContent ?? '{"punkte":[],"orte":[]}')
+    : { punkte: [], orte: [] };
+  const punkte = daten.punkte;
   const nachId = new Map(punkte.map((punkt) => [punkt.id, punkt]));
+  const orteNachId = new Map(daten.orte.map((ort) => [ort.id, ort]));
 
   const meldung = document.getElementById("meldung");
   const werkzeuge = document.getElementById("werkzeuge");
@@ -232,6 +282,10 @@ const tageAufbereitet = tage.map((tag) => {
     if (!ziel) return;
 
     const zielElement = document.querySelector<HTMLElement>(`.punkt[data-id="${ziel.id}"]`);
+
+    /* Was gerade laeuft, wird aufgeklappt: Wer waehrend der Tagung die Seite
+       oeffnet, will die Einzelheiten sehen und nicht erst tippen muessen. */
+    if (zielElement instanceof HTMLDetailsElement) zielElement.open = true;
     zielElement?.scrollIntoView({
       // Wer Bewegung reduziert haben will, springt (Regel 37).
       behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
@@ -242,7 +296,7 @@ const tageAufbereitet = tage.map((tag) => {
   /* ===== Download ===== */
 
   function ladeHerunter(ausgewaehlte: Programmpunkt[]): void {
-    const datei = new Blob([alsKalender(ausgewaehlte)], {
+    const datei = new Blob([alsKalender(ausgewaehlte, orteNachId)], {
       type: "text/calendar;charset=utf-8",
     });
     const adresse = URL.createObjectURL(datei);
@@ -320,6 +374,31 @@ const tageAufbereitet = tage.map((tag) => {
   }
 
   werkzeuge?.removeAttribute("hidden");
+
+  /* ===== Gruppen auf- und zuklappen =====
+     Ohne JavaScript bleibt alles sichtbar - der Umschalter erscheint erst
+     hier. Zugeklappt wird nur die Darstellung; die Punkte bleiben im Dokument
+     und damit fuer "Mein Programm" und die Jetzt-Markierung erreichbar. */
+  for (const knopf of document.querySelectorAll<HTMLButtonElement>(".gruppe-umschalter")) {
+    const kennung = knopf.dataset.gruppe;
+    if (!kennung) continue;
+
+    knopf.removeAttribute("hidden");
+
+    knopf.addEventListener("click", () => {
+      const offen = knopf.getAttribute("aria-expanded") !== "false";
+      const text = knopf.querySelector("[data-umschalter-text]");
+
+      for (const eintrag of document.querySelectorAll<HTMLElement>(
+        `.eintrag[data-gruppe="${kennung}"]`,
+      )) {
+        eintrag.toggleAttribute("hidden", offen);
+      }
+
+      knopf.setAttribute("aria-expanded", String(!offen));
+      if (text) text.textContent = offen ? "Ausklappen" : "Einklappen";
+    });
+  }
 
   /* ===== Liste oder Zeitachse =====
      Beide Ansichten entstehen aus demselben Markup; umgeschaltet wird nur das
@@ -469,15 +548,53 @@ const tageAufbereitet = tage.map((tag) => {
     margin-bottom: var(--raum-3);
   }
 
+  /* Der Gruppenkopf sagt in Worten, was die Einrueckung zeigt: Diese Punkte
+     schliessen einander aus. Beides zusammen, weil Einrueckung allein eine
+     Gestaltungsentscheidung sein koennte und damit missverstaendlich ist. */
   .gruppenkopf {
-    padding: var(--raum-2) var(--raum-3);
-    margin-bottom: var(--raum-3);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--raum-2);
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--raum-3);
+    margin-bottom: var(--raum-2);
     font-size: var(--schrift-klein);
-    font-weight: 700;
     color: var(--text-leise);
     background: var(--hover);
     border: 1px dashed var(--rand);
     border-radius: var(--radius-klein);
+  }
+
+  .gruppe-umschalter {
+    flex: none;
+    min-height: 44px;
+    padding: var(--raum-2) var(--raum-3);
+    font: inherit;
+    font-size: var(--schrift-klein);
+    font-weight: 600;
+    color: var(--akzent);
+    cursor: pointer;
+    background: var(--feld);
+    border: 1px solid var(--feldrand);
+    border-radius: 999px;
+  }
+
+  .gruppe-umschalter:hover {
+    background: var(--hover);
+  }
+
+  /* Eingerueckt und mit Verbindungslinie: Die Punkte gehoeren zum Kopf
+     darueber und stehen nicht gleichrangig im Tagesablauf. */
+  .eintrag[data-gruppe] {
+    position: relative;
+    padding-left: var(--raum-4);
+    margin-left: var(--raum-3);
+    border-left: 2px solid var(--rand);
+  }
+
+  .eintrag[data-gruppe]:last-of-type {
+    margin-bottom: var(--raum-6);
   }
 
   .stundenmarke {
@@ -579,6 +696,14 @@ const tageAufbereitet = tage.map((tag) => {
 
   :global([data-ansicht="achse"]) .gruppenkopf {
     display: none;
+  }
+
+  /* In der Achse zeigen die Straenge die Gleichzeitigkeit - die Einrueckung
+     wuerde dort nur das Raster verschieben. */
+  :global([data-ansicht="achse"]) .eintrag[data-gruppe] {
+    padding-left: 0;
+    margin-left: 0;
+    border-left: none;
   }
 
   :global([data-ansicht="achse"]) .stundenmarke {

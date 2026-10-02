@@ -1,93 +1,159 @@
 ---
 import Ikone from "./Ikone.astro";
+import Ortsangabe from "./Ortsangabe.astro";
+import type { Ort } from "../lib/orte.ts";
 import { formatiereZeitraum, STATUS_TEXT, type Programmpunkt as Punkt } from "../lib/programm.ts";
 import { istExportierbar } from "../lib/kalender.ts";
 
+/**
+ * Ein Programmpunkt, aufklappbar.
+ *
+ * Zugeklappt beantwortet er die drei Fragen, die waehrend der Tagung zaehlen:
+ * wann, was, wo. Aufgeklappt kommen Beschreibung, vollstaendige Adresse,
+ * Wegbeschreibung und die Bedienelemente dazu.
+ *
+ * <details> statt eines eigenen Aufklapp-Skripts: Es funktioniert ohne
+ * JavaScript, ist von Haus aus mit der Tastatur bedienbar und wird von
+ * Screenreadern korrekt als auf- und zuklappbar angekuendigt (Regel 42).
+ */
 interface Props {
   punkt: Punkt;
+  /** Der aufgeloeste Ort - die Daten tragen nur dessen Kennung. */
+  ort?: Ort;
 }
 
-const { punkt } = Astro.props;
+const { punkt, ort } = Astro.props;
 const statusText = STATUS_TEXT[punkt.status];
 const zeit = formatiereZeitraum(punkt);
 const exportierbar = istExportierbar(punkt);
 ---
 
-<article
+<details
   class="punkt"
   data-status={punkt.status}
   data-id={punkt.id}
   data-beginn={punkt.beginn}
   data-ende={punkt.ende}
 >
-  <p class="zeit">
-    <span class="lage" hidden></span>
-    {zeit}
-  </p>
-
-  <h3 class="titel">
-    {punkt.titel}
-    {punkt.optional && <span class="marke marke-optional">freiwillig</span>}
-    {statusText && <span class="marke marke-status">{statusText}</span>}
-  </h3>
-
-  {punkt.beschreibung && <p class="beschreibung">{punkt.beschreibung}</p>}
-
-  {(punkt.ort || punkt.adresse) && (
-    <p class="ort">
-      <Ikone name="pin" />
-      <span>
-        {punkt.ort}
-        {punkt.ort && punkt.adresse && <br />}
-        {punkt.adresse}
+  <summary>
+    <span class="kopf">
+      <span class="zeit">
+        <span class="lage" hidden></span>
+        <span>{zeit}</span>
       </span>
-    </p>
-  )}
 
-  {punkt.hinweis && (
-    <p class="hinweis">
-      <Ikone name="alert" />
-      <span>{punkt.hinweis}</span>
-    </p>
-  )}
+      {/* Ueberschrift INNERHALB von <summary>: So bleibt der Punkt ueber die
+          Ueberschriftennavigation eines Screenreaders erreichbar. Ohne sie
+          waere das Programm nur noch eine Folge von Aufklappern. */}
+      <h3 class="titel">
+        {punkt.titel}
+        {punkt.optional && <span class="marke marke-optional">freiwillig</span>}
+        {statusText && <span class="marke marke-status">{statusText}</span>}
+      </h3>
 
-  {/* Beide Knoepfe brauchen JavaScript und werden erst davon eingeblendet -
-      ein Knopf, der nichts tut, ist schlimmer als keiner. */}
-  <p class="aktionen" hidden>
-    <button class="aktion" type="button" aria-pressed="false" data-merken>
-      <Ikone name="check" />
-      <span data-merken-text>Merken</span>
-      <span class="nur-vorlesen">: {punkt.titel}</span>
-    </button>
+      {/* Der Ortsname bleibt auch zugeklappt sichtbar: "Wo muss ich hin" ist
+          die häufigste Frage vor Ort – dafür soll niemand erst aufklappen. */}
+      {ort && (
+        <span class="ortsname">
+          <Ikone name="pin" />
+          <span>
+            {ort.name}
+            {punkt.raum && <>, {punkt.raum}</>}
+          </span>
+        </span>
+      )}
+    </span>
 
-    {exportierbar && (
-      <button class="aktion" type="button" data-kalender>
-        <Ikone name="calendar" />
-        <span>Zum Kalender</span>
-        <span class="nur-vorlesen">hinzufügen: {punkt.titel}</span>
-      </button>
+    <Ikone name="arrow-right" class="pfeil" />
+  </summary>
+
+  <div class="inhalt">
+    {punkt.beschreibung ? (
+      <p class="beschreibung">{punkt.beschreibung}</p>
+    ) : (
+      <p class="ohne-beschreibung">Zu diesem Punkt liegt noch keine Beschreibung vor.</p>
     )}
-  </p>
-</article>
+
+    {ort && <Ortsangabe ort={ort} raum={punkt.raum} />}
+
+    {punkt.hinweis && (
+      <p class="hinweis">
+        <Ikone name="alert" />
+        <span>{punkt.hinweis}</span>
+      </p>
+    )}
+
+    {/* Beide Knöpfe brauchen JavaScript und werden erst davon eingeblendet –
+        ein Knopf, der nichts tut, ist schlimmer als keiner. */}
+    <p class="aktionen" hidden>
+      <button class="aktion" type="button" aria-pressed="false" data-merken>
+        <Ikone name="check" />
+        <span data-merken-text>Merken</span>
+        <span class="nur-vorlesen">: {punkt.titel}</span>
+      </button>
+
+      {exportierbar && (
+        <button class="aktion" type="button" data-kalender>
+          <Ikone name="calendar" />
+          <span>Zum Kalender</span>
+          <span class="nur-vorlesen">hinzufügen: {punkt.titel}</span>
+        </button>
+      )}
+    </p>
+  </div>
+</details>
 
 <style>
   .punkt {
-    padding: var(--raum-4);
     background: var(--karte);
     border: 1px solid var(--rand);
     border-radius: var(--radius-klein);
     box-shadow: var(--schatten);
   }
 
-  /* Der Bestaetigungsgrad wird zusaetzlich als Text ausgewiesen (Regel 19) -
-     der linke Balken allein traegt keine Information. */
+  /* Der Bestätigungsgrad wird zusätzlich als Text ausgewiesen (Regel 19) –
+     der linke Balken allein trägt keine Information. */
   .punkt[data-status="vorlaeufig"],
   .punkt[data-status="platzhalter"] {
     border-left: 4px solid var(--hinweis-rand);
   }
 
+  summary {
+    display: flex;
+    gap: var(--raum-3);
+    align-items: center;
+    justify-content: space-between;
+    /* Mindestgröße für Berührung (Regel 7). */
+    min-height: 44px;
+    padding: var(--raum-3) var(--raum-4);
+    cursor: pointer;
+  }
+
+  summary:hover {
+    background: var(--hover);
+  }
+
+  /* Das voreingestellte Dreieck wird durch einen eigenen Pfeil ersetzt, der
+     sich beim Aufklappen dreht. */
+  summary::marker {
+    content: "";
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .kopf {
+    display: flex;
+    flex-direction: column;
+    gap: var(--raum-1);
+    min-width: 0;
+  }
+
   .zeit {
-    margin: 0 0 var(--raum-1);
+    display: flex;
+    gap: var(--raum-2);
+    align-items: center;
     font-size: var(--schrift-klein);
     font-weight: 700;
     color: var(--akzent);
@@ -97,6 +163,43 @@ const exportierbar = istExportierbar(punkt);
     margin: 0;
     font-size: 1.05rem;
     color: var(--text);
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .ortsname {
+    display: flex;
+    gap: var(--raum-1);
+    align-items: center;
+    font-size: var(--schrift-klein);
+    color: var(--text-leise);
+  }
+
+  .pfeil {
+    flex: none;
+    color: var(--text-leise);
+    transform: rotate(90deg);
+    transition: transform var(--dauer-kurz) ease;
+  }
+
+  .punkt[open] .pfeil {
+    transform: rotate(-90deg);
+  }
+
+  .inhalt {
+    padding: var(--raum-3) var(--raum-4) var(--raum-4);
+    border-top: 1px solid var(--rand);
+  }
+
+  .beschreibung,
+  .ohne-beschreibung {
+    margin: 0 0 var(--raum-3);
+    font-size: var(--schrift-klein);
+    color: var(--text-leise);
+  }
+
+  .ohne-beschreibung {
+    font-style: italic;
   }
 
   .marke {
@@ -122,23 +225,13 @@ const exportierbar = istExportierbar(punkt);
     border: 1px solid var(--schlagwort-rand);
   }
 
-  .beschreibung,
-  .ort,
-  .hinweis {
-    margin: var(--raum-2) 0 0;
-    font-size: var(--schrift-klein);
-    color: var(--text-leise);
-  }
-
-  .ort,
   .hinweis {
     display: flex;
     gap: var(--raum-2);
     align-items: flex-start;
-  }
-
-  .hinweis {
     padding: var(--raum-2);
+    margin: var(--raum-3) 0 0;
+    font-size: var(--schrift-klein);
     color: var(--hinweis-text);
     background: var(--hinweis-flaeche);
     border-radius: var(--radius-klein);
@@ -149,7 +242,6 @@ const exportierbar = istExportierbar(punkt);
   .lage {
     display: inline-block;
     padding: 2px var(--raum-2);
-    margin-right: var(--raum-2);
     font-size: 0.75rem;
     color: var(--kachel-pink-text);
     text-transform: uppercase;
@@ -173,14 +265,13 @@ const exportierbar = istExportierbar(punkt);
     display: flex;
     flex-wrap: wrap;
     gap: var(--raum-2);
-    margin: var(--raum-3) 0 0;
+    margin: var(--raum-4) 0 0;
   }
 
   .aktion {
     display: inline-flex;
     gap: var(--raum-2);
     align-items: center;
-    /* Mindestgroesse fuer Beruehrung (Regel 7). */
     min-height: 44px;
     padding: var(--raum-2) var(--raum-3);
     font: inherit;
@@ -197,8 +288,8 @@ const exportierbar = istExportierbar(punkt);
     background: var(--hover);
   }
 
-  /* Der gemerkte Zustand wird zusaetzlich ueber aria-pressed und den
-     Beschriftungswechsel mitgeteilt - nicht allein ueber Farbe (Regel 19). */
+  /* Der gemerkte Zustand wird zusätzlich über aria-pressed und den
+     Beschriftungswechsel mitgeteilt – nicht allein über Farbe (Regel 19). */
   .aktion[aria-pressed="true"] {
     color: var(--kachel-gruen-text);
     background: var(--kachel-gruen-von);

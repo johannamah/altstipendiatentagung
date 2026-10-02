@@ -38,11 +38,11 @@ nicht verhandelbar; er ist die härteste Randbedingung des Projekts.
 Der Bedarf unterscheidet sich je Phase grundlegend. Wer das übersieht, baut eine
 Broschüre statt einer App.
 
-| Phase | Zeitraum | Leitfrage der Nutzenden | Gerät / Situation |
-|---|---|---|---|
-| **Vorbereitung** | Monate bis Tage vorher | „Lohnt sich das, und was muss ich jetzt tun?" | Desktop und Handy, in Ruhe |
-| **Vor Ort** | die 5 Tagungstage | „Wo muss ich wann sein — und was kommt als Nächstes?" | Handy, unterwegs, evtl. schlechtes WLAN |
-| **Nachlese** | Wochen danach | „Wo finde ich die Fotos, Präsentationen, Kontakte?" | Desktop und Handy, sporadisch |
+| Phase            | Zeitraum               | Leitfrage der Nutzenden                               | Gerät / Situation                       |
+| ---------------- | ---------------------- | ----------------------------------------------------- | --------------------------------------- |
+| **Vorbereitung** | Monate bis Tage vorher | „Lohnt sich das, und was muss ich jetzt tun?"         | Desktop und Handy, in Ruhe              |
+| **Vor Ort**      | die 5 Tagungstage      | „Wo muss ich wann sein — und was kommt als Nächstes?" | Handy, unterwegs, evtl. schlechtes WLAN |
+| **Nachlese**     | Wochen danach          | „Wo finde ich die Fotos, Präsentationen, Kontakte?"   | Desktop und Handy, sporadisch           |
 
 Die Phase **Vor Ort** ist der Moment, in dem die App eine App sein muss und keine
 Website. Sie entscheidet darüber, ob das Produkt als nützlich erlebt wird.
@@ -52,7 +52,7 @@ Website. Sie entscheidet darüber, ob das Produkt als nützlich erlebt wird.
 - **Teilnehmende Altstipendiat:innen** — die Hauptgruppe. Ein Alumni-Verein umfasst
   ein breites Altersspektrum und damit stark unterschiedliche Technikaffinität und
   Sehfähigkeit. Primärgerät Smartphone; die Anmeldung erfolgt vermutlich häufiger am
-  Desktop. *Annahme A1, zu validieren.*
+  Desktop. _Annahme A1, zu validieren._
 - **Orga-Team / Vorstand** — pflegt Inhalte, beobachtet den Anmeldestand, verschickt
   kurzfristige Ankündigungen. Braucht Verlässlichkeit und Nachvollziehbarkeit, nicht
   Eleganz. Ehrenamtlich, mit begrenzter Zeit und ohne garantierte Git-Kenntnisse.
@@ -63,14 +63,14 @@ Ein formales Rollen- und Rechtemodell ist **nicht** bestätigt (siehe offene Fra
 
 ## 5. Kernjourneys (priorisiert, zu validieren)
 
-| # | Journey | Phase | Warum sie zählt |
-|---|---|---|---|
-| **J1** | Programm verstehen und persönlich planen | Vorbereitung | Grundlage der Teilnahmeentscheidung |
+| #      | Journey                                                          | Phase        | Warum sie zählt                                                        |
+| ------ | ---------------------------------------------------------------- | ------------ | ---------------------------------------------------------------------- |
+| **J1** | Programm verstehen und persönlich planen                         | Vorbereitung | Grundlage der Teilnahmeentscheidung                                    |
 | **J2** | Verbindlich anmelden inkl. Exkursionswahl mit begrenzten Plätzen | Vorbereitung | Einziger Vorgang mit echter Geschäftslogik und personenbezogenen Daten |
-| **J3** | Vor Ort orientieren: „Was läuft jetzt, wo?" | Vor Ort | Häufigste Einzelnutzung während der Tagung |
-| **J4** | Kurzfristige Änderungen erfahren | Vor Ort | Raumwechsel, Verspätungen — der klassische Schmerzpunkt jeder Tagung |
-| **J5** | Unterkunft aus dem Kontingent finden und buchen | Vorbereitung | Zeitkritisch, Kontingente laufen ab |
-| **J6** | Inhalte nachlesen und teilen (Fotos, Präsentationen) | Nachlese | Trägt den Vereinszweck Vernetzung |
+| **J3** | Vor Ort orientieren: „Was läuft jetzt, wo?"                      | Vor Ort      | Häufigste Einzelnutzung während der Tagung                             |
+| **J4** | Kurzfristige Änderungen erfahren                                 | Vor Ort      | Raumwechsel, Verspätungen — der klassische Schmerzpunkt jeder Tagung   |
+| **J5** | Unterkunft aus dem Kontingent finden und buchen                  | Vorbereitung | Zeitkritisch, Kontingente laufen ab                                    |
+| **J6** | Inhalte nachlesen und teilen (Fotos, Präsentationen)             | Nachlese     | Trägt den Vereinszweck Vernetzung                                      |
 
 J1 bis J4 bilden das Minimum eines nützlichen Produkts. J2 ist die einzige Journey,
 die zwingend einen Server erfordert (siehe [ADR-0004](decisions/0004-serverseitige-anmeldung.md)).
@@ -126,14 +126,14 @@ Messbar, nach der Tagung auswertbar — Zielwerte erst nach einem Basislauf fest
 
 ## 10. Wesentliche Risiken
 
-| Risiko | Wirkung | Erste Gegenmaßnahme |
-|---|---|---|
-| **Datenschutz bei Fotos** — Bilder von Personen sind personenbezogene Daten; Einwilligung, Widerruf und Löschung sind zu klären | hoch | Rechtsrahmen klären, **bevor** eine Upload-Funktion gebaut wird (F5) |
-| **Impressum und Datenschutzerklärung sind Platzhalter** (10 Platzhalter im Entwurf) | hoch | Vor jeder öffentlichen Veröffentlichung durch verbindliche Texte ersetzen |
-| **Kontingentlogik bei Gleichzeitigkeit** — „first come, first served" ist ohne Server nicht korrekt abbildbar | hoch | [ADR-0004](decisions/0004-serverseitige-anmeldung.md) |
-| **Zwei ehrenamtliche Entwickler, fixer Termin** (rund 7 Monate) | hoch | Enger Scope, Nicht-Ziele einhalten, Betriebsaufwand minimieren |
-| **Markenfreigabe** — Farbwerte sind aus dem Vereinslogo abgeleitet, nicht aus offiziellen Markenunterlagen | mittel | Freigabe beim Verein einholen (F7), [ADR-0007](decisions/0007-designsystem.md) |
-| **Fehlende Betriebsübergabe** — wer betreibt die App nach der Tagung? | mittel | Betriebsmodell und Nachfolge in einem ADR festhalten |
+| Risiko                                                                                                                          | Wirkung | Erste Gegenmaßnahme                                                            |
+| ------------------------------------------------------------------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------ |
+| **Datenschutz bei Fotos** — Bilder von Personen sind personenbezogene Daten; Einwilligung, Widerruf und Löschung sind zu klären | hoch    | Rechtsrahmen klären, **bevor** eine Upload-Funktion gebaut wird (F5)           |
+| **Impressum und Datenschutzerklärung sind Platzhalter** (10 Platzhalter im Entwurf)                                             | hoch    | Vor jeder öffentlichen Veröffentlichung durch verbindliche Texte ersetzen      |
+| **Kontingentlogik bei Gleichzeitigkeit** — „first come, first served" ist ohne Server nicht korrekt abbildbar                   | hoch    | [ADR-0004](decisions/0004-serverseitige-anmeldung.md)                          |
+| **Zwei ehrenamtliche Entwickler, fixer Termin** (rund 7 Monate)                                                                 | hoch    | Enger Scope, Nicht-Ziele einhalten, Betriebsaufwand minimieren                 |
+| **Markenfreigabe** — Farbwerte sind aus dem Vereinslogo abgeleitet, nicht aus offiziellen Markenunterlagen                      | mittel  | Freigabe beim Verein einholen (F7), [ADR-0007](decisions/0007-designsystem.md) |
+| **Fehlende Betriebsübergabe** — wer betreibt die App nach der Tagung?                                                           | mittel  | Betriebsmodell und Nachfolge in einem ADR festhalten                           |
 
 ## 11. Grober Weg dorthin
 

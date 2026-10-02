@@ -1,0 +1,47 @@
+[
+  {
+    "id": "matthias-wilkes",
+    "reihenfolge": 1,
+    "name": "Dr. Matthias Wilkes",
+    "rolle": "Vorsitzender der Altstipendiaten der Konrad-Adenauer-Stiftung e. V.",
+    "bild": "../assets/grussworte/matthias-wilkes.webp",
+    "bildnachweis": "[Quelle und Rechteinhaber eintragen]",
+    "status": "platzhalter",
+    "absaetze": [
+      "Liebe Altstipendiatinnen und Altstipendiaten, liebe Gäste,",
+      "herzlich willkommen zur Jahrestagung 2027 unter dem Motto „Demokratie leben – Europa gestalten“ in der UNESCO-Welterbestadt Hildesheim.",
+      "Unser Verein lebt davon, dass aus einer gemeinsamen Förderung eine dauerhafte Verbindung wird. Genau dafür kommen wir zusammen: um uns auszutauschen, zu streiten, zu lernen und Freundschaften zu pflegen.",
+      "Ich freue mich auf fünf Tage mit euch in Hildesheim."
+    ]
+  },
+  {
+    "id": "annegret-kramp-karrenbauer",
+    "reihenfolge": 2,
+    "name": "Annegret Kramp-Karrenbauer",
+    "rolle": "Vorsitzende der Konrad-Adenauer-Stiftung e. V.",
+    "bild": "../assets/grussworte/annegret-kramp-karrenbauer.webp",
+    "bildnachweis": "[Quelle und Rechteinhaber eintragen]",
+    "status": "platzhalter",
+    "absaetze": [
+      "Liebe Altstipendiatinnen und Altstipendiaten,",
+      "die Konrad-Adenauer-Stiftung begleitet ihre Stipendiatinnen und Stipendiaten weit über die Förderzeit hinaus. Dass Sie sich als Alumni Jahr für Jahr zusammenfinden, ist ein Zeichen dafür, dass diese Verbindung trägt.",
+      "Europa steht vor Fragen, die sich nicht nebenbei beantworten lassen. Es braucht Menschen, die bereit sind, Verantwortung zu übernehmen – im Beruf, im Ehrenamt, im politischen Gespräch.",
+      "Ich wünsche Ihnen eine anregende Tagung in Hildesheim."
+    ]
+  },
+  {
+    "id": "sebastian-lechner",
+    "reihenfolge": 3,
+    "name": "Sebastian Lechner",
+    "rolle": "Landesvorsitzender der CDU in Niedersachsen",
+    "bild": "../assets/grussworte/sebastian-lechner.jpg",
+    "bildnachweis": "[Quelle und Rechteinhaber eintragen]",
+    "status": "platzhalter",
+    "absaetze": [
+      "Sehr geehrte Damen und Herren, liebe Gäste,",
+      "als Gastgeberland freut sich Niedersachsen, die Jahrestagung 2027 in Hildesheim willkommen zu heißen – in einer Stadt, die wie wenige andere zeigt, was Zerstörung bedeutet und was Wiederaufbau leisten kann.",
+      "Demokratie lebt von denen, die sich einmischen. Die Gespräche dieser Tage sind dafür ein guter Ort.",
+      "Ich wünsche Ihnen einen anregenden Aufenthalt in Niedersachsen."
+    ]
+  }
+]

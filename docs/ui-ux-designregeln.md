@@ -15,8 +15,8 @@ das Prinzip mit der niedrigeren Nummer.
 ## 1. Informationsarchitektur und Navigation
 
 1. **Jede Ansicht hat eine eigene, teilbare Adresse.** Der Zurück-Knopf des Browsers
-   funktioniert immer, in beide Richtungen. *(Im Entwurf über Hash-Routing bereits
-   erfüllt; beim Umbau auf echte Pfade nicht verlieren.)*
+   funktioniert immer, in beide Richtungen. _(Im Entwurf über Hash-Routing bereits
+   erfüllt; beim Umbau auf echte Pfade nicht verlieren.)_
 2. **Höchstens zwei Ebenen bis zu jeder Information.** Startseite → Bereich → Detail.
    Was tiefer liegt, ist falsch einsortiert.
 3. **Auf dem Smartphone ist eine dauerhafte Navigation sichtbar.** Der Wechsel zwischen
@@ -93,7 +93,7 @@ Der wichtigste und riskanteste Teil der App (Journey J2).
 31. **Fehler erscheinen am Feld, sobald es verlassen wurde** — nicht erst beim
     Absenden. Beim Absenden zusätzlich eine Zusammenfassung mit Sprungmarken.
 32. **Eingaben gehen nie verloren.** Weder bei einem Serverfehler noch beim
-    versehentlichen Neuladen. *(Im Entwurf derzeit nicht erfüllt.)*
+    versehentlichen Neuladen. _(Im Entwurf derzeit nicht erfüllt.)_
 33. **Jedes erhobene Feld ist begründet.** Produktprinzip 4: Wer die Frage „wofür
     genau?" nicht beantworten kann, streicht das Feld.
 34. **Der Absendezustand ist eindeutig.** Der Knopf sperrt nach dem ersten Klick;
@@ -105,7 +105,7 @@ Der wichtigste und riskanteste Teil der App (Journey J2).
     und wohin es geht.
 36. **Dauer 150–300 ms.** Alles darüber wird als Verzögerung erlebt.
 37. **`prefers-reduced-motion` wird respektiert** — von jeder Animation, ohne Ausnahme.
-    *(Im Entwurf an zwei Stellen bereits berücksichtigt.)*
+    _(Im Entwurf an zwei Stellen bereits berücksichtigt.)_
 38. **Keine Bewegung blockiert das Lesen oder die Bedienung.** Kein Autoplay, kein
     erzwungenes Zuende-Animieren vor der nächsten Eingabe.
 
@@ -114,16 +114,16 @@ Der wichtigste und riskanteste Teil der App (Journey J2).
 39. **Maßstab ist WCAG 2.2 AA.** Unabhängig davon, wie F12 rechtlich ausgeht.
 40. **Alles ist mit der Tastatur bedienbar**, in sinnvoller Reihenfolge, ohne Fallen.
 41. **Der Tastaturfokus ist immer sichtbar** (`:focus-visible`), mit mindestens 3:1
-    Kontrast zur Umgebung. *(Im Entwurf derzeit nicht vorhanden — die Startseiten-Kacheln
-    sind `<button>`-Elemente ohne sichtbaren Fokus.)*
+    Kontrast zur Umgebung. _(Im Entwurf derzeit nicht vorhanden — die Startseiten-Kacheln
+    sind `<button>`-Elemente ohne sichtbaren Fokus.)_
 42. **Semantisches HTML vor ARIA.** Ein `<button>` ist einem `<div>` mit Klick-Handler
     immer vorzuziehen. ARIA nur, wo HTML nichts anbietet.
 43. **Dynamische Statusmeldungen erreichen Screenreader** (`aria-live`): Anmeldung
-    gespeichert, Kontingent erschöpft, Filter geändert. *(Im Entwurf nicht vorhanden.)*
+    gespeichert, Kontingent erschöpft, Filter geändert. _(Im Entwurf nicht vorhanden.)_
 44. **Jede Kernreise wird mindestens einmal manuell mit einem Screenreader geprüft.**
     Automatische Prüfung ersetzt das nicht.
 45. **Bilder haben aussagekräftige Alternativtexte**, dekorative Grafiken sind
-    `aria-hidden`. *(Das Icon-Sprite im Entwurf macht das bereits richtig.)*
+    `aria-hidden`. _(Das Icon-Sprite im Entwurf macht das bereits richtig.)_
 46. **Die App funktioniert bei 200 % Zoom** ohne Informationsverlust.
 
 ## 9. Sprache und Inhalt
@@ -147,11 +147,41 @@ Der wichtigste und riskanteste Teil der App (Journey J2).
 53. **JavaScript nur dort, wo Interaktion stattfindet.** Eine Programmliste braucht
     keines.
 54. **Bilder werden in moderner Kodierung, in passender Größe und verzögert geladen.**
-    Kein Bild wird base64-kodiert eingebettet. *(Im Entwurf derzeit 273 KB so
-    eingebettet.)*
+    Kein Bild wird base64-kodiert eingebettet. _(Im Entwurf derzeit 273 KB so
+    eingebettet.)_
 55. **Die Programminhalte sind offline verfügbar.** Produktprinzip 3 und Annahme A5.
     Der Service Worker liefert dabei nie veraltete Zeiten aus, ohne es kenntlich zu
     machen.
+
+---
+
+## 11. Zwei Regeln aus konkreten Fehlern
+
+Beide stehen hier, weil sie tatsächlich passiert sind und beim Durchklicken niemandem
+aufgefallen wären — gefunden hat sie erst die CI.
+
+56. **Deutschsprachige Oberflächen brauchen Silbentrennung.** `hyphens: auto` plus
+    `overflow-wrap: break-word` auf dem Textfluss, und `<html lang="de">` muss gesetzt
+    sein, damit der Browser nach deutschen Regeln trennt.
+    _Anlass:_ Die Überschrift „Weitere Übernachtungsempfehlungen" war breiter als ein
+    320-px-Display und machte die ganze Seite waagerecht scrollbar. In diesem Projekt
+    sind lange Zusammensetzungen die Regel — _Altstipendiatentagung_,
+    _Zimmerkontingent_, _Mitgliederversammlung_ —, nicht die Ausnahme.
+
+57. **Ein Scrollbereich braucht `position: relative`.** Ein Scrollcontainer beschneidet
+    absolut positionierte Nachfahren **nur dann**, wenn er selbst ihr umschließender
+    Block ist.
+    _Anlass:_ Die Zeitachse klippte korrekt bei 288 px — aber die
+    `.nur-vorlesen`-Spannen in den Knöpfen sind `position: absolute` und hingen dadurch
+    am Wurzelelement. Ihre statische Position lag bei ~1600 px im Raster, und genau das
+    machte die Seite scrollbar. Überall, wo ein Scrollbereich und das
+    Screenreader-Muster zusammentreffen, wiederholt sich das.
+
+**Und eine Lehre zur Prüfung selbst:** Regel 10 wird am **Verhalten** geprüft („lässt
+sich die Seite schieben?"), nicht an `scrollWidth`. Die Kennzahl war auf der Zeitachse
+um 1174 px zu groß, obwohl sich nichts schieben ließ — und in einem anderen Fall
+umgekehrt. Der Helfer dafür steht in `tests/e2e/hilfen.ts` und grenzt im Fehlerfall die
+Ursache ein, statt sie den Lesenden zu überlassen.
 
 ---
 
