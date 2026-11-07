@@ -37,3 +37,4 @@ ein neues ADR, und das alte erhält den Status „Abgelöst durch".
 | [0009](0009-fotos-auf-sharepoint.md)            | Tagungsfotos auf dem SharePoint des Vereins          | Angenommen    |
 | [0010](0010-zugangssperre.md)                   | Zugangsabfrage vor der unfertigen Anwendung          | Vorgeschlagen |
 | [0011](0011-anmeldung-ueber-microsoft-forms.md) | Anmeldung über Microsoft Forms des Vereins           | Angenommen    |
+| [0012](0012-hosting-auf-cloudflare.md)          | Hosting auf Cloudflare mit Deployment über Actions   | Vorgeschlagen |

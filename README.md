@@ -49,10 +49,17 @@ weiterentwickelt — siehe [archiv/README.md](archiv/README.md) und
 
 ## Veröffentlichung
 
-Noch nicht eingerichtet. Zielumgebung und Domain sind offen (siehe F11 in
-[docs/offene-fragen.md](docs/offene-fragen.md)); der Bauprozess erzeugt einen rein
-statischen Stand in `dist/`, der sich unter anderem über GitHub Pages ausliefern
-ließe.
+Die App läuft unter **https://altstipendiaten-jahrestagung.de** auf Cloudflare Workers
+mit statischen Assets ([ADR-0012](docs/decisions/0012-hosting-auf-cloudflare.md)).
+
+- Jeder Merge auf `main` startet den Workflow `Deployment`. Er wartet auf die Freigabe
+  im GitHub Environment `production`, prüft, deployt und ruft danach die echte Adresse
+  ab.
+- Bis zum Go-Live steht Cloudflare Access davor: Zugang nur für freigegebene
+  E-Mail-Adressen, mit Einmalcode.
+- Einrichtung von Cloudflare, Strato und GitHub Schritt für Schritt:
+  [docs/betrieb/einrichtung-cloudflare.html](docs/betrieb/einrichtung-cloudflare.html)
+  (im Browser öffnen).
 
 ## Mitwirkende
 

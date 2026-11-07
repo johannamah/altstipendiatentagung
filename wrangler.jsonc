@@ -1,0 +1,23 @@
+// Auslieferung ueber Cloudflare Workers mit statischen Assets (ADR-0012).
+// Es gibt bewusst kein Worker-Skript: Cloudflare liefert dist/ unveraendert aus.
+// Zugangsschutz (Cloudflare Access) und die www-Weiterleitung sind im
+// Cloudflare-Dashboard eingerichtet, nicht hier - siehe
+// docs/betrieb/einrichtung-cloudflare.html.
+{
+  "name": "altstipendiaten-jahrestagung",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    // Liefert dist/404.html mit Status 404 statt stillschweigend der Startseite.
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash",
+  },
+  // Keine zweite Adresse neben der Domain: Sie laege an Cloudflare Access vorbei.
+  "workers_dev": false,
+  "preview_urls": false,
+  // Legt beim ersten Deployment den DNS-Eintrag der Domain an. Ein vorhandener
+  // A-/AAAA-Eintrag aus dem Strato-Import muss vorher geloescht sein.
+  "routes": [{ "pattern": "altstipendiaten-jahrestagung.de", "custom_domain": true }],
+  // Produktprinzip 4: keine Nutzungsdaten an Dritte.
+  "send_metrics": false,
+}

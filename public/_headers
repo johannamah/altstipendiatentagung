@@ -1,0 +1,18 @@
+# Kopfzeilen fuer die Auslieferung ueber Cloudflare (ADR-0012).
+# astro dev und astro preview werten diese Datei nicht aus.
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+  Strict-Transport-Security: max-age=31536000
+
+# Dateinamen enthalten einen Hashwert; eine neue Version hat einen neuen Namen.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Der Browser muss jede neue Version des Service Workers sofort sehen,
+# sonst bleiben Geraete auf einem alten Stand.
+/sw.js
+  Cache-Control: no-cache

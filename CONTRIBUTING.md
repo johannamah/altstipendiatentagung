@@ -56,6 +56,31 @@ Vor dem ersten `npm run test:e2e` einmalig:
 npx playwright install --with-deps chromium
 ```
 
+## Deployment
+
+Produktiv deployt nur der Workflow `Deployment` von `main` ([ADR-0012](docs/decisions/0012-hosting-auf-cloudflare.md)).
+Lokal lässt sich die Cloudflare-Konfiguration ohne Zugangsdaten prüfen:
+
+```bash
+npm run build
+npx --yes wrangler@4.151.3 deploy --dry-run
+```
+
+Die Version entspricht `WRANGLER_VERSION` in `.github/workflows/deployment.yml`; beim
+Anheben beide Stellen ändern. Kopfzeilen für Caching und Sicherheit stehen in
+`public/_headers`, die Auslieferung in `wrangler.jsonc`. `astro preview` wertet beide
+nicht aus — Abweichungen zwischen Vorschau und Produktion haben oft dort ihre Ursache.
+
+Zurück auf einen früheren Stand:
+
+```bash
+npx --yes wrangler@4.151.3 deployments list
+npx --yes wrangler@4.151.3 rollback <version-id>
+```
+
+(braucht `CLOUDFLARE_API_TOKEN` in der Umgebung, alternativ im Cloudflare-Dashboard
+unter Workers & Pages → altstipendiaten-jahrestagung → Deployments).
+
 ## Aufbau
 
 ```

@@ -1,0 +1,17 @@
+---
+import Basis from "../layouts/Basis.astro";
+
+/**
+ * Fehlerseite fuer unbekannte Adressen. Cloudflare liefert sie mit Status 404
+ * aus (wrangler.jsonc, not_found_handling). Den Weg zurueck zur Uebersicht
+ * bringt das Grundgeruest mit.
+ */
+---
+
+<Basis titel="Seite nicht gefunden – Jahrestagung 2027" beschreibung="Diese Adresse gibt es nicht.">
+  <h1>Seite nicht gefunden</h1>
+  <p>
+    Diese Adresse gibt es in der App nicht – vielleicht ist der Link veraltet oder nicht
+    vollständig. Über die Übersicht erreichen Sie alle Bereiche der Tagung.
+  </p>
+</Basis>
