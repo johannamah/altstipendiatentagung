@@ -1,0 +1,5 @@
+# Ohne diese Zeilen checkt Git unter Windows CRLF aus. Ein Shell-Skript mit CRLF
+# scheitert im Container mit "bad interpreter: /bin/bash^M", und die Fehlermeldung
+# zeigt nicht auf die Zeilenenden.
+*.sh text eol=lf
+Dockerfile text eol=lf
