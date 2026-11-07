@@ -1,0 +1,168 @@
+---
+import Basis from "../layouts/Basis.astro";
+import Seitenkopf from "../components/Seitenkopf.astro";
+import Platzhalterhinweis from "../components/Platzhalterhinweis.astro";
+
+/**
+ * Datenschutzerklaerung - Grundfassung.
+ *
+ * Beschrieben ist nur, was die Anwendung tatsaechlich tut: statische Seiten bei
+ * Cloudflare, Speicherung allein auf dem Geraet, Verweise auf Microsoft Forms,
+ * SharePoint und Karten-Apps. Was der Verein festlegen muss (Speicherdauer,
+ * Datenschutzbeauftragter, Anmeldedaten nach F4), steht NICHT erfunden im Text,
+ * sondern im Platzhalterhinweis. Der Vorstand prueft und gibt frei, bevor die
+ * Seite oeffentlich wird.
+ *
+ * Aendert sich, was die App speichert oder an wen sie verweist, ist diese
+ * Seite im selben Pull Request anzupassen.
+ */
+---
+
+<Basis
+  titel="Datenschutzerklärung – Jahrestagung 2027"
+  beschreibung="Datenschutzerklärung der Veranstaltungsapp der Altstipendiaten der Konrad-Adenauer-Stiftung e. V."
+>
+  <Seitenkopf
+    ikone="eye"
+    titel="Datenschutzerklärung"
+    einleitung="für die Altstipendiaten der Konrad-Adenauer-Stiftung e. V."
+  />
+
+  <Platzhalterhinweis>
+    Grundfassung, vom Vorstand vor der Veröffentlichung zu prüfen. Offen sind: ob ein
+    Datenschutzbeauftragter benannt ist, wie lange Cloudflare Zugriffsprotokolle aufbewahrt, der
+    Abschluss der Auftragsverarbeitung mit Cloudflare, welche Daten die Anmeldung erhebt und wie
+    lange sie aufbewahrt werden (F4), sowie das Datum dieser Fassung.
+  </Platzhalterhinweis>
+
+  <section class="karte">
+    <h2>Verantwortlicher</h2>
+    <p>
+      Altstipendiaten der Konrad-Adenauer-Stiftung e.&nbsp;V.
+      <br />
+      Klingelhöferstraße 23
+      <br />
+      10785 Berlin
+      <br />
+      E-Mail: <a href="mailto:vorsitzender@altstipendiaten.de">vorsitzender@altstipendiaten.de</a>
+      <br />
+      Telefon: <a href="tel:+493023000322">030 23000-322</a>
+    </p>
+  </section>
+
+  <section class="karte">
+    <h2>Das Wichtigste in Kürze</h2>
+    <p>
+      Diese Anwendung legt keine Benutzerkonten an, setzt keine Cookies und verwendet keine Analyse-
+      oder Werbedienste. Was Sie in der App auswählen, etwa Ihre Merkliste, bleibt auf Ihrem Gerät
+      und wird nicht an uns übertragen.
+    </p>
+  </section>
+
+  <section class="karte">
+    <h2>Bereitstellung der Anwendung</h2>
+    <p>
+      Die Anwendung wird über Cloudflare ausgeliefert (Cloudflare, Inc., 101 Townsend St., San
+      Francisco, CA 94107, USA). Beim Aufruf einer Seite verarbeitet Cloudflare technisch notwendige
+      Daten: IP-Adresse, Zeitpunkt, aufgerufene Adresse sowie Angaben zu Browser und Betriebssystem.
+      Das ist erforderlich, um die Seiten auszuliefern und den Dienst vor Angriffen zu schützen.
+    </p>
+    <p>
+      Rechtsgrundlage ist Art.&nbsp;6 Abs.&nbsp;1 lit.&nbsp;f DSGVO; unser berechtigtes Interesse
+      liegt in einer sicheren und zuverlässigen Bereitstellung. Cloudflare kann Daten in den USA
+      verarbeiten und ist nach dem EU-US Data Privacy Framework zertifiziert.
+    </p>
+  </section>
+
+  <section class="karte">
+    <h2>Zugang während der Vorabphase</h2>
+    <p>
+      Solange die Anwendung noch nicht veröffentlicht ist, ist sie nur für freigegebene Personen
+      erreichbar. Dafür geben Sie Ihre E-Mail-Adresse ein und erhalten einen einmaligen Code
+      (Cloudflare Access). Verarbeitet werden dabei Ihre E-Mail-Adresse und der Zeitpunkt der
+      Anmeldung, allein um den Zugang zu prüfen. Rechtsgrundlage ist Art.&nbsp;6 Abs.&nbsp;1
+      lit.&nbsp;f DSGVO. Mit der Veröffentlichung entfällt diese Abfrage.
+    </p>
+  </section>
+
+  <section class="karte">
+    <h2>Speicherung auf Ihrem Gerät</h2>
+    <p>
+      Die Anwendung legt im Speicher Ihres Browsers ab, was sie für die von Ihnen genutzten
+      Funktionen braucht:
+    </p>
+    <ul>
+      <li>Ihre Merkliste im Programm,</li>
+      <li>die gewählte Darstellung (hell, dunkel oder nach Systemeinstellung),</li>
+      <li>eine Kopie der Seiten, damit Programm und Orte auch ohne Netz verfügbar sind.</li>
+    </ul>
+    <p>
+      Diese Daten verlassen Ihr Gerät nicht. Rechtsgrundlage ist §&nbsp;25 Abs.&nbsp;2 Nr.&nbsp;2
+      TDDDG: Die Speicherung ist für die von Ihnen gewünschten Funktionen unbedingt erforderlich.
+      Sie können die Daten jederzeit löschen, indem Sie die Website-Daten in Ihrem Browser
+      entfernen.
+    </p>
+  </section>
+
+  <section class="karte">
+    <h2>Verweise auf andere Dienste</h2>
+    <p>
+      Einige Funktionen führen zu Angeboten Dritter. Erst wenn Sie einem solchen Verweis folgen,
+      werden Daten an den jeweiligen Anbieter übertragen; dort gilt dessen Datenschutzerklärung.
+    </p>
+    <ul>
+      <li>
+        <strong>Anmeldung:</strong> Microsoft Forms. Die Angaben im Formular verarbeitet der Verein
+        zur Organisation der Tagung.
+      </li>
+      <li>
+        <strong>Fotos:</strong> das Fotoalbum auf dem SharePoint des Vereins (Microsoft).
+      </li>
+      <li>
+        <strong>Wegbeschreibungen:</strong> Google Maps oder Apple Karten.
+      </li>
+      <li>Websites zu Tagungsort, Hotels und Stadt Hildesheim.</li>
+    </ul>
+  </section>
+
+  <section class="karte">
+    <h2>Kontakt per E-Mail</h2>
+    <p>
+      Schreiben Sie uns, verarbeiten wir Ihre Angaben, um Ihr Anliegen zu beantworten (Art.&nbsp;6
+      Abs.&nbsp;1 lit.&nbsp;b bzw. lit.&nbsp;f DSGVO).
+    </p>
+  </section>
+
+  <section class="karte">
+    <h2>Ihre Rechte</h2>
+    <p>Sie haben das Recht auf</p>
+    <ul>
+      <li>Auskunft über Ihre bei uns verarbeiteten Daten (Art.&nbsp;15 DSGVO),</li>
+      <li>Berichtigung (Art.&nbsp;16 DSGVO),</li>
+      <li>Löschung (Art.&nbsp;17 DSGVO),</li>
+      <li>Einschränkung der Verarbeitung (Art.&nbsp;18 DSGVO),</li>
+      <li>Datenübertragbarkeit (Art.&nbsp;20 DSGVO),</li>
+      <li>
+        Widerspruch gegen eine Verarbeitung nach Art.&nbsp;6 Abs.&nbsp;1 lit.&nbsp;f DSGVO
+        (Art.&nbsp;21 DSGVO).
+      </li>
+    </ul>
+    <p>
+      Wenden Sie sich dazu an die oben genannte Adresse. Außerdem können Sie sich bei einer
+      Datenschutz-Aufsichtsbehörde beschweren (Art.&nbsp;77 DSGVO), etwa bei der für den Verein
+      zuständigen Berliner Beauftragten für Datenschutz und Informationsfreiheit.
+    </p>
+  </section>
+</Basis>
+
+<style>
+  h2 {
+    margin-top: 0;
+    font-size: var(--schrift-h3);
+  }
+
+  p:last-child,
+  ul:last-child {
+    margin-bottom: 0;
+  }
+</style>

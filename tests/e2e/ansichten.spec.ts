@@ -295,3 +295,19 @@ test.describe("schmale Geräte", () => {
     });
   }
 });
+
+test.describe("Pflichtangaben", () => {
+  /* Von einer Unterseite aus, nicht nur von der Startseite: Die Angaben muessen
+     ueberall erreichbar sein. */
+  for (const titel of ["Impressum", "Datenschutzerklärung"]) {
+    test(`${titel} ist aus der Fußzeile erreichbar`, async ({ page }) => {
+      await page.goto("/programm");
+      await page
+        .getByRole("navigation", { name: "Rechtliches" })
+        .getByRole("link", { name: titel })
+        .click();
+
+      await expect(page.getByRole("heading", { level: 1, name: titel })).toBeVisible();
+    });
+  }
+});

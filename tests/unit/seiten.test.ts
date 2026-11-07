@@ -31,6 +31,10 @@ describe("Bereiche und Seiten", () => {
     },
   );
 
+  it("führt Impressum und Datenschutzerklärung als Pflichtangaben", () => {
+    expect(RECHTLICHES.map((seite) => seite.titel)).toEqual(["Impressum", "Datenschutzerklärung"]);
+  });
+
   it("verlinkt jede Pflichtangabe aus der Fußzeile", () => {
     // Eine Pflichtangabe, die nur ueber die direkte Adresse erreichbar ist,
     // erfuellt ihren Zweck nicht.
