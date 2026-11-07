@@ -1,0 +1,1078 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Einrichtung Cloudflare und Strato</title>
+    <style>
+      :root {
+        --flaeche: #f7f8fa;
+        --karte: #ffffff;
+        --text: #1b2430;
+        --text-leise: #505c6b;
+        --rand: #d9dee5;
+        --akzent: #004684;
+        --code-flaeche: #eef1f5;
+        --achtung-flaeche: #fff4e5;
+        --achtung-rand: #e0a040;
+        --hinweis-flaeche: #eaf2fb;
+        --hinweis-rand: #6b9bd1;
+        --erledigt: #2e7d4f;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+          --flaeche: #12161c;
+          --karte: #1a2028;
+          --text: #e6eaef;
+          --text-leise: #a6b0bc;
+          --rand: #2e3743;
+          --akzent: #8bbcf0;
+          --code-flaeche: #232b35;
+          --achtung-flaeche: #33270f;
+          --achtung-rand: #b8822c;
+          --hinweis-flaeche: #172636;
+          --hinweis-rand: #3f6c9c;
+          --erledigt: #6cc596;
+        }
+      }
+
+      :root[data-theme="dark"] {
+        --flaeche: #12161c;
+        --karte: #1a2028;
+        --text: #e6eaef;
+        --text-leise: #a6b0bc;
+        --rand: #2e3743;
+        --akzent: #8bbcf0;
+        --code-flaeche: #232b35;
+        --achtung-flaeche: #33270f;
+        --achtung-rand: #b8822c;
+        --hinweis-flaeche: #172636;
+        --hinweis-rand: #3f6c9c;
+        --erledigt: #6cc596;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font:
+          17px/1.6 system-ui,
+          -apple-system,
+          "Segoe UI",
+          sans-serif;
+        color: var(--text);
+        background: var(--flaeche);
+      }
+
+      .rahmen {
+        display: grid;
+        gap: 2rem;
+        max-width: 72rem;
+        padding: 2rem 16px 4rem;
+        margin: 0 auto;
+      }
+
+      @media (min-width: 60rem) {
+        .rahmen {
+          grid-template-columns: 15rem minmax(0, 1fr);
+        }
+
+        nav.inhalt {
+          position: sticky;
+          top: 1rem;
+          align-self: start;
+        }
+      }
+
+      header {
+        grid-column: 1 / -1;
+      }
+
+      h1 {
+        margin: 0 0 0.5rem;
+        font-size: 2rem;
+        line-height: 1.2;
+      }
+
+      h2 {
+        margin: 0 0 1rem;
+        font-size: 1.4rem;
+        line-height: 1.3;
+      }
+
+      h3 {
+        margin: 1.5rem 0 0.5rem;
+        font-size: 1.1rem;
+      }
+
+      .leise {
+        color: var(--text-leise);
+      }
+
+      a {
+        color: var(--akzent);
+      }
+
+      nav.inhalt ol {
+        padding-left: 1.2rem;
+        margin: 0;
+        font-size: 0.95rem;
+      }
+
+      nav.inhalt li {
+        margin-bottom: 0.3rem;
+      }
+
+      main section {
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        background: var(--karte);
+        border: 1px solid var(--rand);
+        border-radius: 12px;
+      }
+
+      code,
+      kbd {
+        padding: 0.1em 0.35em;
+        font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+        font-size: 0.9em;
+        overflow-wrap: anywhere;
+        background: var(--code-flaeche);
+        border-radius: 4px;
+      }
+
+      pre {
+        padding: 0.8rem 1rem;
+        overflow-x: auto;
+        background: var(--code-flaeche);
+        border-radius: 8px;
+      }
+
+      pre code {
+        padding: 0;
+        background: none;
+      }
+
+      .kasten {
+        padding: 0.8rem 1rem;
+        margin: 1rem 0;
+        border-left: 4px solid;
+        border-radius: 6px;
+      }
+
+      .kasten p:first-child {
+        margin-top: 0;
+      }
+
+      .kasten p:last-child {
+        margin-bottom: 0;
+      }
+
+      .achtung {
+        background: var(--achtung-flaeche);
+        border-color: var(--achtung-rand);
+      }
+
+      .hinweis {
+        background: var(--hinweis-flaeche);
+        border-color: var(--hinweis-rand);
+      }
+
+      .tabelle {
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        font-size: 0.95rem;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        padding: 0.5rem;
+        text-align: left;
+        vertical-align: top;
+        border-bottom: 1px solid var(--rand);
+      }
+
+      th {
+        font-weight: 600;
+      }
+
+      ol.schritte > li {
+        margin-bottom: 0.6rem;
+      }
+
+      .pruefliste {
+        padding: 0;
+        list-style: none;
+      }
+
+      .pruefliste li {
+        margin-bottom: 0.4rem;
+      }
+
+      .pruefliste label {
+        display: flex;
+        gap: 0.6rem;
+        align-items: flex-start;
+        cursor: pointer;
+      }
+
+      .pruefliste input {
+        flex: none;
+        width: 1.15rem;
+        height: 1.15rem;
+        margin-top: 0.25rem;
+        accent-color: var(--erledigt);
+      }
+
+      .pruefliste input:checked + span {
+        color: var(--text-leise);
+        text-decoration: line-through;
+      }
+
+      :focus-visible {
+        outline: 3px solid var(--akzent);
+        outline-offset: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="rahmen">
+      <header>
+        <h1>Einrichtung: Cloudflare, Strato und GitHub</h1>
+        <p class="leise">
+          Für die Veranstaltungsapp unter <strong>altstipendiaten-jahrestagung.de</strong>.
+          Entscheidung und Begründung: <code>docs/decisions/0012-hosting-auf-cloudflare.md</code>.
+          Die Häkchen merkt sich nur dieser Browser.
+        </p>
+      </header>
+
+      <nav class="inhalt" aria-label="Inhalt">
+        <ol>
+          <li><a href="#ueberblick">Überblick und Reihenfolge</a></li>
+          <li><a href="#informationen">Was noch gebraucht wird</a></li>
+          <li><a href="#konto">Cloudflare-Konto</a></li>
+          <li><a href="#zone">Domain zu Cloudflare</a></li>
+          <li><a href="#strato">Nameserver bei Strato</a></li>
+          <li><a href="#zoneneinstellungen">Zoneneinstellungen</a></li>
+          <li><a href="#www">www-Weiterleitung</a></li>
+          <li><a href="#access">Cloudflare Access</a></li>
+          <li><a href="#token">API-Token und Account-ID</a></li>
+          <li><a href="#github">GitHub einrichten</a></li>
+          <li><a href="#erstes-deployment">Erstes Deployment</a></li>
+          <li><a href="#golive">Go-Live</a></li>
+          <li><a href="#fehler">Fehlerbehebung</a></li>
+          <li><a href="#betrieb">Laufender Betrieb</a></li>
+        </ol>
+      </nav>
+
+      <main>
+        <section id="ueberblick">
+          <h2>1. Überblick und Reihenfolge</h2>
+          <p>
+            Die App ist eine statische Website. GitHub Actions baut sie bei jedem Merge auf
+            <code>main</code> und lädt sie zu Cloudflare Workers hoch. Bis zum Go-Live steht
+            Cloudflare Access davor: Nur freigegebene E-Mail-Adressen kommen mit einem Einmalcode
+            hinein.
+          </p>
+          <div class="kasten achtung">
+            <p>
+              <strong>Die Reihenfolge ist wichtig.</strong> Access (Schritt 8) muss eingerichtet
+              sein, <em>bevor</em> das erste Deployment läuft (Schritt 11). Sonst ist die unfertige
+              App für einige Minuten öffentlich. Der Workflow erkennt das und schlägt fehl, die
+              Seite ist dann aber schon erreichbar.
+            </p>
+          </div>
+          <div class="tabelle">
+            <table>
+              <thead>
+                <tr>
+                  <th>Schritt</th>
+                  <th>Wo</th>
+                  <th>Wer</th>
+                  <th>Dauer</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>3–4 Konto und Domain anlegen</td>
+                  <td>Cloudflare</td>
+                  <td>Entwickler</td>
+                  <td>15 Min.</td>
+                </tr>
+                <tr>
+                  <td>5 Nameserver umstellen</td>
+                  <td>Strato</td>
+                  <td>Inhaber des Strato-Kontos</td>
+                  <td>5 Min. + bis zu 24 Std. Wartezeit</td>
+                </tr>
+                <tr>
+                  <td>6–9 Einstellungen, Access, Token</td>
+                  <td>Cloudflare</td>
+                  <td>Entwickler</td>
+                  <td>30 Min.</td>
+                </tr>
+                <tr>
+                  <td>10 Environment, Secrets, Branch-Schutz</td>
+                  <td>GitHub</td>
+                  <td>Repo-Admin (<code>johannamah</code>)</td>
+                  <td>15 Min.</td>
+                </tr>
+                <tr>
+                  <td>11 Erstes Deployment</td>
+                  <td>GitHub</td>
+                  <td>beide (Merge und Freigabe)</td>
+                  <td>10 Min.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="informationen">
+          <h2>2. Was noch gebraucht wird</h2>
+          <div class="kasten achtung">
+            <p>
+              <strong>Zugangsdaten nie in Chats, Issues, Commits oder diese Datei.</strong>
+              API-Token und Passwörter gehören nur in den Passwortmanager und in die GitHub-Secrets.
+              Das Repository ist öffentlich.
+            </p>
+          </div>
+
+          <h3>Von euch beiden (Entwickler)</h3>
+          <ul class="pruefliste">
+            <li>
+              <label
+                ><input type="checkbox" data-id="i-passwortmanager" /><span
+                  >Gemeinsamer Passwortmanager-Eintrag für das Cloudflare-Konto, mit
+                  Zwei-Faktor-Code (TOTP), den ihr beide erzeugen könnt.</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="i-team" /><span
+                  >Teamname für Cloudflare Zero Trust, z. B. <code>asev-tagung</code>. Er wird Teil
+                  der Login-Adresse <code>asev-tagung.cloudflareaccess.com</code> und ist für
+                  Besucher sichtbar.</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="i-github" /><span
+                  >Die GitHub-Benutzernamen beider Entwickler. Sie geben Deployments frei.</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="i-sitzung" /><span
+                  >Sitzungsdauer für Access. Empfehlung: <strong>1 Woche</strong>, sonst muss das
+                  Orga-Team täglich einen neuen Code anfordern.</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="i-vercel" /><span
+                  ><strong>Entscheidung zu Vercel:</strong> Das Repo ist mit Vercel verbunden.
+                  Vercel veröffentlicht zu jedem PR eine Vorschau, die an Access vorbei erreichbar
+                  ist. Empfehlung: Verbindung trennen (Vercel → Project → Settings → Git →
+                  Disconnect) oder dort „Deployment Protection" einschalten.</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="i-zugangswort" /><span
+                  >Soll die clientseitige Zugangsabfrage (ADR-0010) zusätzlich zu Access bleiben?
+                  Empfehlung: nein, also das Secret <code>ZUGANGSWORT</code> nicht anlegen. Access
+                  schützt besser, und zwei Abfragen hintereinander verwirren.</span
+                ></label
+              >
+            </li>
+          </ul>
+
+          <h3>Vom Strato-Konto</h3>
+          <ul class="pruefliste">
+            <li>
+              <label
+                ><input type="checkbox" data-id="i-strato-login" /><span
+                  >Zugang zum Strato-Kundenlogin, in dem die Domain liegt.</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="i-strato-mail" /><span
+                  ><strong>Wird E-Mail über die Domain genutzt</strong> (z. B.
+                  info@altstipendiaten-jahrestagung.de bei Strato)? Wenn ja, müssen die MX- und
+                  TXT-Einträge mit umziehen (Schritt 4). Bitte die aktuellen DNS-Einträge aus der
+                  Strato-Verwaltung als Bildschirmfoto sichern.</span
+                ></label
+              >
+            </li>
+          </ul>
+
+          <h3>Vom Orga-Team</h3>
+          <ul class="pruefliste">
+            <li>
+              <label
+                ><input type="checkbox" data-id="i-emails" /><span
+                  >Liste der E-Mail-Adressen, die die App vorab sehen dürfen. Sie wird
+                  <em>nur</em> in Cloudflare eingetragen, nie im Repository. Bis 50 Personen ist
+                  Access kostenfrei.</span
+                ></label
+              >
+            </li>
+          </ul>
+
+          <h3>Vom Vorstand (vor dem Go-Live)</h3>
+          <ul class="pruefliste">
+            <li>
+              <label
+                ><input type="checkbox" data-id="i-dsb" /><span
+                  >Ist ein Datenschutzbeauftragter benannt? Falls ja: Kontaktangaben für die
+                  Datenschutzerklärung.</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="i-avv" /><span
+                  >Auftragsverarbeitung mit Cloudflare: Das Cloudflare Data Processing Addendum ist
+                  Teil der Nutzungsbedingungen. Der Vorstand entscheidet, ob das genügt und ob es
+                  für den Verein abgeschlossen werden muss, wenn das Konto noch auf die Entwickler
+                  läuft.</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="i-anmeldedaten" /><span
+                  >Welche Daten die Anmeldung über Microsoft Forms erhebt und wie lange sie
+                  aufbewahrt werden (offene Frage F4).</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="i-freigabe" /><span
+                  >Freigabe des Textes der Datenschutzerklärung (PR #17) und Antworten zu F14
+                  (Personennamen) und F16 (Rechte an den Porträts).</span
+                ></label
+              >
+            </li>
+          </ul>
+        </section>
+
+        <section id="konto">
+          <h2>3. Cloudflare-Konto anlegen</h2>
+          <ol class="schritte">
+            <li>
+              <a href="https://dash.cloudflare.com/sign-up">dash.cloudflare.com/sign-up</a> öffnen
+              und mit einer gemeinsam erreichbaren E-Mail-Adresse registrieren. Am besten nimmt man
+              eine Funktionsadresse statt eines privaten Postfachs, denn an diese Adresse gehen
+              Sicherheitsmeldungen.
+            </li>
+            <li>E-Mail-Adresse bestätigen.</li>
+            <li>
+              <strong>Zwei-Faktor-Anmeldung einschalten:</strong> Profil (oben rechts) →
+              <em>My Profile</em> → <em>Authentication</em> → <em>Two-Factor Authentication</em> →
+              Authenticator-App. Den QR-Code im gemeinsamen Passwortmanager hinterlegen. Die
+              Wiederherstellungscodes ebenfalls dort ablegen.
+            </li>
+          </ol>
+          <div class="kasten hinweis">
+            <p>
+              Ein gemeinsames Konto ist laut ADR-0012 eine Übergangslösung. Später lassen sich unter
+              <em>Manage Account → Members</em> persönliche Zugänge einladen. Spätestens nach der
+              Tagung sollte das Konto an den Verein übergehen.
+            </p>
+          </div>
+        </section>
+
+        <section id="zone">
+          <h2>4. Domain zu Cloudflare hinzufügen</h2>
+          <ol class="schritte">
+            <li>
+              Im Dashboard <em>Add a domain</em> (bzw. <em>Websites → Add a site</em>) wählen und
+              <code>altstipendiaten-jahrestagung.de</code> eingeben. Die Option „Quick scan for DNS
+              records" aktiviert lassen.
+            </li>
+            <li>Tarif <strong>Free</strong> wählen.</li>
+            <li>
+              Cloudflare zeigt die gefundenen DNS-Einträge. <strong>Jetzt aufräumen:</strong>
+              <ul>
+                <li>
+                  <strong>Löschen:</strong> alle <code>A</code>-, <code>AAAA</code>- und
+                  <code>CNAME</code>-Einträge für <code>altstipendiaten-jahrestagung.de</code> (Name
+                  <code>@</code>) und für <code>www</code>. Sie zeigen auf Strato-Server und würden
+                  das Deployment blockieren. Den Eintrag für die Domain legt das erste Deployment
+                  selbst an.
+                </li>
+                <li>
+                  <strong>Behalten:</strong> <code>MX</code>- und <code>TXT</code>-Einträge (E-Mail,
+                  SPF, DKIM), falls E-Mail über die Domain läuft. Mit dem Bildschirmfoto aus Strato
+                  vergleichen. Fehlt einer, von Hand ergänzen.
+                </li>
+              </ul>
+            </li>
+            <li>
+              Cloudflare zeigt zwei Nameserver, etwa <code>xxx.ns.cloudflare.com</code> und
+              <code>yyy.ns.cloudflare.com</code>. <strong>Beide genau abschreiben.</strong> Sie sind
+              für jedes Konto anders.
+            </li>
+          </ol>
+        </section>
+
+        <section id="strato">
+          <h2>5. Nameserver bei Strato umstellen</h2>
+          <div class="kasten hinweis">
+            <p>
+              Strato ändert seine Oberfläche gelegentlich, die Menünamen können abweichen. Gesucht
+              ist immer die Einstellung für <em>Nameserver</em> bzw. <em>externe Nameserver</em> der
+              Domain.
+            </p>
+          </div>
+          <ol class="schritte">
+            <li>
+              Im
+              <a href="https://www.strato.de/apps/CustomerService">Strato-Kunden-Login</a> anmelden
+              und das Paket mit der Domain wählen.
+            </li>
+            <li><em>Domains</em> → <em>Domainverwaltung</em>.</li>
+            <li>
+              Bei <code>altstipendiaten-jahrestagung.de</code> auf das Zahnrad bzw.
+              <em>Verwalten</em>
+              klicken.
+            </li>
+            <li>
+              <strong>Falls DNSSEC aktiv ist: zuerst ausschalten.</strong> Sonst ist die Domain nach
+              dem Umzug nicht mehr erreichbar.
+            </li>
+            <li>
+              Den Reiter bzw. Punkt <em>Nameserver</em> öffnen → <em>Nameserver ändern</em> →
+              <em>Eigene Nameserver verwenden</em>. Die beiden Cloudflare-Nameserver aus Schritt 4
+              eintragen und alle übrigen Felder leeren.
+            </li>
+            <li>Speichern und die Sicherheitsabfrage bestätigen.</li>
+            <li>
+              In Cloudflare auf der Seite der Domain <em>Check nameservers now</em> klicken. Sobald
+              die Domain als <strong>Active</strong> erscheint (meist innerhalb einer Stunde,
+              höchstens 24 Stunden), kommt eine E-Mail.
+            </li>
+          </ol>
+          <div class="kasten achtung">
+            <p>
+              Bietet Strato bei eurem Paket keine eigenen Nameserver an, bitte beim Strato-Support
+              nach „externen Nameservern für eine .de-Domain" fragen. Ein Umzug der Domain zum
+              Cloudflare-Registrar geht nicht, Cloudflare bietet <code>.de</code> nicht an.
+            </p>
+          </div>
+          <p>Prüfen lässt sich die Umstellung im Terminal:</p>
+          <pre><code>dig NS altstipendiaten-jahrestagung.de +short</code></pre>
+          <p class="leise">Erwartet: die beiden <code>*.ns.cloudflare.com</code>-Einträge.</p>
+        </section>
+
+        <section id="zoneneinstellungen">
+          <h2>6. Zoneneinstellungen in Cloudflare</h2>
+          <p>Alles in der Zone <code>altstipendiaten-jahrestagung.de</code>:</p>
+          <ul class="pruefliste">
+            <li>
+              <label
+                ><input type="checkbox" data-id="z-https" /><span
+                  ><em>SSL/TLS → Edge Certificates:</em> <strong>Always Use HTTPS</strong> an,
+                  <strong>Minimum TLS Version</strong> 1.2,
+                  <strong>Automatic HTTPS Rewrites</strong> an. HSTS hier
+                  <em>nicht</em> einschalten: Die Kopfzeile kommt aus
+                  <code>public/_headers</code>.</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="z-rocket" /><span
+                  ><em>Speed → Optimization:</em> <strong>Rocket Loader</strong> aus. Es schreibt
+                  Skripte um und verfälscht Lighthouse.</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="z-scrape" /><span
+                  ><em>Security → Settings</em> (ältere Oberfläche: <em>Scrape Shield</em>):
+                  <strong>Email Address Obfuscation</strong> aus. Sie schleust ein Skript ein und
+                  ändert die <code>mailto:</code>-Links in Impressum und Kontakt.</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="z-analytics" /><span
+                  ><em>Analytics → Web Analytics:</em> nicht aktivieren (Produktprinzip 4: keine
+                  Nutzungsdaten an Dritte). Sonst müsste es in die Datenschutzerklärung.</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="z-bots" /><span
+                  ><em>Security → Bots:</em> <strong>Bot Fight Mode</strong> aus lassen. Er kann die
+                  Prüfung der Auslieferung aus GitHub Actions blockieren.</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="z-dnssec" /><span
+                  ><em>Optional, DNS → Settings → DNSSEC:</em> aktivieren. Cloudflare zeigt dann
+                  einen DS-Eintrag, der bei Strato hinterlegt werden muss. Lässt Strato das bei
+                  externen Nameservern nicht zu, DNSSEC aus lassen.</span
+                ></label
+              >
+            </li>
+          </ul>
+        </section>
+
+        <section id="www">
+          <h2>7. Weiterleitung von www</h2>
+          <p>
+            Maßgeblich ist die Adresse ohne <code>www</code>. Damit <code>www.</code> überhaupt bei
+            Cloudflare ankommt, braucht es einen Platzhalter-Eintrag:
+          </p>
+          <ol class="schritte">
+            <li>
+              <em>DNS → Records → Add record:</em> Typ <code>AAAA</code>, Name <code>www</code>,
+              IPv6 <code>100::</code>, Proxy status <strong>Proxied</strong> (orange Wolke). Die
+              Adresse <code>100::</code> ist absichtlich ein Nirgendwo: Cloudflare beantwortet die
+              Anfrage selbst.
+            </li>
+            <li>
+              <em>Rules → Overview → Create rule → Redirect Rule</em> (bzw.
+              <em>Rules → Redirect Rules</em>). Die Vorlage
+              <strong>„Redirect from WWW to Root"</strong> wählen. Sie leitet mit Status
+              <code>301</code> um und behält Pfad und Parameter. Speichern.
+            </li>
+          </ol>
+          <p>Prüfen, sobald die Zone aktiv ist:</p>
+          <pre><code>curl -sI https://www.altstipendiaten-jahrestagung.de/programm/ | grep -iE "^(HTTP|location)"</code></pre>
+          <p class="leise">
+            Erwartet: <code>301</code> und
+            <code>location: https://altstipendiaten-jahrestagung.de/programm/</code>.
+          </p>
+        </section>
+
+        <section id="access">
+          <h2>8. Cloudflare Access für die Vorabphase</h2>
+          <ol class="schritte">
+            <li>
+              Im Dashboard links <em>Zero Trust</em> öffnen. Beim ersten Mal den Teamnamen aus
+              Schritt 2 eingeben und den Tarif <strong>Free</strong> wählen. Cloudflare verlangt
+              dafür eventuell ein Zahlungsmittel, berechnet bis 50 Nutzer aber nichts.
+            </li>
+            <li>
+              <em>Settings → Authentication → Login methods:</em> Prüfen, dass
+              <strong>One-time PIN</strong> vorhanden ist. Es ist voreingestellt und schickt einen
+              Code per E-Mail. Weitere Methoden sind nicht nötig.
+            </li>
+            <li>
+              <em>Access → Applications → Add an application → Self-hosted</em>:
+              <ul>
+                <li>Application name: <code>Jahrestagung Vorabzugang</code></li>
+                <li>Session duration: die Sitzungsdauer aus Schritt 2 (Empfehlung: 1 week)</li>
+                <li>
+                  Public hostname 1: Subdomain leer, Domain
+                  <code>altstipendiaten-jahrestagung.de</code>, Path leer
+                </li>
+                <li>Public hostname 2: Subdomain <code>www</code>, gleiche Domain, Path leer</li>
+              </ul>
+            </li>
+            <li>
+              <strong>Policy anlegen:</strong> Name <code>Freigegebene Personen</code>, Action
+              <strong>Allow</strong>, Include → Selector <strong>Emails</strong> → die Adressen aus
+              der Liste des Orga-Teams einzeln eintragen. Tipp: Unter
+              <em>Access → Access groups</em> eine Gruppe anlegen und in der Policy nur die Gruppe
+              verwenden, dann pflegt man die Liste an einer Stelle.
+            </li>
+            <li>Speichern.</li>
+          </ol>
+          <h3>Prüfen</h3>
+          <pre><code>curl -sI https://altstipendiaten-jahrestagung.de/ | grep -iE "^(HTTP|location)"</code></pre>
+          <p class="leise">
+            Erwartet: <code>302</code> und eine <code>location</code> auf
+            <code>…cloudflareaccess.com</code>. Das funktioniert schon vor dem ersten Deployment.
+          </p>
+          <div class="kasten hinweis">
+            <p><strong>Bekannte Einschränkungen in der Vorabphase:</strong></p>
+            <ul>
+              <li>
+                „Zum Startbildschirm hinzufügen" funktioniert nur eingeschränkt: Der Browser lädt
+                das App-Manifest ohne Anmeldung und bekommt nur die Weiterleitung.
+              </li>
+              <li>
+                Läuft die Sitzung ab, liefert der Service Worker zunächst die zwischengespeicherten
+                Seiten. Neue Inhalte gibt es erst nach erneutem Einloggen.
+              </li>
+            </ul>
+            <p>Beides entfällt mit dem Go-Live.</p>
+          </div>
+        </section>
+
+        <section id="token">
+          <h2>9. API-Token und Account-ID</h2>
+          <h3>API-Token</h3>
+          <ol class="schritte">
+            <li>
+              <em>My Profile → API Tokens → Create Token</em>, Vorlage
+              <strong>„Edit Cloudflare Workers"</strong> → <em>Use template</em>.
+            </li>
+            <li>
+              <strong>Einschränken:</strong> <em>Account Resources</em> → Include → genau dieses
+              Konto. <em>Zone Resources</em> → Include → Specific zone →
+              <code>altstipendiaten-jahrestagung.de</code>.
+            </li>
+            <li>
+              <em>TTL:</em> ein Ablaufdatum setzen, z. B. Ende Juni 2027, nach der Tagung. Ein Token
+              ohne Ablauf vergisst man.
+            </li>
+            <li>
+              <em>Continue to summary → Create Token.</em> Das Token wird
+              <strong>nur einmal</strong>
+              angezeigt. Direkt in GitHub eintragen (Schritt 10) und zusätzlich im Passwortmanager
+              ablegen.
+            </li>
+          </ol>
+          <h3>Account-ID</h3>
+          <p>
+            <em>Workers &amp; Pages</em> öffnen. Die <strong>Account ID</strong> steht rechts in der
+            Seitenleiste, alternativ auf der Übersichtsseite der Domain unter <em>API</em>. Sie ist
+            kein Geheimnis, wird aber trotzdem nur in GitHub hinterlegt.
+          </p>
+        </section>
+
+        <section id="github">
+          <h2>10. GitHub einrichten</h2>
+          <div class="kasten hinweis">
+            <p>
+              Das braucht <strong>Admin-Rechte am Repository</strong>, also <code>johannamah</code>.
+              Ein Account mit reinem Schreibzugriff sieht die Einstellungen nicht.
+            </p>
+          </div>
+
+          <h3>Environment <code>production</code></h3>
+          <ol class="schritte">
+            <li>
+              <em>Settings → Environments → New environment</em>, Name genau
+              <code>production</code>.
+            </li>
+            <li>
+              <strong>Required reviewers:</strong> beide Entwickler eintragen,
+              <em>Prevent self-review</em>
+              anhaken. So kann niemand seinen eigenen Merge allein live schalten.
+            </li>
+            <li>
+              <strong>Deployment branches and tags:</strong> <em>Selected branches</em> → Regel
+              <code>main</code>.
+            </li>
+            <li>
+              <strong>Environment secrets → Add secret:</strong>
+              <code>CLOUDFLARE_API_TOKEN</code> = Token aus Schritt 9.
+            </li>
+            <li>
+              <strong>Environment variables → Add variable:</strong>
+              <ul>
+                <li><code>CLOUDFLARE_ACCOUNT_ID</code> = Account-ID aus Schritt 9</li>
+                <li>
+                  <code>VORABZUGANG</code> = <code>aktiv</code>. Damit prüft der Workflow nach jedem
+                  Deployment, dass Access davorsteht. Fehlt die Variable, gilt ebenfalls
+                  <code>aktiv</code>.
+                </li>
+              </ul>
+            </li>
+            <li>
+              Nur falls die Zugangsabfrage aus ADR-0010 bleiben soll: Secret
+              <code>ZUGANGSWORT</code>. Empfehlung: weglassen.
+            </li>
+          </ol>
+
+          <h3>Branch-Schutz für <code>main</code></h3>
+          <p>
+            <em>Settings → Rules → Rulesets → New branch ruleset</em> (oder
+            <em>Branches → Add branch protection rule</em>), Ziel <code>main</code>:
+          </p>
+          <ul class="pruefliste">
+            <li>
+              <label
+                ><input type="checkbox" data-id="g-pr" /><span
+                  >Require a pull request before merging, mit 1 Approval. „Dismiss stale approvals"
+                  und „Require conversation resolution" einschalten.</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="g-checks" /><span
+                  >Require status checks to pass: <code>pruefen</code>,
+                  <code>End-to-End und Barrierefreiheit</code>, <code>Lighthouse</code>,
+                  <code>Konfiguration prüfen</code>. Die Namen tauchen in der Auswahl erst auf,
+                  nachdem sie einmal gelaufen sind, etwa in #18.</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="g-force" /><span
+                  >Block force pushes, Restrict deletions.</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="g-squash" /><span
+                  ><em>Settings → General → Pull Requests:</em> nur „Allow squash merging"
+                  erlauben.</span
+                ></label
+              >
+            </li>
+          </ul>
+        </section>
+
+        <section id="erstes-deployment">
+          <h2>11. Erstes Deployment</h2>
+          <p>
+            Voraussetzungen: Schritte 3 bis 10 erledigt und die Zone ist <strong>Active</strong>.
+          </p>
+          <ol class="schritte">
+            <li>
+              Die PRs in dieser Reihenfolge reviewen und mergen: <strong>#16</strong> (Jetztkarte) →
+              danach bei #17 und #18 die Basis auf <code>main</code> umstellen →
+              <strong>#17</strong> (Datenschutz) → <strong>#18</strong> (Deployment).
+            </li>
+            <li>
+              <em>Actions → Deployment</em> zeigt den Job „Produktion" als <em>Waiting</em>. Die
+              <strong>andere</strong> Person öffnet ihn → <em>Review deployments</em> →
+              <code>production</code> → <em>Approve and deploy</em>.
+            </li>
+            <li>
+              Der Job prüft, baut, deployt und ruft die Adresse ab. Beim ersten Mal legt Cloudflare
+              dabei den DNS-Eintrag und das Zertifikat an. Das kann ein bis zwei Minuten dauern.
+            </li>
+          </ol>
+          <h3>Kontrolle</h3>
+          <ul class="pruefliste">
+            <li>
+              <label
+                ><input type="checkbox" data-id="d-gruen" /><span
+                  >Der Schritt „Auslieferung prüfen" ist grün und meldet „Geschützt".</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="d-privat" /><span
+                  >Im privaten Browserfenster
+                  <code>https://altstipendiaten-jahrestagung.de</code> öffnen. Es erscheint die
+                  Access-Anmeldung. Mit einer freigegebenen Adresse kommt ein Code, danach die
+                  App.</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="d-fremd" /><span
+                  >Eine <em>nicht</em> freigegebene Adresse bekommt keinen Zugang.</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="d-404" /><span
+                  >Nach der Anmeldung zeigt <code>/gibt-es-nicht</code> die Fehlerseite „Seite nicht
+                  gefunden".</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="d-workersdev" /><span
+                  >In Cloudflare unter
+                  <em
+                    >Workers &amp; Pages → altstipendiaten-jahrestagung → Settings → Domains &amp;
+                    Routes</em
+                  >
+                  steht nur die Domain, keine <code>workers.dev</code>-Adresse.</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="d-handy" /><span
+                  >Auf einem echten Smartphone geöffnet, Programm einmal geladen, dann im Flugmodus
+                  erneut geöffnet: Das Programm ist weiterhin da.</span
+                ></label
+              >
+            </li>
+          </ul>
+        </section>
+
+        <section id="golive">
+          <h2>12. Go-Live (geplant Anfang Dezember 2026)</h2>
+          <p>Erst wenn alles aus „Vom Vorstand" in Schritt 2 erledigt ist und das Go vorliegt:</p>
+          <ol class="schritte">
+            <li>
+              PR mit den letzten Textänderungen: Platzhalterhinweis der Datenschutzerklärung
+              entfernen, Datum der Fassung eintragen. Danach mergen und deployen, noch hinter
+              Access.
+            </li>
+            <li>
+              GitHub → Environment <code>production</code> → Variable <code>VORABZUGANG</code> auf
+              <code>aus</code> setzen.
+            </li>
+            <li>
+              Cloudflare → <em>Zero Trust → Access → Applications</em> → „Jahrestagung Vorabzugang"
+              → <em>Delete</em>.
+            </li>
+            <li>
+              GitHub → <em>Actions → Deployment → Run workflow</em> (Branch <code>main</code>) und
+              freigeben. Die Prüfung erwartet jetzt Status 200, die richtige Cache-Kopfzeile für
+              <code>/sw.js</code> und die <code>www</code>-Weiterleitung.
+            </li>
+            <li>Im privaten Fenster ohne Anmeldung öffnen und die Seiten durchklicken.</li>
+          </ol>
+          <div class="kasten achtung">
+            <p>
+              Die Reihenfolge von Schritt 2 und 3 ist egal, solange danach ein Deployment läuft.
+              Steht
+              <code>VORABZUGANG</code> noch auf <code>aktiv</code>, wenn Access schon entfernt ist,
+              schlägt die Prüfung fehl. Das ist gewollt, denn genau diese Abweichung soll auffallen.
+            </p>
+          </div>
+        </section>
+
+        <section id="fehler">
+          <h2>13. Fehlerbehebung</h2>
+          <div class="tabelle">
+            <table>
+              <thead>
+                <tr>
+                  <th>Meldung</th>
+                  <th>Ursache und Abhilfe</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>Authentication error [code: 10000]</code></td>
+                  <td>
+                    Token falsch, abgelaufen oder ohne Rechte für Konto bzw. Zone. Neues Token nach
+                    Schritt 9 erzeugen und das Secret ersetzen.
+                  </td>
+                </tr>
+                <tr>
+                  <td>„Hostname … already has externally managed DNS records"</td>
+                  <td>
+                    Ein alter <code>A</code>/<code>AAAA</code>/<code>CNAME</code>-Eintrag für die
+                    Domain liegt noch in Cloudflare (Strato-Import). Unter
+                    <em>DNS → Records</em> löschen, Job neu starten.
+                  </td>
+                </tr>
+                <tr>
+                  <td>„Could not find zone"</td>
+                  <td>
+                    Zone ist noch nicht <em>Active</em>. Nameserver bei Strato prüfen (Schritt 5).
+                  </td>
+                </tr>
+                <tr>
+                  <td>„Vorabzugang ist aktiv, aber … antwortet ohne Anmeldung mit 200"</td>
+                  <td>
+                    <strong>Die App ist öffentlich.</strong> Sofort die Access-Anwendung prüfen:
+                    Hostname richtig? Policy gespeichert? Bis dahin notfalls das Deployment
+                    zurückrollen (Schritt 14) oder unter <em>Domains &amp; Routes</em> die Domain
+                    entfernen.
+                  </td>
+                </tr>
+                <tr>
+                  <td>„/sw.js wird zwischengespeichert"</td>
+                  <td>
+                    <code>public/_headers</code> wurde nicht übernommen. Prüfen, ob die Datei in
+                    <code>dist/</code> landet, und ob eine Cache Rule in Cloudflare die Kopfzeile
+                    überschreibt.
+                  </td>
+                </tr>
+                <tr>
+                  <td>„www leitet nicht dauerhaft … weiter"</td>
+                  <td>Schritt 7: <code>AAAA</code>-Eintrag (Proxied) und Redirect Rule prüfen.</td>
+                </tr>
+                <tr>
+                  <td>Job „Produktion" startet nicht</td>
+                  <td>Wartet auf Freigabe (Schritt 11) oder lief nicht auf <code>main</code>.</td>
+                </tr>
+                <tr>
+                  <td>Zertifikatsfehler im Browser direkt nach dem ersten Deployment</td>
+                  <td>Das Zertifikat wird noch ausgestellt. Einige Minuten warten.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="betrieb">
+          <h2>14. Laufender Betrieb</h2>
+          <h3>Zurück auf einen früheren Stand</h3>
+          <p>
+            Am schnellsten im Dashboard:
+            <em>Workers &amp; Pages → altstipendiaten-jahrestagung → Deployments</em> → bei einer
+            früheren Version <em>Rollback</em>. Danach den Fehler per PR beheben. Das nächste
+            Deployment von <code>main</code> überschreibt den Rollback.
+          </p>
+          <h3>Freigegebene Personen ändern</h3>
+          <p>
+            <em>Zero Trust → Access → Access groups</em> (oder die Policy) bearbeiten. Das wirkt
+            sofort, ohne Deployment.
+          </p>
+          <h3>Token erneuern</h3>
+          <p>
+            Vor Ablauf ein neues Token nach Schritt 9 erzeugen, das Secret in GitHub ersetzen und
+            das alte Token in Cloudflare löschen. Dasselbe gilt sofort, wenn jemand ausscheidet oder
+            das Token irgendwo sichtbar geworden ist.
+          </p>
+          <h3>Nach der Tagung</h3>
+          <p>
+            Klären, wer Konto und Domain übernimmt (offene Frage F2). Die Domain-Verlängerung bei
+            Strato läuft weiter, auch wenn niemand mehr die App pflegt.
+          </p>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      /* Haekchen nur fuer diesen Browser. Ohne Speicher (privates Fenster) funktioniert
+         die Seite trotzdem, die Haekchen bleiben dann eben nicht stehen. */
+      const SCHLUESSEL = "einrichtung-cloudflare";
+      let stand = {};
+      try {
+        stand = JSON.parse(localStorage.getItem(SCHLUESSEL) || "{}");
+      } catch {
+        stand = {};
+      }
+      for (const kasten of document.querySelectorAll("input[data-id]")) {
+        kasten.checked = stand[kasten.dataset.id] === true;
+        kasten.addEventListener("change", () => {
+          stand[kasten.dataset.id] = kasten.checked;
+          try {
+            localStorage.setItem(SCHLUESSEL, JSON.stringify(stand));
+          } catch {
+            /* Ohne Speicher bleibt es beim Haken fuer diese Sitzung. */
+          }
+        });
+      }
+    </script>
+  </body>
+</html>
