@@ -24,14 +24,16 @@ ein neues ADR, und das alte erhält den Status „Abgelöst durch".
 
 ## Übersicht
 
-| Nr.                                     | Titel                                                | Status        |
-| --------------------------------------- | ---------------------------------------------------- | ------------- |
-| [0001](0001-adr-prozess.md)             | ADR-Prozess und Dokumentationsstruktur               | Angenommen    |
-| [0002](0002-plattform-pwa.md)           | Plattform: installierbare Web-App statt nativer Apps | Vorgeschlagen |
-| [0003](0003-frontend-architektur.md)    | Vom Einzeldatei-Entwurf zu einer gebauten Anwendung  | Angenommen    |
-| [0004](0004-serverseitige-anmeldung.md) | Anmeldung und Kontingente serverseitig               | Vorgeschlagen |
-| [0005](0005-zugang-ohne-konten.md)      | Zugang ohne Benutzerkonten                           | Vorgeschlagen |
-| [0006](0006-inhalte-als-daten.md)       | Tagungsinhalte als versionierte Daten                | Vorgeschlagen |
-| [0007](0007-designsystem.md)            | Designsystem auf rollenbasierten Tokens              | Vorgeschlagen |
-| [0008](0008-teststrategie.md)           | Teststrategie und Zuschnitt der CI                   | Vorgeschlagen |
-| [0009](0009-fotos-auf-sharepoint.md)    | Tagungsfotos auf dem SharePoint des Vereins          | Angenommen    |
+| Nr.                                             | Titel                                                | Status        |
+| ----------------------------------------------- | ---------------------------------------------------- | ------------- |
+| [0001](0001-adr-prozess.md)                     | ADR-Prozess und Dokumentationsstruktur               | Angenommen    |
+| [0002](0002-plattform-pwa.md)                   | Plattform: installierbare Web-App statt nativer Apps | Vorgeschlagen |
+| [0003](0003-frontend-architektur.md)            | Vom Einzeldatei-Entwurf zu einer gebauten Anwendung  | Angenommen    |
+| [0004](0004-serverseitige-anmeldung.md)         | Anmeldung und Kontingente serverseitig               | Vorgeschlagen |
+| [0005](0005-zugang-ohne-konten.md)              | Zugang ohne Benutzerkonten                           | Vorgeschlagen |
+| [0006](0006-inhalte-als-daten.md)               | Tagungsinhalte als versionierte Daten                | Vorgeschlagen |
+| [0007](0007-designsystem.md)                    | Designsystem auf rollenbasierten Tokens              | Vorgeschlagen |
+| [0008](0008-teststrategie.md)                   | Teststrategie und Zuschnitt der CI                   | Vorgeschlagen |
+| [0009](0009-fotos-auf-sharepoint.md)            | Tagungsfotos auf dem SharePoint des Vereins          | Angenommen    |
+| [0010](0010-zugangssperre.md)                   | Zugangsabfrage vor der unfertigen Anwendung          | Vorgeschlagen |
+| [0011](0011-anmeldung-ueber-microsoft-forms.md) | Anmeldung über Microsoft Forms des Vereins           | Angenommen    |

@@ -1,7 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
-import { BEREICHE } from "../../src/daten/bereiche.ts";
+import { BEREICHE, kachelZiel, SEITENBEREICHE } from "../../src/daten/bereiche.ts";
 import { erwarteKeinSeitenScroll } from "./hilfen.ts";
 
 /**
@@ -10,7 +10,7 @@ import { erwarteKeinSeitenScroll } from "./hilfen.ts";
  */
 
 test.describe("alle Bereiche sind erreichbar", () => {
-  for (const bereich of BEREICHE) {
+  for (const bereich of SEITENBEREICHE) {
     test(`${bereich.titel} öffnet sich von der Startseite aus`, async ({ page }) => {
       await page.goto("/");
       await page.getByRole("link", { name: new RegExp(bereich.titel, "i") }).click();
@@ -23,7 +23,7 @@ test.describe("alle Bereiche sind erreichbar", () => {
 });
 
 test.describe("Zurück zur Übersicht", () => {
-  for (const bereich of BEREICHE) {
+  for (const bereich of SEITENBEREICHE) {
     test(`${bereich.titel} hat einen Weg zurück`, async ({ page }) => {
       await page.goto(`/${bereich.slug}`);
 
@@ -69,25 +69,21 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
     await expect(page.getByRole("heading", { name: "B&B Hotel Hildesheim" })).toBeVisible();
   });
 
-  test("Anmeldung zeigt alle neun Exkursionen mit Platzzahl", async ({ page }) => {
-    await page.goto("/anmeldung");
-
-    await expect(page.locator(".exkursionen > li")).toHaveCount(9);
-    await expect(page.getByText("50 Plätze").first()).toBeVisible();
-  });
-
   /**
-   * Der Entwurf hatte ein Formular im Testmodus: Eingaben nur im
-   * Arbeitsspeicher, danach "Anmeldung erfolgreich". Oeffentlich erreichbar
-   * waere das eine Falle - deshalb steht dort jetzt der Stand statt des
-   * Formulars.
+   * Die Anmeldung laeuft ueber Microsoft Forms (ADR-0011). Geprueft wird das
+   * Ziel der Kachel, nicht das Formular selbst: Ein Test, der bei Microsoft
+   * anklopft, haengt an deren Erreichbarkeit und erzeugt dort Aufrufe.
    */
-  test("Anmeldung nimmt keine personenbezogenen Daten entgegen", async ({ page }) => {
-    await page.goto("/anmeldung");
+  test("Anmeldung öffnet das Anmeldeformular in einem neuen Tab", async ({ page }) => {
+    const anmeldung = BEREICHE.find((bereich) => bereich.slug === "anmeldung")!;
+    await page.goto("/");
 
-    await expect(page.getByText("Die Anmeldung ist noch nicht geöffnet.")).toBeVisible();
-    await expect(page.locator("form")).toHaveCount(0);
-    await expect(page.locator("input[type='email'], input[type='text']")).toHaveCount(0);
+    const kachel = page.getByRole("link", { name: /Anmeldung/ });
+    await expect(kachel).toHaveAttribute("href", kachelZiel(anmeldung));
+    await expect(kachel).toHaveAttribute("target", "_blank");
+    await expect(kachel).toHaveAttribute("rel", /noopener/);
+    // Dass ein neuer Tab aufgeht, steht sichtbar auf der Kachel.
+    await expect(kachel).toContainText("öffnet neuen Tab");
   });
 
   test("Kontakt zeigt das Orga-Team in der festgelegten Reihenfolge", async ({ page }) => {
@@ -118,6 +114,31 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
     const erstePerson = await page.locator(".personen > li").first().boundingBox();
 
     expect(faqHinweis!.y).toBeLessThan(erstePerson!.y);
+  });
+
+  test("Referenten & Gäste stellt jede Person mit Funktion und Kurzvorstellung vor", async ({
+    page,
+  }) => {
+    await page.goto("/referenten");
+
+    for (const name of ["Norbert Lammert", "Annegret Kramp-Karrenbauer", "Christian Wulff"]) {
+      const person = page.getByRole("article").filter({
+        has: page.getByRole("heading", { name }),
+      });
+      await expect(person, `${name} fehlt`).toBeVisible();
+      // Ohne Funktion bleibt offen, warum die Person auf der Tagung spricht.
+      await expect(person.locator("p").first()).not.toBeEmpty();
+    }
+  });
+
+  /**
+   * Die Kurzvorstellungen sind von uns verfasst, nicht von den Personen
+   * freigegeben. Das muss als Text dastehen, nicht nur farblich.
+   */
+  test("Referenten & Gäste kennzeichnet nicht abgestimmte Texte", async ({ page }) => {
+    await page.goto("/referenten");
+
+    await expect(page.getByText("Text noch nicht abgestimmt").first()).toBeVisible();
   });
 
   test("Kontakt zeigt den Tagungsort", async ({ page }) => {
@@ -244,7 +265,7 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
 });
 
 test.describe("Barrierefreiheit aller Bereiche", () => {
-  for (const bereich of BEREICHE) {
+  for (const bereich of SEITENBEREICHE) {
     for (const darstellung of ["hell", "dunkel"] as const) {
       test(`${bereich.titel} ist in der ${darstellung}en Darstellung frei von axe-Befunden`, async ({
         page,
@@ -265,7 +286,7 @@ test.describe("Barrierefreiheit aller Bereiche", () => {
 });
 
 test.describe("schmale Geräte", () => {
-  for (const bereich of BEREICHE) {
+  for (const bereich of SEITENBEREICHE) {
     test(`${bereich.titel} läuft ab 320px ohne horizontales Scrollen`, async ({ page }) => {
       await page.setViewportSize({ width: 320, height: 800 });
       await page.goto(`/${bereich.slug}`);

@@ -46,11 +46,21 @@
   },
   {
     "id": "partnerprogramm",
-    "titel": "Partnerprogramm mit Führung im Roemer- und Pelizaeus-Museum",
+    "titel": "Partnerprogramm: Mensch und Kultur – Eine Entdeckungsreise im Museum",
     "status": "vorlaeufig",
     "beginn": "2027-05-06T15:00",
     "ende": "2027-05-06T17:00",
-    "ortId": "roemer-pelizaeus"
+    "ortId": "roemer-pelizaeus",
+    "beschreibung": "Was macht uns Menschen aus? Bei einer Führung durch die Dauerausstellung „Es ist angerichtet: Was tun wir Menschen alles?“ im Roemer- und Pelizaeus-Museum entdecken wir, wie Menschen unterschiedlicher Kulturen und Epochen leben, denken und handeln. Eine spannende Reise durch die Vielfalt menschlichen Zusammenlebens."
+  },
+  {
+    "id": "partnerprogramm-weinfest",
+    "titel": "Partnerprogramm: Europa im Gespräch – Gemeinsam zum Hildesheimer Weinfest",
+    "status": "vorlaeufig",
+    "beginn": "2027-05-06T15:00",
+    "ende": "2027-05-06T17:00",
+    "beschreibung": "Demokratie lebt vom Dialog und Europa von Begegnungen! Bei einem gemeinsamen Spaziergang durch Hildesheim tauschen wir uns über das Tagungsmotto „Demokratie leben – Europa gestalten“ aus. Unser Ziel ist das Hildesheimer Weinfest, wo wir bei einem Glas Wein die Gespräche in geselliger Atmosphäre fortsetzen.",
+    "hinweis": "Uhrzeit und Treffpunkt werden noch bestätigt."
   },
   {
     "id": "spaziergang-weinfest",
@@ -70,10 +80,11 @@
   },
   {
     "id": "panel-europa-unter-druck",
-    "titel": "„Europa unter Druck – Wie behaupten wir uns in einer neuen Weltordnung?“",
+    "titel": "Europas Zukunft sichern – Zwischen KI, Wettbewerb und Souveränität",
     "beginn": "2027-05-07T10:00",
     "ende": "2027-05-07T11:30",
-    "ortId": "novotel"
+    "ortId": "novotel",
+    "beschreibung": "Europa steht vor entscheidenden Weichenstellungen: Künstliche Intelligenz, globaler Wettbewerb und geopolitische Abhängigkeiten fordern unsere wirtschaftliche und politische Handlungsfähigkeit heraus. Wie kann Europa seine Innovationskraft stärken, technologische Souveränität sichern und seine Zukunft selbstbestimmt gestalten?"
   },
   {
     "id": "stehimbiss",
@@ -84,7 +95,7 @@
   },
   {
     "id": "exkursion-dom",
-    "titel": "Glaube, Werte, Europa – Auf den Spuren europäischer Identität",
+    "titel": "Glaube, Werte, Europa – Europäische Identität im Mariendom und in der St. Michaeliskirche",
     "beginn": "2027-05-07T12:30",
     "ende": "2027-05-07T17:00",
     "spur": "exkursion",
@@ -92,7 +103,7 @@
   },
   {
     "id": "exkursion-landwirtschaft",
-    "titel": "Europa auf dem Acker – Landwirtschaft zwischen Politik, Markt und Verantwortung",
+    "titel": "Europas Landwirtschaft im Wandel – Tradition, Hightech und Agrarpolitik auf dem Hof Riepl-Bauer",
     "beginn": "2027-05-07T12:30",
     "ende": "2027-05-07T17:00",
     "spur": "exkursion",
@@ -100,15 +111,15 @@
   },
   {
     "id": "exkursion-stadt",
-    "titel": "Hildesheim entdecken – Geschichte, Gesellschaft und Stadtleben aus neuen Perspektiven",
+    "titel": "Hildesheim entdecken – Geschichte, Traditionen und lebendige Stadtkultur",
     "beginn": "2027-05-07T12:30",
     "ende": "2027-05-07T17:00",
     "spur": "exkursion",
-    "hinweis": "Treffpunkt steht noch nicht fest."
+    "ortId": "marktplatz"
   },
   {
     "id": "exkursion-ndr",
-    "titel": "Öffentlichkeit und Demokratie – Einblicke in den öffentlich-rechtlichen Rundfunk",
+    "titel": "Zwischen Fakten und Fake News – Journalismus im digitalen Europa beim NDR",
     "beginn": "2027-05-07T12:30",
     "ende": "2027-05-07T17:00",
     "spur": "exkursion",
@@ -116,28 +127,29 @@
   },
   {
     "id": "exkursion-mittelstand",
-    "titel": "Mittelstand mit Weitblick – Unternehmertum und Verantwortung aus Hildesheim",
+    "titel": "Von Hildesheim in Europas Stadien – Zu Besuch bei Helo Sports",
     "beginn": "2027-05-07T12:30",
     "ende": "2027-05-07T17:00",
     "spur": "exkursion",
     "ortId": "helo-sports"
   },
   {
-    "id": "exkursion-fagus",
-    "titel": "Industriekultur trifft Zukunft – Arbeit, Architektur und Wandel im Fagus-Werk",
+    "id": "exkursion-bosch",
+    "titel": "Mobilität im Umbruch – Hightech, Elektromobilität und Europas industrielle Zukunft bei Bosch",
     "beginn": "2027-05-07T12:30",
     "ende": "2027-05-07T17:00",
     "spur": "exkursion",
-    "ortId": "fagus-werk"
+    "ortId": "bosch",
+    "hinweis": "Genaue Anschrift und Zugang werden ergänzt."
   },
   {
-    "id": "exkursion-bosch",
-    "titel": "Technologie im Wandel – Innovation, Industrie und Europas Wettbewerbsfähigkeit",
+    "id": "exkursion-zah",
+    "titel": "ZAH Wertstoffhof Hildesheim – Kreislaufwirtschaft und Europas Umgang mit Ressourcen",
     "beginn": "2027-05-07T12:30",
     "ende": "2027-05-07T17:00",
     "spur": "exkursion",
-    "status": "vorlaeufig",
-    "ortId": "bosch"
+    "hinweis": "Beschreibung und Anschrift folgen.",
+    "ortId": "zah-wertstoffhof"
   },
   {
     "id": "weinfest",
@@ -294,7 +306,8 @@
     "beginn": "2027-05-08T13:00",
     "ende": "2027-05-08T14:30",
     "status": "vorlaeufig",
-    "ortId": "novotel"
+    "ortId": "novotel",
+    "beschreibung": "Am 8. Mai 2027 jährt sich das Ende des Zweiten Weltkriegs in Europa zum 82. Mal. Aus der historischen Verantwortung Deutschlands erwächst der Auftrag, Frieden, Freiheit und Demokratie zu bewahren. Doch was bedeutet „Nie wieder“ angesichts neuer Kriege, geopolitischer Spannungen und wachsender Bedrohungen für Europas Sicherheit?"
   },
   {
     "id": "konzert",

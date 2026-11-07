@@ -3,7 +3,8 @@ import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
 
-import { BEREICHE } from "../../src/daten/bereiche.ts";
+import { SEITENBEREICHE } from "../../src/daten/bereiche.ts";
+import { RECHTLICHES } from "../../src/daten/rechtliches.ts";
 
 /**
  * Genau der Fehler, der diese Arbeit ausgeloest hat: Acht Kacheln der
@@ -16,15 +17,38 @@ const seitenVerzeichnis = fileURLToPath(new URL("../../src/pages", import.meta.u
 const seiten = readdirSync(seitenVerzeichnis);
 
 describe("Bereiche und Seiten", () => {
-  it.each(BEREICHE.map((bereich) => [bereich.titel, bereich.slug] as const))(
+  it.each(SEITENBEREICHE.map((bereich) => [bereich.titel, bereich.slug] as const))(
     "Kachel %s führt auf eine Seite, die es gibt",
     (_titel, slug) => {
       expect(seiten, `src/pages/${slug}.astro fehlt`).toContain(`${slug}.astro`);
     },
   );
 
+  it.each(RECHTLICHES.map((seite) => [seite.titel, seite.slug] as const))(
+    "Pflichtangabe %s führt auf eine Seite, die es gibt",
+    (_titel, slug) => {
+      expect(seiten, `src/pages/${slug}.astro fehlt`).toContain(`${slug}.astro`);
+    },
+  );
+
+  it("verlinkt jede Pflichtangabe aus der Fußzeile", () => {
+    // Eine Pflichtangabe, die nur ueber die direkte Adresse erreichbar ist,
+    // erfuellt ihren Zweck nicht.
+    const layout = readFileSync(
+      fileURLToPath(new URL("../../src/layouts/Basis.astro", import.meta.url)),
+      "utf8",
+    );
+
+    expect(layout).toContain("RECHTLICHES");
+  });
+
   it("es gibt keine Seite ohne Kachel", () => {
-    const verlinkt = new Set([...BEREICHE.map((bereich) => bereich.slug), "index"]);
+    const verlinkt = new Set([
+      ...SEITENBEREICHE.map((bereich) => bereich.slug),
+      // Pflichtangaben haengen an der Fusszeile, nicht an einer Kachel.
+      ...RECHTLICHES.map((seite) => seite.slug),
+      "index",
+    ]);
     const verwaist = seiten
       .filter((datei) => datei.endsWith(".astro"))
       .map((datei) => datei.replace(/\.astro$/, ""))
@@ -47,15 +71,12 @@ describe("Platzhalter", () => {
     expect(exkursionen).toContain("[Treffpunkt einfügen");
   });
 
-  it.each(["anmeldung", "kontakt"])(
-    "%s.astro erkennt Platzhalter und ersetzt sie durch Klartext",
-    (seite) => {
-      const quelle = readFileSync(`${seitenVerzeichnis}/${seite}.astro`, "utf8");
+  it.each(["kontakt"])("%s.astro erkennt Platzhalter und ersetzt sie durch Klartext", (seite) => {
+    const quelle = readFileSync(`${seitenVerzeichnis}/${seite}.astro`, "utf8");
 
-      expect(quelle).toContain("istPlatzhalter");
-      expect(quelle).toMatch(/startsWith\("\["\)/);
-    },
-  );
+    expect(quelle).toContain("istPlatzhalter");
+    expect(quelle).toMatch(/startsWith\("\["\)/);
+  });
 });
 
 /**

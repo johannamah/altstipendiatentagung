@@ -1,0 +1,195 @@
+---
+import { SALZ } from "../lib/zugang.ts";
+
+/**
+ * Vorgeschaltete Zugangsabfrage (ADR-0010).
+ *
+ * Gesperrt ist der AUSLIEFERUNGSZUSTAND: `data-gesperrt` steht im gebauten
+ * HTML am Wurzelelement, nicht erst nach einem Skript. Andernfalls waere die
+ * Seite bei abgeschaltetem JavaScript offen und bliebe ausserdem einen
+ * Wimpernschlag lang sichtbar, bevor die Sperre einsetzt.
+ *
+ * Entsperrt wird nur, wenn ein frueher Kopfzeilen-Schnipsel den gespeicherten
+ * Hashwert wiedererkennt (siehe Basis.astro).
+ */
+interface Props {
+  /** Erwarteter Hashwert; null schaltet die Sperre vollstaendig ab. */
+  hash: string | null;
+}
+
+const { hash } = Astro.props;
+---
+
+{hash && (
+  <div class="zugangssperre" role="dialog" aria-modal="true" aria-labelledby="zugangTitel">
+    <form class="karte" id="zugangForm" novalidate>
+      <h1 id="zugangTitel">Diese Anwendung ist noch im Aufbau</h1>
+
+      <p>
+        Sie wird gerade für die Jahrestagung 2027 vorbereitet. Inhalte sind teils vorläufig. Wer das
+        Zugangswort vom Orga-Team erhalten hat, kann sie ansehen.
+      </p>
+
+      {/* Regel 28: Die Beschriftung steht sichtbar ueber dem Feld. */}
+      <label for="zugangWort">Zugangswort</label>
+      <input
+        id="zugangWort"
+        name="zugangswort"
+        type="password"
+        autocomplete="current-password"
+        aria-describedby="zugangFehler"
+        required
+      />
+
+      {/* Regel 43: Die Meldung erreicht auch Screenreader. Der Platz bleibt
+            bestehen, damit der Knopf beim Fehlversuch nicht wegspringt. */}
+      <p class="fehler" id="zugangFehler" role="alert" />
+
+      <button type="submit">Weiter</button>
+    </form>
+  </div>
+)}
+
+{hash && <script is:inline define:vars={{ erwartet: hash, salz: SALZ }}>
+  (() => {
+    const form = document.getElementById("zugangForm");
+    const feld = document.getElementById("zugangWort");
+    const fehler = document.getElementById("zugangFehler");
+
+    /* Nur beim ersten Abruf: Danach merkt sich das Geraet die Freigabe.
+           Aendert sich das Zugangswort, passt der gespeicherte Wert nicht mehr
+           und die Abfrage erscheint von selbst wieder. */
+    function merken() {
+      try {
+        localStorage.setItem("asev-zugang", erwartet);
+      } catch {
+        /* Privates Fenster oder gesperrte Website-Daten: Die Freigabe gilt
+               dann nur fuer diesen Aufruf. Das ist unschoen, aber kein Fehler. */
+      }
+    }
+
+    async function hashe(wort) {
+      /* crypto.subtle gibt es nur in sicheren Kontexten - also unter https
+             und auf localhost, nicht unter einer nackten http-Adresse im WLAN. */
+      if (!globalThis.crypto || !crypto.subtle) return null;
+
+      const daten = new TextEncoder().encode(salz + ":" + wort);
+      const puffer = await crypto.subtle.digest("SHA-256", daten);
+
+      return Array.from(new Uint8Array(puffer))
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("");
+    }
+
+    feld?.focus();
+
+    form?.addEventListener("submit", async (ereignis) => {
+      ereignis.preventDefault();
+
+      /* .normalize("NFC") muss zur Serverseite passen - siehe lib/zugang.ts. */
+      const versuch = await hashe(feld.value.trim().normalize("NFC"));
+
+      if (versuch === null) {
+        fehler.textContent =
+          "Die Prüfung braucht eine verschlüsselte Verbindung. Bitte die Adresse mit https:// aufrufen.";
+        return;
+      }
+
+      if (versuch !== erwartet) {
+        fehler.textContent = "Das Zugangswort stimmt nicht.";
+        feld.value = "";
+        feld.focus();
+        return;
+      }
+
+      merken();
+      document.documentElement.removeAttribute("data-gesperrt");
+    });
+  })();
+</script>}
+
+{hash && <style is:global>
+  /* Solange gesperrt ist, bleibt vom Dokument nur die Abfrage. display:none
+     nimmt die uebrigen Bereiche auch aus der Tastaturreihenfolge und aus
+     dem Baum fuer Screenreader - eine bloss verdeckende Flaeche taete das
+     nicht. Eine Fokusfalle braucht es deshalb nicht. */
+  :root[data-gesperrt] body > *:not(.zugangssperre) {
+    display: none !important;
+  }
+
+  :root:not([data-gesperrt]) .zugangssperre {
+    display: none;
+  }
+
+  .zugangssperre {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    place-items: center;
+    padding: var(--raum-4);
+    overflow-y: auto;
+    background: var(--flaeche);
+  }
+
+  .zugangssperre form {
+    display: grid;
+    gap: var(--raum-3);
+    width: min(28rem, 100%);
+    padding: var(--raum-6);
+  }
+
+  .zugangssperre h1 {
+    margin: 0;
+    font-size: var(--schrift-h1);
+  }
+
+  .zugangssperre p {
+    margin: 0;
+    color: var(--text-leise);
+  }
+
+  .zugangssperre label {
+    font-weight: 600;
+  }
+
+  .zugangssperre input {
+    /* Regel 7: Mindestgroesse fuer Beruehrung. */
+    min-height: 44px;
+    padding: var(--raum-2) var(--raum-3);
+    font: inherit;
+    color: var(--text);
+    background: var(--feld);
+    /* Regel 18: Der Rand eines Bedienelements braucht 3:1 - deshalb
+       --feldrand und nicht die dekorative Trennlinie --rand. */
+    border: 1px solid var(--feldrand);
+    border-radius: var(--radius);
+  }
+
+  .zugangssperre input:focus-visible,
+  .zugangssperre button:focus-visible {
+    outline: 3px solid var(--fokus);
+    outline-offset: 2px;
+  }
+
+  .zugangssperre .fehler {
+    min-height: 1.5em;
+    margin: 0;
+    font-size: var(--schrift-klein);
+    /* Ein eigenes Fehlertoken gibt es noch nicht; die Hinweisfarbe ist
+       geprueft und traegt hier dieselbe Bedeutung. Beim Ausbau der
+       Anmeldung (J2) gehoert ein --fehler-Token in die Tokendatei. */
+    color: var(--hinweis-text);
+  }
+
+  .zugangssperre button {
+    min-height: 44px;
+    font: inherit;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    background: var(--akzent);
+    border: none;
+    border-radius: var(--radius);
+  }
+</style>}

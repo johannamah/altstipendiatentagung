@@ -1,7 +1,7 @@
 [
   {
     "id": "exkursion-dom",
-    "titel": "Glaube, Werte, Europa – Auf den Spuren europäischer Identität",
+    "titel": "Glaube, Werte, Europa – Europäische Identität im Mariendom und in der St. Michaeliskirche",
     "plaetze": 50,
     "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
     "ortId": "dom",
@@ -9,11 +9,11 @@
     "anreise": "[Anreiseinfo einfügen]",
     "verantwortlich": "[Name Verantwortliche:r Orga-Team]",
     "telefon": "[Telefonnummer einfügen]",
-    "info": "Die Exkursion beleuchtet, wie Glaube, Werte und religiöses Erbe die europäische Identität geprägt haben und bis heute gesellschaftliche Debatten beeinflussen. Führungen und Gespräche an den historischen Orten eröffnen unterschiedliche Perspektiven auf Verantwortung, Zusammenhalt und gelebte Demokratie. Das konkrete Programm und die Gesprächspartner:innen werden ergänzt."
+    "info": "Über 1.200 Jahre Geschichte, beeindruckende Architektur und einzigartige Kunstschätze: Der Hildesheimer Mariendom und die St. Michaeliskirche gehören zu den bedeutendsten Zeugnissen europäischer Kulturgeschichte und zählen zum UNESCO-Weltkulturerbe. Hier wird erlebbar, wie eng die Geschichte Hildesheims mit der Entwicklung Europas verbunden ist.\n\nDie Exkursion führt uns auf eine spannende Zeitreise durch das religiöse und kulturelle Erbe Europas. Dabei gehen wir der Frage nach, wie christliche Werte, Traditionen und historische Entwicklungen unsere europäische Identität geprägt haben – und welche Bedeutung sie heute noch für Demokratie, gesellschaftlichen Zusammenhalt und ein gemeinsames Europa besitzen.\n\nWas erwartet Dich? Bei fachkundigen Führungen durch den Mariendom, die St. Michaeliskirche und das Dommuseum entdecken wir faszinierende Architektur, bedeutende Kunstschätze und Geschichte, die Europa bis heute prägen."
   },
   {
     "id": "exkursion-landwirtschaft",
-    "titel": "Europa auf dem Acker – Landwirtschaft zwischen Politik, Markt und Verantwortung",
+    "titel": "Europas Landwirtschaft im Wandel – Tradition, Hightech und Agrarpolitik auf dem Hof Riepl-Bauer",
     "plaetze": 50,
     "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
     "ortId": "hof-riepl-bauer",
@@ -21,22 +21,23 @@
     "anreise": "[Anreiseinfo einfügen]",
     "verantwortlich": "[Name Verantwortliche:r Orga-Team]",
     "telefon": "[Telefonnummer einfügen]",
-    "info": "Die Exkursion vermittelt Einblicke in die Praxis eines landwirtschaftlichen Betriebs und diskutiert das Spannungsfeld zwischen europäischer Agrarpolitik, wirtschaftlichen Rahmenbedingungen und gesellschaftlicher Verantwortung. Im Austausch vor Ort werden aktuelle Herausforderungen und Zukunftsperspektiven der Landwirtschaft aufgegriffen. Das konkrete Programm und die Gesprächspartner:innen werden ergänzt."
+    "info": "„Du bist, was du isst“ – doch woher kommen unsere Lebensmittel und wie sieht die Landwirtschaft von morgen aus? Auf dem Hof Riepl-Bauer erleben wir hautnah, wie moderne Landwirtschaft Tradition, familiäres Unternehmertum und innovative Technologien miteinander verbindet.\n\nWir werfen einen Blick hinter die Kulissen eines modernen landwirtschaftlichen Betriebs und machen die oft kontrovers diskutierte europäische Agrarpolitik greifbar. Wie beeinflussen EU-Vorgaben, Nachhaltigkeitsziele und internationaler Wettbewerb den landwirtschaftlichen Alltag? Und wie können wir die Zukunft der Landwirtschaft in Europa gemeinsam gestalten?\n\nWas erwartet Dich? Wir lernen die Betriebsgemeinschaft und ihre Entwicklung kennen, erhalten bei einer Betriebsführung Einblicke in die moderne Landwirtschaft und diskutieren mit den Inhabern über die Chancen und Herausforderungen der europäischen Agrarpolitik."
   },
   {
     "id": "exkursion-stadt",
-    "titel": "Hildesheim entdecken – Geschichte, Gesellschaft und Stadtleben aus neuen Perspektiven",
+    "titel": "Hildesheim entdecken – Geschichte, Traditionen und lebendige Stadtkultur",
     "plaetze": 50,
     "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
+    "ortId": "marktplatz",
     "treffpunkt": "[Treffpunkt einfügen]",
     "anreise": "[Anreiseinfo einfügen]",
     "verantwortlich": "[Name Verantwortliche:r Orga-Team]",
     "telefon": "[Telefonnummer einfügen]",
-    "info": "Die Exkursion führt zu ausgewählten Orten in Hildesheim und verbindet historische Entwicklungen mit Fragen des heutigen gesellschaftlichen Zusammenlebens. Begegnungen und Beobachtungen im Stadtraum laden dazu ein, bekannte und weniger bekannte Perspektiven auf Demokratie, Teilhabe und urbanes Leben zu entdecken. Das konkrete Programm und die Gesprächspartner:innen werden ergänzt."
+    "info": "Über 1.200 Jahre Geschichte, beeindruckende Bauwerke und verborgene Geschichten: Hildesheim hat weit mehr zu bieten als seine berühmten Kirchen und den historischen Marktplatz. Die liebevoll als „Rosenstadt“ bezeichnete Bischofs- und Hochschulstadt verbindet ein reiches kulturelles Erbe mit lebendigem Stadtleben.\n\nAuf den Spuren vergangener Jahrhunderte entdecken wir, wie Bräuche, Traditionen und gesellschaftliche Veränderungen das Zusammenleben geprägt haben. Dabei wird deutlich, wie eng die Geschichte Hildesheims mit der kulturellen Vielfalt und Entwicklung Europas verbunden ist.\n\nWas erwartet Dich? Bei abwechslungsreichen Stadtführungen erkunden wir Hildesheim aus unterschiedlichen Perspektiven: von Bräuchen, Ritualen und Traditionen über geheimnisvolle Geschichten rund um Hexen und Hexenverfolgung bis hin zur historischen Altstadt und Hildesheims „Guter Stube“, dem Marktplatz."
   },
   {
     "id": "exkursion-ndr",
-    "titel": "Öffentlichkeit und Demokratie – Einblicke in den öffentlich-rechtlichen Rundfunk",
+    "titel": "Zwischen Fakten und Fake News – Journalismus im digitalen Europa beim NDR",
     "plaetze": 50,
     "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
     "ortId": "ndr-hannover",
@@ -44,11 +45,11 @@
     "anreise": "[Anreiseinfo einfügen]",
     "verantwortlich": "[Name Verantwortliche:r Orga-Team]",
     "telefon": "[Telefonnummer einfügen]",
-    "info": "Die Exkursion gibt Einblicke in Auftrag, Arbeitsweise und gesellschaftliche Verantwortung des öffentlich-rechtlichen Rundfunks. Im Gespräch mit Mitarbeitenden werden unter anderem journalistische Standards, Meinungsvielfalt, digitale Transformation und die Rolle verlässlicher Informationen für eine demokratische Öffentlichkeit thematisiert. Das konkrete Programm und die Gesprächspartner:innen werden ergänzt."
+    "info": "Wie entstehen Nachrichten, wer entscheidet, was gesendet wird, und wie erkennen Journalisten, was wahr ist? Im NDR-Landesfunkhaus Hannover werfen wir einen exklusiven Blick hinter die Kulissen der Radio- und Fernsehproduktion und erleben, wie moderner Journalismus funktioniert.\n\nIn Zeiten von KI, Fake News und Desinformation stehen unabhängige Medien vor großen Herausforderungen. Welche Rolle spielen sie für unsere Demokratie? Wie beeinflusst die europäische Medienpolitik die journalistische Arbeit? Und wie können Medien dazu beitragen, eine gemeinsame europäische Öffentlichkeit zu schaffen?\n\nWas erwartet Dich? Bei einer Führung durch die Radio- und Fernsehstudios entdecken wir, wie Nachrichten entstehen und Redaktionen arbeiten. Im anschließenden Gespräch mit journalistisch Verantwortlichen diskutieren wir über Pressefreiheit, künstliche Intelligenz, Desinformation und die Bedeutung unabhängiger Medien für unsere Demokratie und Europa."
   },
   {
     "id": "exkursion-mittelstand",
-    "titel": "Mittelstand mit Weitblick – Unternehmertum und Verantwortung aus Hildesheim",
+    "titel": "Von Hildesheim in Europas Stadien – Zu Besuch bei Helo Sports",
     "plaetze": 50,
     "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
     "ortId": "helo-sports",
@@ -56,23 +57,11 @@
     "anreise": "[Anreiseinfo einfügen]",
     "verantwortlich": "[Name Verantwortliche:r Orga-Team]",
     "telefon": "[Telefonnummer einfügen]",
-    "info": "Die Exkursion zeigt am Beispiel eines mittelständischen Unternehmens, wie Unternehmertum, Innovation und gesellschaftliche Verantwortung miteinander verbunden werden können. Im Mittelpunkt stehen unternehmerische Entscheidungen, regionale Verwurzelung, Arbeitswelt und nachhaltige Zukunftsstrategien. Das konkrete Programm und die Gesprächspartner:innen werden ergänzt."
-  },
-  {
-    "id": "exkursion-fagus",
-    "titel": "Industriekultur trifft Zukunft – Arbeit, Architektur und Wandel im Fagus-Werk",
-    "plaetze": 50,
-    "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
-    "ortId": "fagus-werk",
-    "treffpunkt": "[Treffpunkt einfügen]",
-    "anreise": "[Anreiseinfo einfügen]",
-    "verantwortlich": "[Name Verantwortliche:r Orga-Team]",
-    "telefon": "[Telefonnummer einfügen]",
-    "info": "Die Exkursion verbindet die besondere Architektur und Industriegeschichte des Fagus-Werks mit Fragen nach dem Wandel von Arbeit, Produktion und Unternehmenskultur. Der Besuch eröffnet Perspektiven auf den Umgang mit industriellem Erbe sowie auf Innovation und Zukunftsfähigkeit in Europa. Das konkrete Programm und die Gesprächspartner:innen werden ergänzt."
+    "info": "Ob Fußball, Handball, Volleyball oder Leichtathletik – wer sportbegeistert ist, hat möglicherweise schon Produkte von Helo Sports gesehen, ohne es zu wissen! Der Hidden Champion aus Hildesheim produziert Sportgeräte für Vereine, Schulen und internationale Großveranstaltungen bis hin zu Fußball-Weltmeisterschaften. Ein echter Global Player aus der Region!\n\nDoch wie behauptet sich ein mittelständisches Unternehmen aus Deutschland im internationalen Wettbewerb? Welche Rolle spielen der europäische Binnenmarkt, globale Lieferketten und gemeinsame Standards? Und wie bleibt die Produktion am Standort Deutschland trotz steigender Kosten und wachsender Konkurrenz wettbewerbsfähig?\n\nWas erwartet Dich? Wir lernen die Erfolgsgeschichte von Helo Sports kennen, werfen bei einer Betriebsführung einen Blick hinter die Kulissen der Sportgeräteproduktion und diskutieren mit den Verantwortlichen über die Chancen und Herausforderungen eines international tätigen Mittelständlers im europäischen Wirtschaftsraum."
   },
   {
     "id": "exkursion-bosch",
-    "titel": "Technologie im Wandel – Innovation, Industrie und Europas Wettbewerbsfähigkeit",
+    "titel": "Mobilität im Umbruch – Hightech, Elektromobilität und Europas industrielle Zukunft bei Bosch",
     "plaetze": 50,
     "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
     "ortId": "bosch",
@@ -80,6 +69,17 @@
     "anreise": "[Anreiseinfo einfügen]",
     "verantwortlich": "[Name Verantwortliche:r Orga-Team]",
     "telefon": "[Telefonnummer einfügen]",
-    "info": "Die Exkursion gibt Einblicke in technologische Transformation, industrielle Innovation und die Herausforderungen internationaler Wettbewerbsfähigkeit. Am Standort Bosch Hildesheim werden Entwicklungen in Produktion und Arbeitswelt sowie ihre Bedeutung für den Wirtschaftsstandort Europa diskutiert. Das konkrete Programm und die Gesprächspartner:innen werden ergänzt."
+    "info": "Wie sieht die Mobilität von morgen aus – und welche Rolle spielt Europa dabei? Am Bosch-Standort Hildesheim treffen innovative Technologien, Elektromobilität und künstliche Intelligenz auf die Herausforderungen eines tiefgreifenden industriellen Wandels.\n\nAls einer der weltweit führenden Automobilzulieferer steht Bosch beispielhaft für die Chancen und Herausforderungen der europäischen Automobilindustrie. Wie können deutsche Unternehmen im Wettbewerb mit China und den USA bestehen? Welche Bedeutung haben technologische Innovationen, europäische Industriepolitik und die Sicherung von Arbeitsplätzen für die Zukunft des Industriestandorts Europa?\n\nWas erwartet Dich? Bei einem Besuch des Bosch-Standorts Hildesheim erhalten wir Einblicke in das Unternehmen, seine Technologien und Produktionsbereiche. Im anschließenden Austausch mit Verantwortlichen diskutieren wir über die Transformation der Automobilindustrie, internationale Wettbewerbsfähigkeit und die Zukunft der Mobilität in Europa."
+  },
+  {
+    "id": "exkursion-zah",
+    "titel": "ZAH Wertstoffhof Hildesheim – Kreislaufwirtschaft und Europas Umgang mit Ressourcen",
+    "plaetze": 50,
+    "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
+    "ortId": "zah-wertstoffhof",
+    "treffpunkt": "[Treffpunkt einfügen]",
+    "anreise": "[Anreiseinfo einfügen]",
+    "verantwortlich": "[Name Verantwortliche:r Orga-Team]",
+    "telefon": "[Telefonnummer einfügen]"
   }
 ]

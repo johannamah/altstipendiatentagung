@@ -118,6 +118,13 @@
   --kachel-orange-bis: #ff9c00;
   --kachel-orange-text: #1b2430;
 
+  /* Bordeaux fuer "Referenten & Gaeste" - dunkel genug fuer weisse Schrift
+     auf beiden Verlaufsenden (10,05:1 bzw. 7,07:1), deutlich getrennt von Rot
+     und Pink. */
+  --kachel-bordeaux-von: #7b1e3a;
+  --kachel-bordeaux-bis: #a3284e;
+  --kachel-bordeaux-text: #ffffff;
+
   /* ===== Dunkle Palette =====
      Hier EINMAL gepflegt. Die beiden Bloecke darunter weisen die Werte nur zu,
      damit Systemautomatik und Handschalter nicht auseinanderlaufen koennen.

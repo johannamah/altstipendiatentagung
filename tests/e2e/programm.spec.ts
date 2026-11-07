@@ -61,7 +61,7 @@ test("ein Programmpunkt laesst sich aufklappen und zeigt dann mehr", async ({ pa
   await expect(punkt).not.toHaveAttribute("open", "");
   // Zeit, Titel und Ortsname sind auch zugeklappt zu sehen.
   await expect(punkt.getByText("10:00–11:30 Uhr")).toBeVisible();
-  await expect(punkt.getByRole("heading", { name: /Europa unter Druck/ })).toBeVisible();
+  await expect(punkt.getByRole("heading", { name: /Europas Zukunft sichern/ })).toBeVisible();
   await expect(punkt.getByText("Novotel Hildesheim").first()).toBeVisible();
 
   await punkt.locator("summary").click();
@@ -112,10 +112,28 @@ test("eine Gruppe laesst sich einklappen und wieder ausklappen", async ({ page }
   await expect(page.locator('.eintrag[data-gruppe="2027-05-07-2"]').first()).toBeVisible();
 });
 
-test("zeigt Punkte ohne Termin, statt sie zu verschweigen", async ({ page }) => {
-  await expect(page.getByRole("heading", { name: "Noch ohne Termin" })).toBeVisible();
-  // Die Kaffeepause am Samstag hat weiterhin keine Uhrzeit.
-  await expect(page.getByRole("heading", { name: "Kaffeepause" }).last()).toBeVisible();
+/**
+ * Derzeit hat jeder Punkt eine Zeitangabe - der Abschnitt entfaellt deshalb.
+ * Er erscheint wieder, sobald ein Punkt ohne Termin hinzukommt; das ist der
+ * Punkt dieses Tests.
+ */
+test("blendet den Abschnitt fuer Punkte ohne Termin aus, solange es keine gibt", async ({
+  page,
+}) => {
+  await expect(page.getByRole("heading", { name: "Noch ohne Termin" })).toHaveCount(0);
+});
+
+/**
+ * Die Beschreibung kommt aus exkursionen.json, nicht aus dem Programm.
+ * Sie hat mehrere Absaetze; "Was erwartet Dich?" muss einen eigenen beginnen,
+ * statt im Fliesstext davor unterzugehen.
+ */
+test("zeigt die Beschreibung einer Exkursion beim Aufklappen", async ({ page }) => {
+  const punkt = page.locator('.punkt[data-id="exkursion-ndr"]');
+  await punkt.locator("summary").click();
+
+  await expect(punkt.getByText(/^Wie entstehen Nachrichten/)).toBeVisible();
+  await expect(punkt.getByText(/^Was erwartet Dich\? Bei einer Führung/)).toBeVisible();
 });
 
 test("weist einen Punkt ueber Mitternacht als solchen aus", async ({ page }) => {

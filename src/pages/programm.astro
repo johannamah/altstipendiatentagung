@@ -12,20 +12,33 @@ import {
   type Programmpunkt as Punkt,
   type Spur,
 } from "../lib/programm.ts";
-import { alsAchse, RASTER_MINUTEN, stundenMarken } from "../lib/zeitachse.ts";
 
 const orte = new Map(
   (await getCollection("orte")).map((eintrag) => [eintrag.id, { id: eintrag.id, ...eintrag.data }]),
 );
+/* Die Beschreibung der Exkursionen steht in exkursionen.json und wird hier
+   ueber die gleiche Kennung dazugeholt. Sie doppelt zu pflegen waere genau
+   das, wovor ADR-0006 warnt: Wer eine der beiden Stellen aendert, aendert die
+   andere nicht - und niemand merkt es. */
+const exkursionstexte = new Map(
+  (await getCollection("exkursionen")).map((eintrag) => [eintrag.id, eintrag.data.info]),
+);
 const eintraege = await getCollection("programm");
-const punkte: Punkt[] = eintraege.map((eintrag) => ({ id: eintrag.id, ...eintrag.data }));
+const punkte: Punkt[] = eintraege.map((eintrag) => ({
+  id: eintrag.id,
+  ...eintrag.data,
+  beschreibung: eintrag.data.beschreibung ?? exkursionstexte.get(eintrag.id),
+}));
 const { tage, ohneZeit } = nachTagenGruppieren(punkte);
 
 /**
  * Fasst gleichzeitige Punkte derselben Spur zusammen. Die sieben Exkursionen am
  * Freitag sind Alternativen zueinander, keine Abfolge - eine schlichte Liste
- * wuerde das verschweigen. Die proportionale Zeitachse (Issue #5) ersetzt das
- * spaeter; bis dahin ist die Gruppierung das ehrlichere Minimum.
+ * wuerde das verschweigen.
+ *
+ * Das ist seit dem Entfernen der Zeitachse der einzige Weg, auf dem die
+ * Gleichzeitigkeit sichtbar wird: Gruppenkopf mit Anzahl, eingerueckte
+ * Eintraege, Verbindungslinie.
  */
 type Gruppe = { schluessel: string; spur: Spur; punkte: Punkt[] };
 
@@ -50,24 +63,10 @@ function gruppiere(punkteDesTages: Punkt[]): Gruppe[] {
   return gruppen;
 }
 
-/**
- * Beide Ansichten - Liste und Zeitachse - entstehen aus DEMSELBEN Markup.
- * Eine zweite, versteckte Fassung waere fuer Screenreader doppelter Inhalt und
- * fuer die Wartung eine zweite Wahrheit; umgeschaltet wird nur das Layout.
- */
-const tageAufbereitet = tage.map((tag) => {
-  const achse = alsAchse(tag.punkte, tag.datum);
-  const lage = new Map(achse.eintraege.map((e) => [e.punkt.id, e]));
-
-  return {
-    ...tag,
-    gruppen: gruppiere(tag.punkte),
-    straenge: achse.straenge,
-    zeilen: (achse.fenster.bis - achse.fenster.von) / RASTER_MINUTEN,
-    marken: stundenMarken(achse.fenster),
-    lage,
-  };
-});
+const tageAufbereitet = tage.map((tag) => ({
+  ...tag,
+  gruppen: gruppiere(tag.punkte),
+}));
 ---
 
 <Basis
@@ -90,11 +89,6 @@ const tageAufbereitet = tage.map((tag) => {
     <button class="werkzeug" type="button" id="nurMeine" aria-pressed="false">
       <Ikone name="check" />
       <span id="nurMeineText">Nur mein Programm</span>
-    </button>
-
-    <button class="werkzeug" type="button" id="ansichtWechseln" aria-pressed="false">
-      <Ikone name="clipboard" />
-      <span id="ansichtText">Als Zeitachse</span>
     </button>
 
     <button class="werkzeug" type="button" id="alleExportieren" disabled>
@@ -122,84 +116,56 @@ const tageAufbereitet = tage.map((tag) => {
     <section class="tag" id={`tag-${tag.datum}`} aria-labelledby={`ueberschrift-${tag.datum}`}>
       <h2 id={`ueberschrift-${tag.datum}`}>{formatiereDatum(tag.datum)}</h2>
 
-      {/* In der Achsenansicht darf dieser Bereich waagerecht scrollen, die
-          Seite selbst nie (Regel 10). tabindex macht ihn mit der Tastatur
-          scrollbar, aria-label sagt, worum es sich handelt. */}
-      <div
-        class="tagesbereich"
-        tabindex="0"
-        role="group"
-        aria-label={`Programm am ${formatiereDatum(tag.datum)}`}
-      >
-        <ol
-          class="tagesliste"
-          style={`--straenge:${tag.straenge}; --zeilen:${tag.zeilen}`}
-          data-straenge={tag.straenge}
-        >
-          {/* Stundenmarken: nur in der Achsenansicht sichtbar, fuer
-              Screenreader ohnehin ohne Wert - die Zeit steht an jedem Punkt. */}
-          {tag.marken.map((marke) => (
-            <li class="stundenmarke" style={`--zeile:${marke.zeile}`} aria-hidden="true">
-              <span>{marke.beschriftung}</span>
-            </li>
-          ))}
+      <ol class="tagesliste">
+        {tag.gruppen.map((gruppe, nummer) => {
+          /* Gleichzeitige Punkte gehoeren zusammen und schliessen einander
+               aus. Zusammengehalten werden sie ueber data-gruppe: Einrueckung
+               und Verbindungslinie im CSS, Auf- und Zuklappen im Skript.
 
-          {tag.gruppen.map((gruppe, nummer) => {
-            /* Gleichzeitige Punkte gehoeren zusammen und schliessen einander
-               aus. Sie bleiben aber flach in der Liste, weil die Zeitachse
-               jeden Eintrag einzeln im Raster platziert - eine Verschachtelung
-               wuerde das zerstoeren. Zusammengehalten werden sie deshalb ueber
-               data-gruppe: Einrueckung und Verbindungslinie im CSS, Auf- und
-               Zuklappen im Skript. */
-            const gruppenKennung = gruppe.punkte.length > 1 ? `${tag.datum}-${nummer}` : undefined;
+               Die Liste bleibt dabei flach. Mit der Zeitachse war das
+               zwingend, weil sie jeden Eintrag einzeln im Raster platzierte;
+               jetzt waere eine verschachtelte Liste moeglich und semantisch
+               genauer. Das ist ein eigener Umbau und keine Nebenwirkung
+               dieser Entfernung. */
+          const gruppenKennung = gruppe.punkte.length > 1 ? `${tag.datum}-${nummer}` : undefined;
 
-            return (
-              <>
-                {gruppenKennung && (
-                  <li class="gruppenkopf" data-gruppenkopf={gruppenKennung}>
-                    <span>
-                      <b>
-                        {SPUR_TEXT[gruppe.spur] ?? "Gleichzeitig"} · {gruppe.punkte.length} zur Wahl
-                      </b>
-                      <br />
-                      Diese Punkte laufen parallel – ihr entscheidet euch für einen.
-                    </span>
+          return (
+            <>
+              {gruppenKennung && (
+                <li class="gruppenkopf" data-gruppenkopf={gruppenKennung}>
+                  <span>
+                    <b>
+                      {SPUR_TEXT[gruppe.spur] ?? "Gleichzeitig"} · {gruppe.punkte.length} zur Wahl
+                    </b>
+                    <br />
+                    Diese Punkte laufen parallel – ihr entscheidet euch für einen.
+                  </span>
 
-                    {/* Braucht JavaScript und wird erst davon eingeblendet. */}
-                    <button
-                      class="gruppe-umschalter"
-                      type="button"
-                      aria-expanded="true"
-                      data-gruppe={gruppenKennung}
-                      hidden
-                    >
-                      <span data-umschalter-text>Einklappen</span>
-                      <span class="nur-vorlesen">
-                        : {gruppe.punkte.length} gleichzeitige Punkte
-                      </span>
-                    </button>
-                  </li>
-                )}
-                {gruppe.punkte.map((punkt) => {
-                  const lage = tag.lage.get(punkt.id);
-                  return (
-                    <li
-                      class="eintrag"
-                      data-gruppe={gruppenKennung}
-                      style={`--zeile-von:${lage?.zeileVon ?? 1}; --zeile-bis:${lage?.zeileBis ?? 2}; --spalte:${lage?.spalte ?? 1}`}
-                    >
-                      <Programmpunkt
-                        punkt={punkt}
-                        ort={punkt.ortId ? orte.get(punkt.ortId) : undefined}
-                      />
-                    </li>
-                  );
-                })}
-              </>
-            );
-          })}
-        </ol>
-      </div>
+                  {/* Braucht JavaScript und wird erst davon eingeblendet. */}
+                  <button
+                    class="gruppe-umschalter"
+                    type="button"
+                    aria-expanded="true"
+                    data-gruppe={gruppenKennung}
+                    hidden
+                  >
+                    <span data-umschalter-text>Einklappen</span>
+                    <span class="nur-vorlesen">: {gruppe.punkte.length} gleichzeitige Punkte</span>
+                  </button>
+                </li>
+              )}
+              {gruppe.punkte.map((punkt) => (
+                <li class="eintrag" data-gruppe={gruppenKennung}>
+                  <Programmpunkt
+                    punkt={punkt}
+                    ort={punkt.ortId ? orte.get(punkt.ortId) : undefined}
+                  />
+                </li>
+              ))}
+            </>
+          );
+        })}
+      </ol>
     </section>
   ))}
 
@@ -241,8 +207,6 @@ const tageAufbereitet = tage.map((tag) => {
   const nurMeine = document.getElementById("nurMeine");
   const nurMeineText = document.getElementById("nurMeineText");
   const alleExportieren = document.getElementById("alleExportieren") as HTMLButtonElement | null;
-  const ansichtWechseln = document.getElementById("ansichtWechseln");
-  const ansichtText = document.getElementById("ansichtText");
 
   const speicher = browserSpeicher();
   let auswahl = ladeAuswahl(speicher, [...nachId.keys()]);
@@ -400,30 +364,6 @@ const tageAufbereitet = tage.map((tag) => {
     });
   }
 
-  /* ===== Liste oder Zeitachse =====
-     Beide Ansichten entstehen aus demselben Markup; umgeschaltet wird nur das
-     Layout ueber ein Attribut am Wurzelelement. Deshalb bleibt die Reihenfolge
-     im Dokument in beiden Ansichten dieselbe - fuer Screenreader aendert sich
-     nichts (Issue #5).
-
-     Standard ist die Liste: Sie funktioniert auf jedem Geraet, waehrend die
-     Achse bei sieben Straengen waagerechtes Scrollen braucht. */
-  ansichtWechseln?.addEventListener("click", () => {
-    const achse = document.documentElement.dataset.ansicht !== "achse";
-
-    if (achse) document.documentElement.dataset.ansicht = "achse";
-    else delete document.documentElement.dataset.ansicht;
-
-    ansichtWechseln.setAttribute("aria-pressed", String(achse));
-    if (ansichtText) ansichtText.textContent = achse ? "Als Liste" : "Als Zeitachse";
-
-    melde(
-      achse
-        ? "Zeitachse: Die Höhe zeigt die Dauer, nebeneinander steht, was gleichzeitig läuft. Waagerecht scrollen zeigt weitere Stränge."
-        : "Liste: alle Punkte untereinander in zeitlicher Reihenfolge.",
-    );
-  });
-
   nurMeine?.addEventListener("click", () => {
     nurAuswahlZeigen = !nurAuswahlZeigen;
     nurMeine.setAttribute("aria-pressed", String(nurAuswahlZeigen));
@@ -517,26 +457,7 @@ const tageAufbereitet = tage.map((tag) => {
     border-bottom: 2px solid var(--rand);
   }
 
-  /* ===== Tagesansicht: Liste (Standard) =====
-     Beide Ansichten teilen sich dieses Markup. In der Liste zaehlen die
-     Rasterkoordinaten der Eintraege nicht - sie stehen schlicht untereinander. */
-
-  .tagesbereich {
-    /* Nur die Achsenansicht scrollt; in der Liste gaebe es nichts zu scrollen. */
-    overflow: visible;
-
-    /* position: relative ist hier kein Zierrat, sondern die Voraussetzung
-       dafuer, dass der Scrollbereich ueberhaupt alles beschneidet:
-       Ein Scrollcontainer beschneidet absolut positionierte Nachfahren NUR,
-       wenn er selbst ihr umschliessender Block ist - also positioniert ist.
-
-       Ohne diese Zeile liegen die .nur-vorlesen-Spannen in den Knoepfen
-       ausserhalb der Beschneidung. Ihre statische Position liegt weit rechts
-       im Raster, ihr umschliessender Block ist dann das Wurzelelement - und
-       genau das macht die ganze SEITE waagerecht scrollbar, obwohl der
-       Tagesbereich selbst korrekt bei 288px klippt. */
-    position: relative;
-  }
+  /* ===== Tagesansicht ===== */
 
   .tagesliste {
     padding: 0;
@@ -595,10 +516,6 @@ const tageAufbereitet = tage.map((tag) => {
 
   .eintrag[data-gruppe]:last-of-type {
     margin-bottom: var(--raum-6);
-  }
-
-  .stundenmarke {
-    display: none;
   }
 
   .werkzeuge {
@@ -661,71 +578,5 @@ const tageAufbereitet = tage.map((tag) => {
     color: var(--hinweis-text);
     background: var(--hinweis-flaeche);
     border-radius: var(--radius-klein);
-  }
-
-  /* ===== Tagesansicht: Zeitachse =====
-     Hoehe folgt der Dauer, Spalten sind die Straenge. Damit zeigt die Ansicht
-     das, was eine Liste verschweigt: dass sieben Exkursionen gleichzeitig
-     laufen und eine Kaffeepause kuerzer ist als ein Panel. */
-
-  :global([data-ansicht="achse"]) .tagesbereich {
-    /* Waagerecht scrollbar - aber nur dieser Bereich, nie die Seite (Regel 10).
-       max-width und min-width sind kein Zierrat: Ohne sie kann der Bereich von
-       seinem Rasterinhalt aufgespannt werden, statt ihn zu beschneiden - und
-       dann scrollt die Seite. */
-    max-width: 100%;
-    min-width: 0;
-    padding-bottom: var(--raum-2);
-    overflow-x: auto;
-  }
-
-  :global([data-ansicht="achse"]) .tagesbereich:focus-visible {
-    outline: 3px solid var(--fokus);
-    outline-offset: 2px;
-  }
-
-  :global([data-ansicht="achse"]) .tagesliste {
-    display: grid;
-    /* Erste Spalte: die Stundenskala. Danach je Strang eine Spalte. */
-    grid-template-columns: 4.5rem repeat(var(--straenge), minmax(220px, 1fr));
-    /* 15 Minuten = eine Rasterzeile. 1.35rem je Viertelstunde ergibt bei
-       45 Minuten eine Karte, in die Titel und Ort passen. */
-    grid-template-rows: repeat(var(--zeilen), 1.35rem);
-    column-gap: var(--raum-2);
-  }
-
-  :global([data-ansicht="achse"]) .gruppenkopf {
-    display: none;
-  }
-
-  /* In der Achse zeigen die Straenge die Gleichzeitigkeit - die Einrueckung
-     wuerde dort nur das Raster verschieben. */
-  :global([data-ansicht="achse"]) .eintrag[data-gruppe] {
-    padding-left: 0;
-    margin-left: 0;
-    border-left: none;
-  }
-
-  :global([data-ansicht="achse"]) .stundenmarke {
-    display: block;
-    grid-row: var(--zeile);
-    grid-column: 1;
-    font-size: 0.75rem;
-    font-variant-numeric: tabular-nums;
-    color: var(--text-leise);
-    border-top: 1px solid var(--rand);
-  }
-
-  :global([data-ansicht="achse"]) .eintrag {
-    grid-row: var(--zeile-von) / var(--zeile-bis);
-    grid-column: var(--spalte);
-    margin-bottom: 0;
-    /* Laengere Punkte sollen nicht ueberlaufen, sondern innen scrollen. */
-    overflow: hidden;
-  }
-
-  :global([data-ansicht="achse"]) .eintrag > :global(.punkt) {
-    height: 100%;
-    overflow-y: auto;
   }
 </style>
