@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { erwarteKeinSeitenScroll } from "./hilfen.ts";
+import { erwarteKeinSeitenScroll, oeffneProgrammpunkt } from "./hilfen.ts";
 
 /**
  * Tests fuer "Jetzt laeuft" (#3) und "Mein Programm" (#4).
@@ -63,7 +63,8 @@ test.describe("Mein Programm", () => {
   });
 
   test("merkt einen Punkt und behaelt ihn nach dem Neuladen", async ({ page }) => {
-    const punkt = page.locator('.punkt[data-id="exkursion-fagus"]');
+    await oeffneProgrammpunkt(page, "exkursion-ndr");
+    const punkt = page.locator('.punkt[data-id="exkursion-ndr"]');
     const merken = punkt.getByRole("button", { name: /Merken/ });
 
     await expect(merken).toHaveAttribute("aria-pressed", "false");
@@ -77,12 +78,14 @@ test.describe("Mein Programm", () => {
 
     // Regel 32: Die Auswahl muss einen Neuaufbau ueberstehen.
     await page.reload();
+    await oeffneProgrammpunkt(page, "exkursion-ndr");
     await expect(
-      page.locator('.punkt[data-id="exkursion-fagus"]').getByRole("button", { name: /Gemerkt/ }),
+      page.locator('.punkt[data-id="exkursion-ndr"]').getByRole("button", { name: /Gemerkt/ }),
     ).toHaveAttribute("aria-pressed", "true");
   });
 
   test("filtert auf die eigene Auswahl und wieder zurueck", async ({ page }) => {
+    await oeffneProgrammpunkt(page, "konzert");
     await page
       .locator('.punkt[data-id="konzert"]')
       .getByRole("button", { name: /Merken/ })
@@ -112,6 +115,7 @@ test.describe("Mein Programm", () => {
     const knopf = page.getByRole("button", { name: /Mein Programm in den Kalender/ });
 
     await expect(knopf).toBeDisabled();
+    await oeffneProgrammpunkt(page, "konzert");
     await page
       .locator('.punkt[data-id="konzert"]')
       .getByRole("button", { name: /Merken/ })
@@ -129,13 +133,14 @@ test.describe("Kalender-Export", () => {
   test("laedt einen einzelnen Punkt als .ics herunter", async ({ page }) => {
     const download = page.waitForEvent("download");
 
+    await oeffneProgrammpunkt(page, "exkursion-ndr");
     await page
-      .locator('.punkt[data-id="exkursion-fagus"]')
+      .locator('.punkt[data-id="exkursion-ndr"]')
       .getByRole("button", { name: /Zum Kalender/ })
       .click();
 
     const datei = await download;
-    expect(datei.suggestedFilename()).toBe("jahrestagung-2027-exkursion-fagus.ics");
+    expect(datei.suggestedFilename()).toBe("jahrestagung-2027-exkursion-ndr.ics");
   });
 
   /**
@@ -150,10 +155,12 @@ test.describe("Kalender-Export", () => {
   });
 
   test("laedt die gesamte Auswahl als eine Datei herunter", async ({ page }) => {
+    await oeffneProgrammpunkt(page, "konzert");
     await page
       .locator('.punkt[data-id="konzert"]')
       .getByRole("button", { name: /Merken/ })
       .click();
+    await oeffneProgrammpunkt(page, "panel-nie-wieder");
     await page
       .locator('.punkt[data-id="panel-nie-wieder"]')
       .getByRole("button", { name: /Merken/ })
@@ -183,105 +190,22 @@ test.describe("ohne JavaScript", () => {
   });
 });
 
-/** Tests fuer die proportionale Zeitachse (#5). */
-test.describe("Zeitachse", () => {
-  test.beforeEach(async ({ page }) => {
+/**
+ * Regel 10 und Regel 57. Die Gruppen sind eingerueckt und enthalten
+ * `.nur-vorlesen`-Spannen in den Umschaltknoepfen - genau die Kombination, die
+ * die Seite schon einmal waagerecht scrollbar gemacht hat. Mit der Zeitachse
+ * ist zwar der damalige Scrollbereich entfallen, die Ursache aber nicht.
+ */
+test.describe("Kein waagerechtes Scrollen", () => {
+  test.use({ viewport: { width: 320, height: 720 } });
+
+  test("die Programmseite laesst sich auf schmalen Geräten nicht schieben", async ({ page }) => {
     await page.clock.setFixedTime(WEIT_VORHER);
     await page.goto("/programm");
-  });
 
-  test("laesst sich ein- und wieder ausschalten", async ({ page }) => {
-    const umschalter = page.getByRole("button", { name: "Als Zeitachse" });
-
-    await expect(umschalter).toHaveAttribute("aria-pressed", "false");
-    await umschalter.click();
-
-    await expect(page.locator("html")).toHaveAttribute("data-ansicht", "achse");
-    await expect(page.getByRole("button", { name: "Als Liste" })).toHaveAttribute(
-      "aria-pressed",
-      "true",
-    );
-
-    await page.getByRole("button", { name: "Als Liste" }).click();
-    await expect(page.locator("html")).not.toHaveAttribute("data-ansicht", /.+/);
-  });
-
-  /**
-   * Der Kern von #5: Die Hoehe folgt der Dauer. Das Panel am Freitag dauert
-   * 90 Minuten, die Kaffeepause am Donnerstag 30 - in der Liste sehen beide
-   * gleich aus.
-   */
-  test("bildet die Dauer in der Hoehe ab", async ({ page }) => {
-    await page.getByRole("button", { name: "Als Zeitachse" }).click();
-
-    const langerPunkt = page.locator('.punkt[data-id="panel-europa-unter-druck"]');
-    const kurzerPunkt = page.locator('.punkt[data-id="kaffeepause-donnerstag"]');
-
-    const lang = await langerPunkt.boundingBox();
-    const kurz = await kurzerPunkt.boundingBox();
-
-    expect(lang!.height).toBeGreaterThan(kurz!.height * 2);
-  });
-
-  test("stellt gleichzeitige Exkursionen nebeneinander", async ({ page }) => {
-    await page.getByRole("button", { name: "Als Zeitachse" }).click();
-
-    const freitag = page.locator("#tag-2027-05-07 .tagesliste");
-    await expect(freitag).toHaveAttribute("data-straenge", "7");
-
-    const erste = await page.locator('.punkt[data-id="exkursion-dom"]').boundingBox();
-    const zweite = await page.locator('.punkt[data-id="exkursion-fagus"]').boundingBox();
-
-    // Nebeneinander heisst: unterschiedliche x-Position, gleiche Hoehe im Raster.
-    expect(erste!.x).not.toBe(zweite!.x);
-    expect(Math.abs(erste!.y - zweite!.y)).toBeLessThan(5);
-  });
-
-  /** Regel 10: Der Bereich darf scrollen, die Seite nicht. */
-  test("scrollt nur den Tagesbereich, nie die Seite", async ({ page }) => {
-    await page.setViewportSize({ width: 320, height: 800 });
-    await page.getByRole("button", { name: "Als Zeitachse" }).click();
+    // Aufgeklappte Gruppen sind der ungünstigere Fall - sie sind der Standard.
+    await expect(page.locator(".gruppenkopf").first()).toBeVisible();
 
     await erwarteKeinSeitenScroll(page);
-
-    const bereichScrollt = await page.evaluate(() => {
-      const bereich = document.querySelector("#tag-2027-05-07 .tagesbereich");
-      return bereich !== null && bereich.scrollWidth > bereich.clientWidth;
-    });
-    expect(bereichScrollt).toBe(true);
-  });
-
-  test("der scrollbare Bereich ist mit der Tastatur erreichbar", async ({ page }) => {
-    await page.getByRole("button", { name: "Als Zeitachse" }).click();
-
-    const bereich = page.locator("#tag-2027-05-07 .tagesbereich");
-    await expect(bereich).toHaveAttribute("tabindex", "0");
-    await bereich.focus();
-    await expect(bereich).toBeFocused();
-  });
-
-  /**
-   * Die visuelle Parallelitaet darf die Reihenfolge im Dokument nicht
-   * durcheinanderbringen - sonst liest ein Screenreader den Tag in einer
-   * anderen Folge als er stattfindet.
-   */
-  test("aendert die Reihenfolge im Dokument nicht", async ({ page }) => {
-    const alsListe = await page
-      .locator("#tag-2027-05-07 .punkt")
-      .evaluateAll((elemente) => elemente.map((element) => (element as HTMLElement).dataset.id));
-
-    await page.getByRole("button", { name: "Als Zeitachse" }).click();
-
-    const alsAchse = await page
-      .locator("#tag-2027-05-07 .punkt")
-      .evaluateAll((elemente) => elemente.map((element) => (element as HTMLElement).dataset.id));
-
-    expect(alsAchse).toEqual(alsListe);
-  });
-
-  test("erklaert die Ansicht beim Umschalten", async ({ page }) => {
-    await page.getByRole("button", { name: "Als Zeitachse" }).click();
-
-    await expect(page.getByRole("status")).toContainText("Höhe zeigt die Dauer");
   });
 });

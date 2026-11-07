@@ -1,6 +1,9 @@
 ---
 import IkonenSammlung from "../components/IkonenSammlung.astro";
 import Ikone from "../components/Ikone.astro";
+import Zugangssperre from "../components/Zugangssperre.astro";
+import { zugangshashAusUmgebung } from "../lib/zugang.ts";
+import { RECHTLICHES } from "../daten/rechtliches.ts";
 import "../styles/tokens.css";
 import "../styles/basis.css";
 
@@ -19,10 +22,14 @@ const { titel, beschreibung } = Astro.props;
    Link oder ein Lesezeichen geoeffnet hat, hat keine Vorgeschichte - ein
    Zurueck-Knopf, der dann nichts tut, ist schlimmer als keiner. */
 const istStartseite = Astro.url.pathname.replace(/\/+$/, "") === "";
+
+/* Null, solange keine Umgebungsvariable ZUGANGSWORT gesetzt ist - dann gibt es
+   die Sperre gar nicht (ADR-0010). */
+const sperrhash = zugangshashAusUmgebung();
 ---
 
 <!doctype html>
-<html lang="de">
+<html lang="de" data-gesperrt={sperrhash ? "true" : undefined}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -35,6 +42,27 @@ const istStartseite = Astro.url.pathname.replace(/\/+$/, "") === "";
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
+
+    {/* Eine Anwendung hinter einer Zugangsabfrage gehoert nicht in den Index -
+        das waere genau der zufaellige Fund, den die Sperre verhindern soll. */}
+    {sperrhash && <meta name="robots" content="noindex, nofollow" />}
+
+    {sperrhash && <script is:inline define:vars={{ erwartet: sperrhash }}>
+      (() => {
+        /* Laeuft vor dem ersten Zeichnen, aus demselben Grund wie der
+               Darstellungsschnipsel darunter: Der Inhalt darf nicht kurz
+               aufblitzen. Hier wird nur ENTSPERRT - gesperrt ist das Dokument
+               bereits durch das Attribut am Wurzelelement, damit die Sperre
+               auch ohne JavaScript steht. */
+        try {
+          if (localStorage.getItem("asev-zugang") === erwartet) {
+            document.documentElement.removeAttribute("data-gesperrt");
+          }
+        } catch {
+          /* Kein Zugriff auf den Speicher: Es bleibt bei der Abfrage. */
+        }
+      })();
+    </script>}
 
     <script is:inline>
       /* Laeuft vor dem ersten Zeichnen, damit die gewaehlte Darstellung nicht
@@ -55,6 +83,8 @@ const istStartseite = Astro.url.pathname.replace(/\/+$/, "") === "";
   </head>
 
   <body>
+    <Zugangssperre hash={sperrhash} />
+
     <IkonenSammlung />
 
     <a class="zum-inhalt" href="#inhalt">
@@ -90,10 +120,38 @@ const istStartseite = Astro.url.pathname.replace(/\/+$/, "") === "";
       <slot />
     </main>
 
+    {/* Der Service Worker macht Programm und Ort offline verfuegbar (ADR-0002).
+        Bewusst NUR im gebauten Stand: Im Entwicklungsserver gibt es die
+        gehashten Dateien noch nicht, und ein einmal registrierter Worker
+        ueberdauert den Neustart - man debuggt dann stundenlang gegen einen
+        Speicher statt gegen den Code. */}
+    {import.meta.env.PROD && <script is:inline>
+      (() => {
+        if (!("serviceWorker" in navigator)) return;
+
+        /* Erst nach dem Laden: Die Registrierung soll nicht mit dem ersten
+               Zeichnen um Bandbreite konkurrieren (Regel 10). */
+        addEventListener("load", () => {
+          navigator.serviceWorker.register("/sw.js").catch(() => {
+            /* Ohne Worker funktioniert die App weiter, nur eben online. Ein
+                   Fehler in der Konsole hilft niemandem beim Tagungsstart. */
+          });
+        });
+      })();
+    </script>}
+
     <footer class="fusszeile">
       <p>
         Altstipendiaten der Konrad-Adenauer-Stiftung e.&nbsp;V. · Diese Anwendung ist im Aufbau.
       </p>
+
+      {/* Pflichtangaben muessen von jeder Seite aus erreichbar sein, nicht nur
+          von der Startseite. Die Liste kommt aus src/daten/rechtliches.ts. */}
+      <nav aria-label="Rechtliches">
+        {RECHTLICHES.map((seite) => (
+          <a href={`/${seite.slug}`}>{seite.titel}</a>
+        ))}
+      </nav>
     </footer>
 
     <script>
@@ -290,6 +348,23 @@ const istStartseite = Astro.url.pathname.replace(/\/+$/, "") === "";
       .fusszeile p {
         max-width: none;
         margin: 0;
+      }
+
+      .fusszeile nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--raum-4);
+        justify-content: center;
+        margin-top: var(--raum-3);
+      }
+
+      .fusszeile a {
+        /* Regel 7: Mindestgroesse fuer Beruehrung - eine Zeile Text allein
+           waere auf dem Smartphone kaum zu treffen. */
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+        color: var(--akzent);
       }
     </style>
   </body>

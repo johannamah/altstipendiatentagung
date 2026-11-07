@@ -1,0 +1,66 @@
+---
+import Basis from "../layouts/Basis.astro";
+import Seitenkopf from "../components/Seitenkopf.astro";
+
+/**
+ * Pflichtangaben nach § 5 TMG. Der Inhalt stammt vom Verein und ist bewusst
+ * NICHT aus Bausteinen zusammengesetzt: Hier wird nichts abgeleitet, ergaenzt
+ * oder umformuliert.
+ */
+---
+
+<Basis
+  titel="Impressum – Jahrestagung 2027"
+  beschreibung="Anbieterkennzeichnung nach § 5 TMG für die Veranstaltungsapp der Altstipendiaten der Konrad-Adenauer-Stiftung e. V."
+>
+  <Seitenkopf ikone="book" titel="Impressum" einleitung="Angaben gemäß § 5 TMG" />
+
+  <section class="karte">
+    <h2>Anbieter</h2>
+    <p>
+      Altstipendiaten der Konrad-Adenauer-Stiftung e.&nbsp;V.
+      <br />
+      Klingelhöferstraße 23
+      <br />
+      10785 Berlin
+    </p>
+  </section>
+
+  <section class="karte">
+    <h2>Vertreten durch</h2>
+    <p>Dr. Matthias Wilkes (Vorsitzender)</p>
+  </section>
+
+  <section class="karte">
+    <h2>Kontakt</h2>
+    <p>
+      E-Mail: <a href="mailto:vorsitzender@altstipendiaten.de">vorsitzender@altstipendiaten.de</a>
+      <br />
+      {/* tel:-Verweis mit Laendervorwahl, damit er vom Smartphone aus waehlbar
+          ist; sichtbar bleibt die gewohnte Schreibweise. */}
+      Telefon: <a href="tel:+493023000322">030 23000-322</a>
+    </p>
+  </section>
+
+  <section class="karte">
+    <h2>Registereintrag</h2>
+    <p>
+      Eintragung im Vereinsregister.
+      <br />
+      Registergericht: AG Charlottenburg
+      <br />
+      Registernummer: VR 32582 B
+    </p>
+  </section>
+</Basis>
+
+<style>
+  h2 {
+    margin-top: 0;
+    font-size: var(--schrift-h3);
+  }
+
+  p {
+    margin-bottom: 0;
+  }
+</style>

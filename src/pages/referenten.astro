@@ -1,0 +1,151 @@
+---
+import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
+
+import Basis from "../layouts/Basis.astro";
+import Seitenkopf from "../components/Seitenkopf.astro";
+import Platzhalterhinweis from "../components/Platzhalterhinweis.astro";
+
+const eintraege = await getCollection("referenten");
+const referenten = eintraege
+  .map((eintrag) => eintrag.data)
+  .sort((a, b) => a.reihenfolge - b.reihenfolge);
+
+const alleVorlaeufig = referenten.every((person) => person.status !== "bestaetigt");
+
+/** Initialen als Ersatz, solange kein Portrait freigegeben ist (F16). */
+const initialen = (name: string) =>
+  name
+    .split(/\s+/)
+    // Titel wie "Prof." oder "Dr." ergeben keine sinnvollen Initialen.
+    .filter((teil) => !teil.endsWith("."))
+    .map((teil) => teil[0])
+    .join("")
+    .slice(0, 2);
+---
+
+<Basis
+  titel="Referenten & Gäste – Jahrestagung 2027"
+  beschreibung="Referentinnen, Referenten und Gäste der Altstipendiatentagung 2027 in Hildesheim."
+>
+  <Seitenkopf
+    ikone="mic"
+    titel="Referenten & Gäste"
+    einleitung="Wer auf der Jahrestagung spricht und mit uns diskutiert."
+  />
+
+  {alleVorlaeufig && (
+    <Platzhalterhinweis>
+      Die Kurzvorstellungen sind noch nicht mit den Personen abgestimmt. Wer in welchem
+      Programmpunkt spricht, ergänzen wir, sobald es feststeht.
+    </Platzhalterhinweis>
+  )}
+
+  <ul class="personen">
+    {referenten.map((person) => (
+      <li>
+        <article class="karte">
+          <header class="kopf">
+            {person.bild ? (
+              <Image
+                class="portrait"
+                src={person.bild}
+                alt={`Porträt von ${person.name}`}
+                width={72}
+                height={72}
+                densities={[1, 2]}
+              />
+            ) : (
+              /* aria-hidden: Der Name steht direkt daneben. */
+              <span class="initialen" aria-hidden="true">
+                {initialen(person.name)}
+              </span>
+            )}
+
+            <div>
+              <h2>{person.name}</h2>
+              <p class="rolle">{person.rolle}</p>
+              {person.status !== "bestaetigt" && <p class="marke">Text noch nicht abgestimmt</p>}
+            </div>
+          </header>
+
+          {person.absaetze.map((absatz) => (
+            <p>{absatz}</p>
+          ))}
+        </article>
+      </li>
+    ))}
+  </ul>
+</Basis>
+
+<style>
+  .personen {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: var(--raum-4);
+    padding: 0;
+    margin: 0 0 var(--raum-6);
+    list-style: none;
+  }
+
+  .personen .karte {
+    height: 100%;
+    margin-bottom: 0;
+  }
+
+  .kopf {
+    display: flex;
+    gap: var(--raum-3);
+    align-items: center;
+    margin-bottom: var(--raum-3);
+  }
+
+  .portrait,
+  .initialen {
+    flex: none;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+  }
+
+  .portrait {
+    object-fit: cover;
+  }
+
+  .initialen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--kachel-bordeaux-text);
+    background: var(--kachel-bordeaux-von);
+  }
+
+  h2 {
+    margin-bottom: 2px;
+    font-size: 1.05rem;
+  }
+
+  .rolle {
+    margin: 0 0 var(--raum-1);
+    font-size: var(--schrift-klein);
+    color: var(--text-leise);
+  }
+
+  .marke {
+    display: inline-block;
+    padding: 2px var(--raum-2);
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--hinweis-text);
+    background: var(--hinweis-flaeche);
+    border: 1px solid var(--hinweis-rand);
+    border-radius: 999px;
+  }
+
+  .karte > p {
+    margin: 0 0 var(--raum-2);
+  }
+</style>

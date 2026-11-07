@@ -1,0 +1,73 @@
+---
+import { formatiereStand } from "../lib/jetzt.ts";
+import { jetztAlsOrtszeit } from "../lib/zeit.ts";
+
+/**
+ * Wie aktuell ist das, was hier steht?
+ *
+ * Der Stand ist der Zeitpunkt, zu dem die Seite gebaut wurde - bei einer
+ * statisch erzeugten Seite ist das genau der Stand der Inhalte, die jemand vor
+ * sich hat. Wird die Seite aus dem Zwischenspeicher ausgeliefert, stimmt er
+ * weiterhin: Dann sieht man eben den Stand von damals, und genau das soll
+ * dastehen.
+ *
+ * Der Zusatz "Offline verfügbar" erscheint NUR, wenn tatsaechlich ein
+ * Zwischenspeicher die Seite ausliefert. Eine Offline-Faehigkeit zu behaupten,
+ * die es nicht gibt, waere schlimmer als sie nicht zu erwaehnen - jemand
+ * verliesse sich im Tagungshaus darauf.
+ */
+const stand = formatiereStand(jetztAlsOrtszeit());
+---
+
+<p class="standanzeige" data-offline="nein">
+  <span class="punkt" aria-hidden="true"></span>
+  <span>
+    <span class="offline" hidden>
+      Offline verfügbar ·{" "}
+    </span>
+    Stand: {stand}
+  </span>
+</p>
+
+<style>
+  .standanzeige {
+    display: flex;
+    gap: var(--raum-2);
+    align-items: center;
+    max-width: none;
+    padding: var(--raum-2) var(--raum-4);
+    margin: 0;
+    font-size: var(--schrift-klein);
+    color: var(--akzent);
+    background: var(--hover);
+    border-bottom: 1px solid var(--rand);
+  }
+
+  /* Der Punkt ist Zierde, die Aussage steht im Text daneben (Regel 19). */
+  .punkt {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    background: var(--text-leise);
+    border-radius: 50%;
+  }
+
+  .standanzeige[data-offline="ja"] .punkt {
+    background: var(--kachel-gruen-von);
+  }
+</style>
+
+<script>
+  /* Ein Service Worker kann die Seite aus dem Zwischenspeicher ausliefern.
+     Geprueft wird der Controller und nicht die blosse Registrierung: Beim
+     allerersten Besuch ist der Worker zwar registriert, bedient diese Seite
+     aber noch nicht - dann waere "offline verfügbar" eine Vorhersage und keine
+     Aussage. */
+  const anzeige = document.querySelector<HTMLElement>(".standanzeige");
+  const hinweis = anzeige?.querySelector<HTMLElement>(".offline");
+
+  if (anzeige && hinweis && navigator.serviceWorker?.controller) {
+    anzeige.dataset.offline = "ja";
+    hinweis.hidden = false;
+  }
+</script>

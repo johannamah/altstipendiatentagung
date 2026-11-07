@@ -1,7 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
-import { BEREICHE } from "../../src/daten/bereiche.ts";
+import { BEREICHE, kachelZiel, SEITENBEREICHE } from "../../src/daten/bereiche.ts";
 import { erwarteKeinSeitenScroll } from "./hilfen.ts";
 
 /**
@@ -10,7 +10,7 @@ import { erwarteKeinSeitenScroll } from "./hilfen.ts";
  */
 
 test.describe("alle Bereiche sind erreichbar", () => {
-  for (const bereich of BEREICHE) {
+  for (const bereich of SEITENBEREICHE) {
     test(`${bereich.titel} öffnet sich von der Startseite aus`, async ({ page }) => {
       await page.goto("/");
       await page.getByRole("link", { name: new RegExp(bereich.titel, "i") }).click();
@@ -23,7 +23,7 @@ test.describe("alle Bereiche sind erreichbar", () => {
 });
 
 test.describe("Zurück zur Übersicht", () => {
-  for (const bereich of BEREICHE) {
+  for (const bereich of SEITENBEREICHE) {
     test(`${bereich.titel} hat einen Weg zurück`, async ({ page }) => {
       await page.goto(`/${bereich.slug}`);
 
@@ -69,31 +69,81 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
     await expect(page.getByRole("heading", { name: "B&B Hotel Hildesheim" })).toBeVisible();
   });
 
-  test("Anmeldung zeigt alle neun Exkursionen mit Platzzahl", async ({ page }) => {
-    await page.goto("/anmeldung");
+  /**
+   * Die Anmeldung laeuft ueber Microsoft Forms (ADR-0011). Geprueft wird das
+   * Ziel der Kachel, nicht das Formular selbst: Ein Test, der bei Microsoft
+   * anklopft, haengt an deren Erreichbarkeit und erzeugt dort Aufrufe.
+   */
+  test("Anmeldung öffnet das Anmeldeformular in einem neuen Tab", async ({ page }) => {
+    const anmeldung = BEREICHE.find((bereich) => bereich.slug === "anmeldung")!;
+    await page.goto("/");
 
-    await expect(page.locator(".exkursionen > li")).toHaveCount(9);
-    await expect(page.getByText("50 Plätze").first()).toBeVisible();
+    const kachel = page.getByRole("link", { name: /Anmeldung/ });
+    await expect(kachel).toHaveAttribute("href", kachelZiel(anmeldung));
+    await expect(kachel).toHaveAttribute("target", "_blank");
+    await expect(kachel).toHaveAttribute("rel", /noopener/);
+    // Dass ein neuer Tab aufgeht, steht sichtbar auf der Kachel.
+    await expect(kachel).toContainText("öffnet neuen Tab");
+  });
+
+  test("Kontakt zeigt das Orga-Team in der festgelegten Reihenfolge", async ({ page }) => {
+    await page.goto("/kontakt");
+
+    const namen = page.locator(".personen h3");
+    await expect(namen).toHaveCount(8);
+    await expect(namen.nth(0)).toHaveText("Konstantin Gerbrich");
+    await expect(namen.nth(1)).toHaveText("Torben Burdorf");
+    await expect(namen.nth(7)).toHaveText("Ferdinand Meißner");
+  });
+
+  test("Kontakt verlinkt hinterlegte Telefonnummern und E-Mail-Adressen", async ({ page }) => {
+    await page.goto("/kontakt");
+
+    await expect(page.getByRole("link", { name: "+49 1515 6675547" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "t.burdorf@altstipendiaten.de" })).toBeVisible();
   });
 
   /**
-   * Der Entwurf hatte ein Formular im Testmodus: Eingaben nur im
-   * Arbeitsspeicher, danach "Anmeldung erfolgreich". Oeffentlich erreichbar
-   * waere das eine Falle - deshalb steht dort jetzt der Stand statt des
-   * Formulars.
+   * Der Verweis auf die FAQ steht bewusst VOR den Ansprechpersonen: Jede Frage,
+   * die gar nicht erst gestellt wird, entlastet ein ehrenamtliches Team.
    */
-  test("Anmeldung nimmt keine personenbezogenen Daten entgegen", async ({ page }) => {
-    await page.goto("/anmeldung");
-
-    await expect(page.getByText("Die Anmeldung ist noch nicht geöffnet.")).toBeVisible();
-    await expect(page.locator("form")).toHaveCount(0);
-    await expect(page.locator("input[type='email'], input[type='text']")).toHaveCount(0);
-  });
-
-  test("Kontakt zeigt das Orga-Team und den Tagungsort", async ({ page }) => {
+  test("Kontakt nennt die FAQ vor den Ansprechpersonen", async ({ page }) => {
     await page.goto("/kontakt");
 
-    await expect(page.locator(".personen > li")).toHaveCount(8);
+    const faqHinweis = await page.locator(".zuerst").boundingBox();
+    const erstePerson = await page.locator(".personen > li").first().boundingBox();
+
+    expect(faqHinweis!.y).toBeLessThan(erstePerson!.y);
+  });
+
+  test("Referenten & Gäste stellt jede Person mit Funktion und Kurzvorstellung vor", async ({
+    page,
+  }) => {
+    await page.goto("/referenten");
+
+    for (const name of ["Norbert Lammert", "Annegret Kramp-Karrenbauer", "Christian Wulff"]) {
+      const person = page.getByRole("article").filter({
+        has: page.getByRole("heading", { name }),
+      });
+      await expect(person, `${name} fehlt`).toBeVisible();
+      // Ohne Funktion bleibt offen, warum die Person auf der Tagung spricht.
+      await expect(person.locator("p").first()).not.toBeEmpty();
+    }
+  });
+
+  /**
+   * Die Kurzvorstellungen sind von uns verfasst, nicht von den Personen
+   * freigegeben. Das muss als Text dastehen, nicht nur farblich.
+   */
+  test("Referenten & Gäste kennzeichnet nicht abgestimmte Texte", async ({ page }) => {
+    await page.goto("/referenten");
+
+    await expect(page.getByText("Text noch nicht abgestimmt").first()).toBeVisible();
+  });
+
+  test("Kontakt zeigt den Tagungsort", async ({ page }) => {
+    await page.goto("/kontakt");
+
     await expect(page.getByRole("heading", { name: "Tagungsort" })).toBeVisible();
     await expect(page.getByText("Bahnhofsallee 38")).toBeVisible();
   });
@@ -108,12 +158,66 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
     await expect(frage).toHaveAttribute("open", "");
   });
 
-  test("Hildesheim zeigt Geschichte, Sehenswürdigkeiten und Restaurants", async ({ page }) => {
+  test("Hildesheim zeigt alle Abschnitte in fester Reihenfolge", async ({ page }) => {
     await page.goto("/hildesheim");
 
-    await expect(page.getByRole("heading", { name: /Geschichte Hildesheims/ })).toBeVisible();
-    await expect(page.getByText("Tausendjährige Rosenstock")).toBeVisible();
-    await expect(page.getByText("Knochenhaueramtshaus").first()).toBeVisible();
+    const ueberschriften = page.getByRole("heading", { level: 2 });
+    await expect(ueberschriften.nth(0)).toContainText("Eine Stadt mit mehr als 1.200 Jahren");
+    await expect(ueberschriften.nth(1)).toContainText("Zerstörung und Wiederaufbau");
+    await expect(ueberschriften.nth(2)).toContainText("UNESCO-Welterbe");
+    await expect(ueberschriften.nth(3)).toContainText("Hildesheim heute");
+    await expect(ueberschriften.nth(4)).toContainText("hiApp");
+    await expect(ueberschriften.nth(5)).toContainText("Lauschtour");
+  });
+
+  test("Hildesheim zeigt die Eckdaten als Wert-Erklärung-Paare", async ({ page }) => {
+    await page.goto("/hildesheim");
+
+    await expect(page.locator(".zahlen dt")).toHaveCount(9);
+    await expect(page.getByText("104.712")).toBeVisible();
+    await expect(page.getByText("92,19 km²")).toBeVisible();
+  });
+
+  test("Hildesheim verlinkt die weiterführenden Quellen", async ({ page }) => {
+    await page.goto("/hildesheim");
+
+    const links = page.locator(".links a");
+    await expect(links).toHaveCount(4);
+    // Verweise auf die Stadt und die UNESCO, ohne Nachverfolgungsparameter.
+    for (const ziel of await links.evaluateAll((a) => a.map((e) => e.getAttribute("href")))) {
+      expect(ziel).not.toContain("utm_source");
+    }
+  });
+
+  test("Hildesheim nennt Geschichte und Wahrzeichen aus der Vorlage", async ({ page }) => {
+    await page.goto("/hildesheim");
+
+    await expect(page.getByText(/Tausendjährige Rosenstock/)).toBeVisible();
+    await expect(page.getByText(/Knochenhauer-Amtshaus/)).toBeVisible();
+    await expect(page.getByText(/22. März 1945/)).toBeVisible();
+  });
+
+  /**
+   * Die Empfehlungen werden nachgereicht. Bis dahin steht dort bewusst keine
+   * Liste - eine ungepruefte Auswahl waere keine Empfehlung.
+   */
+  test("Hildesheim listet die Lokale mit Weiterleitung an Karten-Apps", async ({ page }) => {
+    await page.goto("/hildesheim");
+
+    const lokale = page.locator(".lokale > li");
+    await expect(lokale).toHaveCount(6);
+    await expect(lokale.first().getByRole("link", { name: /Google Maps/ })).toBeVisible();
+    await expect(lokale.first().getByRole("link", { name: /Apple Karten/ })).toBeVisible();
+  });
+
+  /**
+   * Die Adressen fehlen - dann muss dastehen, dass die Verweise nur suchen.
+   * Sonst hält man den Treffer für geprüft.
+   */
+  test("Hildesheim sagt, dass die Verweise ohne Adresse nur suchen", async ({ page }) => {
+    await page.goto("/hildesheim");
+
+    await expect(page.getByText(/die Verweise suchen nach dem Namen/).first()).toBeVisible();
   });
 
   test("Ankündigungen zeigt die Einträge, neueste zuerst", async ({ page }) => {
@@ -122,11 +226,30 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
     await expect(page.locator(".liste > li")).toHaveCount(2);
   });
 
-  test("Begrüßung weist den Text als Platzhalter aus", async ({ page }) => {
+  test("Begrüßung zeigt drei Grußworte in fester Reihenfolge", async ({ page }) => {
     await page.goto("/begruessung");
 
-    await expect(page.getByText(/Platzhaltertext/)).toBeVisible();
-    await expect(page.getByText("Demokratie leben – Europa gestalten")).toBeVisible();
+    const namen = page.getByRole("heading", { level: 2 });
+    await expect(namen).toHaveCount(3);
+    await expect(namen.nth(0)).toContainText("Matthias Wilkes");
+    await expect(namen.nth(1)).toContainText("Annegret Kramp-Karrenbauer");
+    await expect(namen.nth(2)).toContainText("Sebastian Lechner");
+  });
+
+  /**
+   * Solange die Originaltexte fehlen, muss an jedem Grusswort stehen, dass es
+   * ein Beispiel ist - sonst haelt es jemand fuer abgestimmt und zitiert es.
+   */
+  test("Begrüßung weist jeden Text als Beispiel aus", async ({ page }) => {
+    await page.goto("/begruessung");
+
+    await expect(page.getByText("Beispieltext – Originaltext folgt")).toHaveCount(3);
+  });
+
+  test("Begrüßung zeigt zu jedem Grußwort ein Porträt", async ({ page }) => {
+    await page.goto("/begruessung");
+
+    await expect(page.locator(".grusswort img")).toHaveCount(3);
   });
 
   /**
@@ -142,7 +265,7 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
 });
 
 test.describe("Barrierefreiheit aller Bereiche", () => {
-  for (const bereich of BEREICHE) {
+  for (const bereich of SEITENBEREICHE) {
     for (const darstellung of ["hell", "dunkel"] as const) {
       test(`${bereich.titel} ist in der ${darstellung}en Darstellung frei von axe-Befunden`, async ({
         page,
@@ -163,7 +286,7 @@ test.describe("Barrierefreiheit aller Bereiche", () => {
 });
 
 test.describe("schmale Geräte", () => {
-  for (const bereich of BEREICHE) {
+  for (const bereich of SEITENBEREICHE) {
     test(`${bereich.titel} läuft ab 320px ohne horizontales Scrollen`, async ({ page }) => {
       await page.setViewportSize({ width: 320, height: 800 });
       await page.goto(`/${bereich.slug}`);

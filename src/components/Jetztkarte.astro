@@ -1,0 +1,134 @@
+---
+import Ikone from "./Ikone.astro";
+import type { Ort } from "../lib/orte.ts";
+import { naechsteLage } from "../lib/jetzt.ts";
+import { formatiereZeitraum, type Programmpunkt } from "../lib/programm.ts";
+
+/**
+ * Was gerade läuft – oder als Nächstes kommt.
+ *
+ * Serverseitig wird der Zustand gerendert, der ohne Uhr stimmt: der erste
+ * Programmpunkt. Das Skript ersetzt ihn beim Laden durch den tatsächlichen
+ * Stand. Ohne JavaScript bleibt damit der Auftakt stehen – eine leere Fläche
+ * wäre schlechter, und falsch ist der Auftakt nie.
+ */
+interface Props {
+  punkte: Programmpunkt[];
+  orte: Map<string, Ort>;
+}
+
+const { punkte, orte } = Astro.props;
+
+/* Der erste Punkt des Programms – unabhängig von der aktuellen Uhrzeit und
+   damit das, was serverseitig verantwortbar ist. */
+const anfangslage = naechsteLage(punkte, "2000-01-01T00:00");
+const ersterPunkt = anfangslage.punkte[0];
+const ersterOrt = ersterPunkt?.ortId ? orte.get(ersterPunkt.ortId) : undefined;
+---
+
+{ersterPunkt && (
+  <section class="jetztkarte" aria-labelledby="jetzt-ueberschrift" data-art="vorher">
+    <p class="lage">
+      <span data-lage-text>Zum Auftakt</span>
+      <span data-vorlauf />
+    </p>
+
+    <p class="gross" data-gross hidden />
+
+    <h2 id="jetzt-ueberschrift" data-titel>
+      {ersterPunkt.titel}
+    </h2>
+
+    <p class="weitere" data-weitere hidden />
+
+    <p class="ort" data-ort hidden={ersterOrt === undefined}>
+      <Ikone name="pin" />
+      <span data-ort-text>{ersterOrt?.name}</span>
+    </p>
+
+    <p class="zeit" data-zeit>
+      {formatiereZeitraum(ersterPunkt)}
+    </p>
+
+    {/* Der Tagesanker ist der einzige, den die Programmseite setzt - ein
+          Verweis auf einen Punktanker ginge ins Leere. */}
+    <a class="knopf" href={`/programm#tag-${ersterPunkt.beginn?.slice(0, 10)}`} data-ziel>
+      <Ikone name="arrow-right" />
+      <span>Details öffnen</span>
+    </a>
+  </section>
+)}
+
+<style>
+  .jetztkarte {
+    padding: var(--raum-6) var(--raum-4);
+    margin-bottom: var(--raum-8);
+    color: var(--kachel-blau-text);
+    background: linear-gradient(135deg, var(--kachel-blau-von), var(--kachel-blau-bis));
+    border-radius: var(--radius);
+    box-shadow: var(--schatten);
+  }
+
+  .lage {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--raum-2);
+    margin: 0 0 var(--raum-1);
+    font-size: var(--schrift-klein);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .gross {
+    margin: 0 0 var(--raum-3);
+    font-size: clamp(1.75rem, 4vw + 1rem, 2.5rem);
+    font-weight: 700;
+    line-height: var(--zeilenhoehe-eng);
+  }
+
+  h2 {
+    margin: 0 0 var(--raum-3);
+    font-size: var(--schrift-h3);
+    color: inherit;
+  }
+
+  .weitere,
+  .ort,
+  .zeit {
+    display: flex;
+    gap: var(--raum-2);
+    align-items: center;
+    max-width: none;
+    margin: 0 0 var(--raum-2);
+    font-size: var(--schrift-klein);
+  }
+
+  .zeit {
+    margin-bottom: var(--raum-4);
+  }
+
+  /* Weißer Rahmen auf blauem Grund: Der Fokusring aus basis.css läge sonst
+     mit zu wenig Kontrast auf der Fläche (Regel 41). */
+  .knopf {
+    display: inline-flex;
+    gap: var(--raum-2);
+    align-items: center;
+    min-height: 44px;
+    padding: var(--raum-2) var(--raum-6);
+    font-weight: 700;
+    color: inherit;
+    text-decoration: none;
+    border: 2px solid var(--kachel-gold-bis);
+    border-radius: var(--radius-klein);
+  }
+
+  .knopf:hover {
+    background: rgb(255 255 255 / 12%);
+  }
+
+  .knopf:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 2px;
+  }
+</style>

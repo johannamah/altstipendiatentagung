@@ -1,41 +1,55 @@
 [
   {
-    "id": "torben-burdorf",
-    "name": "Torben Burdorf",
-    "bereich": "[Zuständigkeitsbereich einfügen]",
-    "telefon": "[Telefonnummer einfügen]",
-    "email": "[E-Mail einfügen]"
-  },
-  {
     "id": "konstantin-gerbrich",
+    "reihenfolge": 1,
     "name": "Konstantin Gerbrich",
     "bereich": "[Zuständigkeitsbereich einfügen]",
-    "telefon": "[Telefonnummer einfügen]",
-    "email": "[E-Mail einfügen]"
+    "telefon": "+49 1515 6675547",
+    "email": "konstantin.gerbrich@web.de"
+  },
+  {
+    "id": "torben-burdorf",
+    "reihenfolge": 2,
+    "name": "Torben Burdorf",
+    "bereich": "[Zuständigkeitsbereich einfügen]",
+    "telefon": "+49 178 8345299",
+    "email": "t.burdorf@altstipendiaten.de"
   },
   {
     "id": "pia-gerbrich",
+    "reihenfolge": 3,
     "name": "Pia Gerbrich",
     "bereich": "[Zuständigkeitsbereich einfügen]",
     "telefon": "[Telefonnummer einfügen]",
     "email": "[E-Mail einfügen]"
   },
   {
-    "id": "marvin-pawelczyk",
-    "name": "Marvin Pawelczyk",
-    "bereich": "[Zuständigkeitsbereich einfügen]",
-    "telefon": "[Telefonnummer einfügen]",
-    "email": "[E-Mail einfügen]"
-  },
-  {
     "id": "johanna-mahler",
+    "reihenfolge": 4,
     "name": "Johanna Mahler",
     "bereich": "[Zuständigkeitsbereich einfügen]",
     "telefon": "[Telefonnummer einfügen]",
     "email": "[E-Mail einfügen]"
   },
   {
-    "id": "sven-ludiger",
+    "id": "marvin-pawelczyk",
+    "reihenfolge": 5,
+    "name": "Marvin Pawelczyk",
+    "bereich": "[Zuständigkeitsbereich einfügen]",
+    "telefon": "[Telefonnummer einfügen]",
+    "email": "[E-Mail einfügen]"
+  },
+  {
+    "id": "brit-fillies",
+    "reihenfolge": 6,
+    "name": "Brit Fillies",
+    "bereich": "[Zuständigkeitsbereich einfügen]",
+    "telefon": "[Telefonnummer einfügen]",
+    "email": "[E-Mail einfügen]"
+  },
+  {
+    "id": "sven-luediger",
+    "reihenfolge": 7,
     "name": "Sven Lüdiger",
     "bereich": "[Zuständigkeitsbereich einfügen]",
     "telefon": "[Telefonnummer einfügen]",
@@ -43,14 +57,8 @@
   },
   {
     "id": "ferdinand-meissner",
+    "reihenfolge": 8,
     "name": "Ferdinand Meißner",
-    "bereich": "[Zuständigkeitsbereich einfügen]",
-    "telefon": "[Telefonnummer einfügen]",
-    "email": "[E-Mail einfügen]"
-  },
-  {
-    "id": "brit-fillies",
-    "name": "Brit Fillies",
     "bereich": "[Zuständigkeitsbereich einfügen]",
     "telefon": "[Telefonnummer einfügen]",
     "email": "[E-Mail einfügen]"

@@ -3,7 +3,7 @@ import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
 
-import { BEREICHE } from "../../src/daten/bereiche.ts";
+import { BEREICHE, SEITENBEREICHE, kachelZiel } from "../../src/daten/bereiche.ts";
 
 const lies = (pfad: string) => readFileSync(fileURLToPath(new URL(pfad, import.meta.url)), "utf8");
 
@@ -50,6 +50,44 @@ describe("Bereiche der Startseite", () => {
         bereich.unterzeile.trim().length,
         `Unterzeile fehlt bei ${bereich.slug}`,
       ).toBeGreaterThan(0);
+    }
+  });
+});
+
+/**
+ * Die Anmeldung laeuft ueber Microsoft Forms des Vereins (ADR-0011). Die
+ * Kachel fuehrt deshalb direkt dorthin, ohne Zwischenseite in der App.
+ */
+describe("Kacheln mit externem Ziel", () => {
+  const anmeldung = BEREICHE.find((b) => b.slug === "anmeldung")!;
+
+  it("Anmeldung fuehrt direkt auf das Anmeldeformular", () => {
+    expect(kachelZiel(anmeldung)).toBe("https://forms.cloud.microsoft/e/yyrAWFASLc");
+  });
+
+  it("interne Kacheln fuehren auf ihre eigene Seite", () => {
+    const programm = BEREICHE.find((b) => b.slug === "programm")!;
+    expect(kachelZiel(programm)).toBe("/programm");
+  });
+
+  it("externe Ziele sind verschluesselte Adressen", () => {
+    for (const bereich of BEREICHE.filter((b) => b.extern !== undefined)) {
+      expect(bereich.extern, bereich.slug).toMatch(/^https:\/\//);
+    }
+  });
+
+  it("nur Kacheln ohne externes Ziel haben eine eigene Seite", () => {
+    expect(SEITENBEREICHE.map((b) => b.slug)).not.toContain("anmeldung");
+    expect(SEITENBEREICHE.map((b) => b.slug)).toContain("programm");
+  });
+
+  /**
+   * Wer die Kachel antippt, verlaesst die App. Das muss vorher erkennbar
+   * sein - sichtbar in der Unterzeile, nicht nur fuer Screenreader.
+   */
+  it("kuendigen den neuen Tab in der Unterzeile an", () => {
+    for (const bereich of BEREICHE.filter((b) => b.extern !== undefined)) {
+      expect(bereich.unterzeile, bereich.slug).toMatch(/neue[mn]? Tab/);
     }
   });
 });

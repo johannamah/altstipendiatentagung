@@ -1,11 +1,13 @@
 ---
 import Ikone from "./Ikone.astro";
-import type { Bereich } from "../daten/bereiche.ts";
+import { kachelZiel, type Bereich } from "../daten/bereiche.ts";
 
 /**
  * Eine Kachel der Startseite.
  *
  * Bewusst ein <a> und kein <button>: Die Kachel fuehrt zu einer eigenen Adresse.
+ * Fuehrt sie aus der App hinaus (Anmeldeformular), oeffnet sie einen neuen Tab,
+ * damit die App beim Zurueckkehren noch offen ist.
  * Damit funktionieren Mittelklick, "In neuem Tab oeffnen" und der Zurueck-Knopf
  * von selbst (Regel 1) - beim <button> im Entwurf war das nicht der Fall.
  *
@@ -20,7 +22,12 @@ interface Props {
 const { bereich } = Astro.props;
 ---
 
-<a class="kachel" href={`/${bereich.slug}`} data-farbe={bereich.farbe}>
+<a
+  class="kachel"
+  href={kachelZiel(bereich)}
+  data-farbe={bereich.farbe}
+  {...(bereich.extern ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+>
   <Ikone name={bereich.ikone} class="kachel-ikone" />
   <span class="kachel-text">
     <span class="kachel-titel">{bereich.titel}</span>
@@ -137,9 +144,19 @@ const { bereich } = Astro.props;
     --kachel-bis: var(--kachel-gold-bis);
     --kachel-text: var(--kachel-gold-text);
   }
+  .kachel[data-farbe="schiefer"] {
+    --kachel-von: var(--kachel-schiefer-von);
+    --kachel-bis: var(--kachel-schiefer-bis);
+    --kachel-text: var(--kachel-schiefer-text);
+  }
   .kachel[data-farbe="orange"] {
     --kachel-von: var(--kachel-orange-von);
     --kachel-bis: var(--kachel-orange-bis);
     --kachel-text: var(--kachel-orange-text);
+  }
+  .kachel[data-farbe="bordeaux"] {
+    --kachel-von: var(--kachel-bordeaux-von);
+    --kachel-bis: var(--kachel-bordeaux-bis);
+    --kachel-text: var(--kachel-bordeaux-text);
   }
 </style>

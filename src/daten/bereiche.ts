@@ -15,7 +15,17 @@
  */
 
 export type Kachelfarbe =
-  "blau" | "pink" | "gruen" | "teal" | "lila" | "rot" | "braun" | "gold" | "orange";
+  | "blau"
+  | "pink"
+  | "gruen"
+  | "teal"
+  | "lila"
+  | "rot"
+  | "braun"
+  | "gold"
+  | "orange"
+  | "schiefer"
+  | "bordeaux";
 
 export interface Bereich {
   /** Adressfragment, z. B. "programm" fuer /programm. */
@@ -26,6 +36,12 @@ export interface Bereich {
   /** Name eines <symbol> ohne das Praefix "i-". */
   readonly ikone: string;
   readonly farbe: Kachelfarbe;
+  /**
+   * Externe Adresse, falls die Kachel die App verlaesst (z. B. das
+   * Anmeldeformular, ADR-0011). Dann gibt es keine eigene Seite, und die
+   * Kachel oeffnet einen neuen Tab - die Unterzeile muss das ankuendigen.
+   */
+  readonly extern?: string;
 }
 
 export const BEREICHE: readonly Bereich[] = [
@@ -51,11 +67,19 @@ export const BEREICHE: readonly Bereich[] = [
     farbe: "blau",
   },
   {
+    slug: "referenten",
+    titel: "Referenten & Gäste",
+    unterzeile: "Wer auf der Tagung spricht",
+    ikone: "mic",
+    farbe: "bordeaux",
+  },
+  {
     slug: "anmeldung",
     titel: "Anmeldung",
-    unterzeile: "Zur Tagung & Exkursion anmelden",
+    unterzeile: "Zum Anmeldeformular (öffnet neuen Tab)",
     ikone: "edit",
     farbe: "pink",
+    extern: "https://forms.cloud.microsoft/e/yyrAWFASLc",
   },
   {
     slug: "unterbringung",
@@ -73,8 +97,8 @@ export const BEREICHE: readonly Bereich[] = [
   },
   {
     slug: "hildesheim",
-    titel: "Hildesheim & Umgebung",
-    unterzeile: "Sightseeing, Essen & Geschichte",
+    titel: "Hildesheim",
+    unterzeile: "Geschichte, Sehenswürdigkeiten & Tipps",
     ikone: "landmark",
     farbe: "orange",
   },
@@ -86,6 +110,13 @@ export const BEREICHE: readonly Bereich[] = [
     farbe: "braun",
   },
   {
+    slug: "orte",
+    titel: "Orte & Anfahrt",
+    unterzeile: "Übersichtskarte & Wegbeschreibungen",
+    ikone: "pin",
+    farbe: "schiefer",
+  },
+  {
     slug: "kontakt",
     titel: "Kontakt & Orga-Team",
     unterzeile: "Ansprechpersonen & Fragen",
@@ -93,3 +124,13 @@ export const BEREICHE: readonly Bereich[] = [
     farbe: "teal",
   },
 ];
+
+/** Kacheln mit eigener Seite in der App - nur diese werden gebaut und vorab gespeichert. */
+export const SEITENBEREICHE: readonly Bereich[] = BEREICHE.filter(
+  (bereich) => bereich.extern === undefined,
+);
+
+/** Wohin die Kachel fuehrt: die externe Adresse oder die eigene Seite. */
+export function kachelZiel(bereich: Bereich): string {
+  return bereich.extern ?? `/${bereich.slug}`;
+}
