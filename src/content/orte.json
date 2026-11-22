@@ -2,9 +2,11 @@
   {
     "id": "mariano-josephinum",
     "name": "Mariano-Josephinum",
+    "adresse": "Domhof 7",
+    "plz": "31134",
     "stadt": "Hildesheim",
     "art": "tagungsort",
-    "hinweis": "Hauptveranstaltungsort der Jahrestagung"
+    "hinweis": "Hauptveranstaltungsort der Jahrestagung. Das Gymnasium liegt zwischen Domhof 7, Brühl 1–3 und Kreuzstraße 22."
   },
   {
     "id": "novotel",
@@ -24,7 +26,7 @@
   },
   {
     "id": "dom",
-    "name": "Dom St. Mariae",
+    "name": "Dom Mariä Himmelfahrt",
     "adresse": "Domhof 3",
     "plz": "31134",
     "stadt": "Hildesheim",
@@ -42,7 +44,7 @@
   {
     "id": "marktplatz",
     "name": "Historischer Marktplatz",
-    "adresse": "Marktplatz 1",
+    "adresse": "Markt 1",
     "plz": "31134",
     "stadt": "Hildesheim",
     "art": "rahmenprogramm"
@@ -140,9 +142,10 @@
   {
     "id": "knochenhaueramtshaus",
     "name": "Knochenhauer-Amtshaus",
+    "adresse": "Markt 7",
+    "plz": "31134",
     "stadt": "Hildesheim",
-    "art": "rahmenprogramm",
-    "hinweis": "am Historischen Marktplatz"
+    "art": "rahmenprogramm"
   },
   {
     "id": "st-godehard",
@@ -153,6 +156,8 @@
   {
     "id": "halle39",
     "name": "Halle39",
+    "adresse": "Schinkelstraße 7",
+    "plz": "31137",
     "stadt": "Hildesheim",
     "art": "rahmenprogramm"
   },
