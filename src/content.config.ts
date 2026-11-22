@@ -89,10 +89,10 @@ const programm = defineCollection({
        */
       hinweis: z.string().optional(),
       /**
-       * Personen bleiben vorerst leer: Das Repository ist oeffentlich, und die
-       * Vorlage fuehrt Referierende teils mit Vermerken wie "angefragt".
-       * Erst wenn das Orga-Team benennt, welche Namen freigegeben sind, wird
-       * hier gepflegt. Siehe docs/offene-fragen.md.
+       * Mitwirkende aus dem Programmheft 2027. Das Repository ist oeffentlich:
+       * Namen mit Vorbehalt ("unverbindlich zugesagt", "angefragt") und
+       * Platzhalter fuer offene Gaeste gehoeren NICHT hierher - das prueft
+       * tests/unit/programmdaten.test.ts.
        */
       personen: z
         .array(z.object({ name: z.string().min(1), rolle: z.string().optional() }))
@@ -119,8 +119,11 @@ const exkursionen = defineCollection({
   loader: file("src/content/exkursionen.json"),
   schema: z.object({
     titel: z.string().min(1),
-    /** Plaetze insgesamt. Die Vergabe braucht einen Server (ADR-0004). */
-    plaetze: z.number().int().positive(),
+    /**
+     * Plaetze insgesamt, sofern bekannt. Das Programmheft 2027 nennt keine;
+     * die Vergabe laeuft ueber die Anmeldung (ADR-0011).
+     */
+    plaetze: z.number().int().positive().optional(),
     zeitrahmen: z.string().min(1),
     /** Verweist auf einen Eintrag in orte.json. */
     ortId: z.string().optional(),

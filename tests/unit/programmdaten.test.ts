@@ -12,7 +12,10 @@ import { describe, expect, it } from "vitest";
  * 2031 bis 2042 statt 2027. Jede dieser Zeilen war ein gueltiges Datum.
  */
 
-const DATEI = fileURLToPath(new URL("../../src/content/programm.json", import.meta.url));
+const inhalt = (datei: string) =>
+  JSON.parse(
+    readFileSync(fileURLToPath(new URL(`../../src/content/${datei}`, import.meta.url)), "utf8"),
+  );
 
 interface Eintrag {
   id: string;
@@ -20,10 +23,17 @@ interface Eintrag {
   beginn?: string;
   ende?: string;
   zeitHinweis?: string;
-  personen?: unknown[];
+  ortId?: string;
+  spur?: string;
+  personen?: { name: string; rolle?: string }[];
 }
 
-const punkte = JSON.parse(readFileSync(DATEI, "utf8")) as Eintrag[];
+const punkte = inhalt("programm.json") as Eintrag[];
+const orte = inhalt("orte.json") as { id: string; name: string; adresse?: string; plz?: string }[];
+const ortIds = new Set(orte.map((o) => o.id));
+const exkursionen = new Map(
+  (inhalt("exkursionen.json") as { id: string; info?: string }[]).map((e) => [e.id, e]),
+);
 
 /** Die Tagung laeuft vom 5. bis 9. Mai 2027. Der Festabend endet am 9. um 03:00 Uhr. */
 const ERSTER_TAG = "2027-05-05";
@@ -72,20 +82,49 @@ describe("Programmdaten", () => {
     expect(punkt.beginn !== undefined || punkt.zeitHinweis !== undefined).toBe(true);
   });
 
-  /**
-   * Das Repository ist oeffentlich. Solange nicht geklaert ist, welche Namen
-   * freigegeben sind (docs/offene-fragen.md), gehoert keiner in den Datenbestand -
-   * die Vorlage fuehrt Referierende teils mit Vermerken wie "angefragt".
-   *
-   * Dieser Test wird entfernt, sobald die Freigabe vorliegt. Bis dahin verhindert
-   * er, dass ein Name versehentlich veroeffentlicht wird.
-   */
-  it("enthalten noch keine Personennamen", () => {
-    const mitPersonen = punkte.filter((p) => (p.personen?.length ?? 0) > 0).map((p) => p.id);
+  it.each(punkte.filter((p) => p.ortId).map((p) => [p.id, p.ortId] as const))(
+    "%s verweist auf einen gepflegten Ort",
+    (_id, ortId) => {
+      expect(ortIds.has(ortId!), `${ortId} fehlt in orte.json`).toBe(true);
+    },
+  );
 
-    expect(
-      mitPersonen,
-      `Personennamen brauchen erst die Freigabe des Orga-Teams: ${mitPersonen.join(", ")}`,
-    ).toEqual([]);
+  /** Anschriften der Veranstaltungsorte laut Programmheft 2027 (Abschnitt "Tagungsorte"). */
+  it.each([
+    ["deseo", "Hindenburgplatz 3", "31134"],
+    ["mariano-josephinum", "Domhof 7", "31134"],
+    ["knochenhaueramtshaus", "Markt 7", "31134"],
+    ["halle39", "Schinkelstraße 7", "31137"],
+    ["marktplatz", "Markt 1", "31134"],
+    ["dom", "Domhof 3", "31134"],
+  ])("Ort %s hat die Anschrift %s, %s Hildesheim", (id, adresse, plz) => {
+    const ort = orte.find((o) => o.id === id);
+    expect(ort?.adresse).toBe(adresse);
+    expect(ort?.plz).toBe(plz);
+  });
+
+  /** Die Beschreibung einer Exkursion steht in exkursionen.json (programm.astro). */
+  it.each(punkte.filter((p) => p.spur === "exkursion").map((p) => p.id))(
+    "Exkursion %s hat eine Beschreibung",
+    (id) => {
+      expect(exkursionen.get(id)?.info, `${id} fehlt in exkursionen.json`).toBeTruthy();
+    },
+  );
+
+  /**
+   * Das Repository ist oeffentlich, und was hier steht, ist mit dem Commit
+   * veroeffentlicht. Die Namen aus dem Programmheft 2027 sind freigegeben -
+   * ausser denen mit Vorbehalt ("unverbindlich zugesagt", "angefragt") und den
+   * Platzhaltern fuer noch offene Gaeste. Die duerfen nie als Person erscheinen.
+   */
+  it("veroeffentlichen keine Person mit Vorbehalt und keinen Platzhalter als Namen", () => {
+    const vorbehalt = /angefragt|unverbindlich|zugesagt|\[|\]|podiumsgast/i;
+    const betroffen = punkte.flatMap((p) =>
+      (p.personen ?? [])
+        .filter((person) => vorbehalt.test(`${person.name} ${person.rolle ?? ""}`))
+        .map((person) => `${p.id}: ${person.name}`),
+    );
+
+    expect(betroffen).toEqual([]);
   });
 });
