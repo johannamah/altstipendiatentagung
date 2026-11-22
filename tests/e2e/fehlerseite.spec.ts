@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
-/* Auf Cloudflare liefert not_found_handling "404-page" genau diese Seite aus
-   (wrangler.jsonc); astro preview verhaelt sich gleich. */
+/* Vercel liefert fuer unbekannte Adressen dist/404.html mit Status 404 aus;
+   astro preview verhaelt sich gleich. */
 test("eine unbekannte Adresse zeigt die Fehlerseite mit Weg zur Übersicht", async ({ page }) => {
   const antwort = await page.goto("/gibt-es-nicht");
 

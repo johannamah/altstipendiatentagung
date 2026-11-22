@@ -58,28 +58,21 @@ npx playwright install --with-deps chromium
 
 ## Deployment
 
-Produktiv deployt nur der Workflow `Deployment` von `main` ([ADR-0012](docs/decisions/0012-hosting-auf-cloudflare.md)).
-Lokal lässt sich die Cloudflare-Konfiguration ohne Zugangsdaten prüfen:
+Produktiv deployt nur der Workflow `Deployment` von `main`
+([ADR-0013](docs/decisions/0013-hosting-auf-vercel.md)). Vorschauen zu Pull Requests
+baut die Git-Anbindung von Vercel.
 
-```bash
-npm run build
-npx --yes wrangler@4.151.3 deploy --dry-run
-```
+Kopfzeilen für Caching und Sicherheit sowie die Weiterleitung auf Adressen mit `/` am
+Ende stehen in `vercel.json`. `astro preview` wertet die Datei nicht aus —
+Abweichungen zwischen lokaler Vorschau und Vercel haben oft dort ihre Ursache.
 
-Die Version entspricht `WRANGLER_VERSION` in `.github/workflows/deployment.yml`; beim
-Anheben beide Stellen ändern. Kopfzeilen für Caching und Sicherheit stehen in
-`public/_headers`, die Auslieferung in `wrangler.jsonc`. `astro preview` wertet beide
-nicht aus — Abweichungen zwischen Vorschau und Produktion haben oft dort ihre Ursache.
+Umgebungsvariablen der App (`PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_KEY`,
+`ZUGANGSWORT`) werden in Vercel gepflegt, nicht in GitHub. Lokal stehen sie in einer
+`.env`, die nie ins Repository gehört.
 
-Zurück auf einen früheren Stand:
-
-```bash
-npx --yes wrangler@4.151.3 deployments list
-npx --yes wrangler@4.151.3 rollback <version-id>
-```
-
-(braucht `CLOUDFLARE_API_TOKEN` in der Umgebung, alternativ im Cloudflare-Dashboard
-unter Workers & Pages → altstipendiaten-jahrestagung → Deployments).
+Zurück auf einen früheren Stand: im Vercel-Dashboard unter Deployments bei der
+gewünschten Version **Instant Rollback**. Das nächste Deployment von `main`
+überschreibt den Rollback.
 
 ## Aufbau
 

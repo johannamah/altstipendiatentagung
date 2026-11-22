@@ -1,6 +1,6 @@
 # ADR-0012: Hosting auf Cloudflare mit Deployment über GitHub Actions
 
-- **Status:** Vorgeschlagen
+- **Status:** Zurückgezogen (2026-11-22). Der Verein hat sich für Vercel entschieden, siehe [ADR-0013](0013-hosting-auf-vercel.md).
 - **Datum:** 2026-11-07
 - **Beteiligt:** beide Entwickler
 - **Bezug:** F2, F3, F11; ADR-0003, ADR-0004, ADR-0005, ADR-0010

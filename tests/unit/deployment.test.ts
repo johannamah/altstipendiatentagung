@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
@@ -6,36 +6,30 @@ import { describe, expect, it } from "vitest";
 import astroKonfiguration from "../../astro.config.mjs";
 
 /**
- * Auslieferung ueber Cloudflare (ADR-0012). Geprueft wird, was beim Hoster
- * schiefgehen kann, ohne dass ein lokaler Lauf es merkt: Astro und
- * `astro preview` kennen weder wrangler.jsonc noch _headers.
+ * Auslieferung ueber Vercel (ADR-0013). Geprueft wird, was beim Hoster
+ * schiefgehen kann, ohne dass ein lokaler Lauf es merkt: `astro preview`
+ * kennt vercel.json nicht.
  */
 
 const wurzel = (pfad: string) => fileURLToPath(new URL(`../../${pfad}`, import.meta.url));
 
-/**
- * wrangler.jsonc erlaubt Kommentare und abschliessende Kommas (Prettier setzt
- * sie). Kommentare stehen hier nur auf eigenen Zeilen.
- */
-function wranglerKonfiguration() {
-  const roh = readFileSync(wurzel("wrangler.jsonc"), "utf8");
-  return JSON.parse(roh.replace(/^\s*\/\/.*$/gm, "").replace(/,(\s*[}\]])/g, "$1"));
+interface Kopfzeilenregel {
+  source: string;
+  headers: { key: string; value: string }[];
 }
 
-/** Kopfzeilen je Pfadmuster aus public/_headers. */
-function kopfzeilen(): Map<string, string[]> {
-  const regeln = new Map<string, string[]>();
-  let muster: string | undefined;
-  for (const zeile of readFileSync(wurzel("public/_headers"), "utf8").split("\n")) {
-    if (zeile.trim() === "" || zeile.trimStart().startsWith("#")) continue;
-    if (!/^\s/.test(zeile)) {
-      muster = zeile.trim();
-      regeln.set(muster, []);
-    } else if (muster) {
-      regeln.get(muster)!.push(zeile.trim());
-    }
-  }
-  return regeln;
+const konfiguration = JSON.parse(readFileSync(wurzel("vercel.json"), "utf8")) as {
+  framework: string;
+  outputDirectory: string;
+  trailingSlash: boolean;
+  git: { deploymentEnabled: Record<string, boolean> };
+  headers: Kopfzeilenregel[];
+};
+
+/** Kopfzeilen einer Regel als "Name: Wert", wie man sie im Browser liest. */
+function kopfzeilen(quelle: string): string[] {
+  const regel = konfiguration.headers.find((r) => r.source === quelle);
+  return (regel?.headers ?? []).map((h) => `${h.key}: ${h.value}`);
 }
 
 describe("Adresse", () => {
@@ -44,48 +38,45 @@ describe("Adresse", () => {
   });
 });
 
-describe("Cloudflare-Konfiguration", () => {
-  const konfiguration = wranglerKonfiguration();
-
+describe("Vercel-Konfiguration", () => {
   it("liefert den Astro-Build aus", () => {
-    expect(konfiguration.assets.directory).toBe("./dist");
+    expect(konfiguration.framework).toBe("astro");
+    expect(konfiguration.outputDirectory).toBe("dist");
   });
 
-  it("zeigt bei unbekannten Adressen die Fehlerseite statt der Startseite", () => {
-    expect(konfiguration.assets.not_found_handling).toBe("404-page");
+  /** Dieselben Adressen, die der Service Worker vorab speichert ("/programm/"). */
+  it("fuehrt Adressen mit abschliessendem Schraegstrich", () => {
+    expect(konfiguration.trailingSlash).toBe(true);
   });
 
-  /** Eine zweite Adresse laege an Cloudflare Access vorbei. */
-  it("hat keine zusaetzlichen workers.dev- oder Vorschau-Adressen", () => {
-    expect(konfiguration.workers_dev).toBe(false);
-    expect(konfiguration.preview_urls).toBe(false);
+  /**
+   * Produktion nur ueber den Workflow mit Freigabe (AGENTS.md). Ein Push auf
+   * main darf nicht nebenbei ueber die Git-Anbindung live gehen.
+   */
+  it("deployt main nicht ueber die Git-Anbindung", () => {
+    expect(konfiguration.git.deploymentEnabled.main).toBe(false);
   });
 
-  it("haengt an der Domain der Tagung", () => {
-    expect(konfiguration.routes).toEqual([
-      { pattern: "altstipendiaten-jahrestagung.de", custom_domain: true },
-    ]);
-  });
-
-  it("schickt keine Nutzungsdaten an Cloudflare", () => {
-    expect(konfiguration.send_metrics).toBe(false);
+  it("enthaelt keine Cloudflare-Konfiguration mehr", () => {
+    expect(existsSync(wurzel("wrangler.jsonc"))).toBe(false);
+    expect(existsSync(wurzel("public/_headers"))).toBe(false);
   });
 });
 
 describe("Kopfzeilen", () => {
-  const regeln = kopfzeilen();
-
   /** Sonst haengen Geraete tagelang an einem alten Service Worker. */
   it("laesst den Service Worker nicht zwischenspeichern", () => {
-    expect(regeln.get("/sw.js")).toContain("Cache-Control: no-cache");
+    expect(kopfzeilen("/sw.js")).toContain("Cache-Control: no-cache");
   });
 
   it("speichert gehashte Dateien dauerhaft", () => {
-    expect(regeln.get("/_astro/*")).toContain("Cache-Control: public, max-age=31536000, immutable");
+    expect(kopfzeilen("/_astro/(.*)")).toContain(
+      "Cache-Control: public, max-age=31536000, immutable",
+    );
   });
 
   it("setzt Sicherheitskopfzeilen fuer jede Seite", () => {
-    expect(regeln.get("/*")).toEqual(
+    expect(kopfzeilen("/(.*)")).toEqual(
       expect.arrayContaining([
         "X-Content-Type-Options: nosniff",
         "Referrer-Policy: strict-origin-when-cross-origin",

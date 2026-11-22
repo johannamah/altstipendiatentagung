@@ -49,16 +49,17 @@ weiterentwickelt — siehe [archiv/README.md](archiv/README.md) und
 
 ## Veröffentlichung
 
-Die App läuft unter **https://altstipendiaten-jahrestagung.de** auf Cloudflare Workers
-mit statischen Assets ([ADR-0012](docs/decisions/0012-hosting-auf-cloudflare.md)).
+Die App läuft unter **https://altstipendiaten-jahrestagung.de** auf Vercel
+([ADR-0013](docs/decisions/0013-hosting-auf-vercel.md)).
 
 - Jeder Merge auf `main` startet den Workflow `Deployment`. Er wartet auf die Freigabe
   im GitHub Environment `production`, prüft, deployt und ruft danach die echte Adresse
   ab.
-- Bis zum Go-Live steht Cloudflare Access davor: Zugang nur für freigegebene
-  E-Mail-Adressen, mit Einmalcode.
-- Einrichtung von Cloudflare, Strato und GitHub Schritt für Schritt:
-  [docs/betrieb/einrichtung-cloudflare.html](docs/betrieb/einrichtung-cloudflare.html)
+- Pull Requests bekommen über die Git-Anbindung von Vercel eine Vorschau.
+- Bis zum Go-Live ist die Zugangsabfrage aus
+  [ADR-0010](docs/decisions/0010-zugangssperre.md) aktiv.
+- Einrichtung von Vercel, Strato und GitHub Schritt für Schritt:
+  [docs/betrieb/einrichtung-vercel.html](docs/betrieb/einrichtung-vercel.html)
   (im Browser öffnen).
 
 ## Mitwirkende
