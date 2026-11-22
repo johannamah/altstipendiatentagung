@@ -85,7 +85,7 @@ test("die Titel bleiben Ueberschriften, auch zugeklappt", async ({ page }) => {
 });
 
 /**
- * Am Freitag stehen sieben Exkursionen zur Wahl. Eine schlichte Liste liest
+ * Am Freitag stehen zehn Exkursionen zur Wahl. Eine schlichte Liste liest
  * sich wie eine Abfolge - deshalb Einrueckung, Verbindungslinie UND ein Satz,
  * der es ausspricht.
  */
@@ -93,7 +93,7 @@ test("gleichzeitige Punkte sind eingerueckt und als Auswahl benannt", async ({ p
   await expect(page.getByText(/Diese Punkte laufen parallel/).first()).toBeVisible();
 
   const eingerueckt = page.locator("#tag-2027-05-07 .eintrag[data-gruppe]");
-  await expect(eingerueckt).toHaveCount(7);
+  await expect(eingerueckt).toHaveCount(10);
 
   const innen = await eingerueckt.first().evaluate((el) => getComputedStyle(el).borderLeftWidth);
   expect(parseFloat(innen)).toBeGreaterThan(0);
@@ -124,15 +124,15 @@ test("blendet den Abschnitt fuer Punkte ohne Termin aus, solange es keine gibt",
 
 /**
  * Die Beschreibung kommt aus exkursionen.json, nicht aus dem Programm.
- * Sie hat mehrere Absaetze; "Was erwartet Dich?" muss einen eigenen beginnen,
- * statt im Fliesstext davor unterzugehen.
+ * Sie hat mehrere Absaetze; jeder muss einen eigenen beginnen, statt im
+ * Fliesstext davor unterzugehen.
  */
 test("zeigt die Beschreibung einer Exkursion beim Aufklappen", async ({ page }) => {
-  const punkt = page.locator('.punkt[data-id="exkursion-ndr"]');
+  const punkt = page.locator('.punkt[data-id="exkursion-hennies"]');
   await punkt.locator("summary").click();
 
-  await expect(punkt.getByText(/^Wie entstehen Nachrichten/)).toBeVisible();
-  await expect(punkt.getByText(/^Was erwartet Dich\? Bei einer Führung/)).toBeVisible();
+  await expect(punkt.getByText(/^Was für die einen Abfall ist/)).toBeVisible();
+  await expect(punkt.getByText(/^Bei unserem Unternehmensbesuch/)).toBeVisible();
 });
 
 test("weist einen Punkt ueber Mitternacht als solchen aus", async ({ page }) => {

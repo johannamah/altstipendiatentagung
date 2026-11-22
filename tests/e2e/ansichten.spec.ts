@@ -145,7 +145,7 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
     await page.goto("/kontakt");
 
     await expect(page.getByRole("heading", { name: "Tagungsort" })).toBeVisible();
-    await expect(page.getByText("Bahnhofsallee 38")).toBeVisible();
+    await expect(page.getByText("Mariano-Josephinum").first()).toBeVisible();
   });
 
   test("FAQ lässt sich ohne JavaScript auf- und zuklappen", async ({ page }) => {
@@ -237,19 +237,25 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
   });
 
   /**
-   * Solange die Originaltexte fehlen, muss an jedem Grusswort stehen, dass es
-   * ein Beispiel ist - sonst haelt es jemand fuer abgestimmt und zitiert es.
+   * Solange ein Originaltext fehlt, muss am Grusswort stehen, dass es ein
+   * Beispiel ist - sonst haelt es jemand fuer abgestimmt und zitiert es. Laut
+   * Programmheft 2027 fehlt nur noch der Text von Annegret Kramp-Karrenbauer.
    */
-  test("Begrüßung weist jeden Text als Beispiel aus", async ({ page }) => {
+  test("Begrüßung weist fehlende Originaltexte als Beispiel aus", async ({ page }) => {
     await page.goto("/begruessung");
 
-    await expect(page.getByText("Beispieltext – Originaltext folgt")).toHaveCount(3);
+    const beispiel = page.getByText("Beispieltext – Originaltext folgt");
+    await expect(beispiel).toHaveCount(1);
+    await expect(page.locator(".grusswort").filter({ has: beispiel })).toContainText(
+      "Annegret Kramp-Karrenbauer",
+    );
   });
 
-  test("Begrüßung zeigt zu jedem Grußwort ein Porträt", async ({ page }) => {
+  /** Für Dr. Ingo Meyer liegt noch kein Porträt vor; sein Grußwort steht ohne Bild. */
+  test("Begrüßung zeigt die vorhandenen Porträts", async ({ page }) => {
     await page.goto("/begruessung");
 
-    await expect(page.locator(".grusswort img")).toHaveCount(3);
+    await expect(page.locator(".grusswort img")).toHaveCount(2);
   });
 
   /**
