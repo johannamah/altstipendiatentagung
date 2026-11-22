@@ -12,13 +12,13 @@ import {
   type Ort,
 } from "../../src/lib/orte.ts";
 
-const novotel: Ort = {
-  id: "novotel",
-  name: "Novotel Hildesheim",
-  adresse: "Bahnhofsallee 38",
+const amtshaus: Ort = {
+  id: "knochenhaueramtshaus",
+  name: "Knochenhauer-Amtshaus",
+  adresse: "Markt 7",
   plz: "31134",
   stadt: "Hildesheim",
-  art: "tagungsort",
+  art: "rahmenprogramm",
 };
 
 const ohneAdresse: Ort = {
@@ -30,7 +30,7 @@ const ohneAdresse: Ort = {
 
 describe("vollstaendigeAdresse", () => {
   it("setzt Strasse, Postleitzahl und Stadt zusammen", () => {
-    expect(vollstaendigeAdresse(novotel)).toBe("Bahnhofsallee 38, 31134 Hildesheim");
+    expect(vollstaendigeAdresse(amtshaus)).toBe("Markt 7, 31134 Hildesheim");
   });
 
   it("laesst fehlende Teile weg, statt Luecken zu zeigen", () => {
@@ -45,7 +45,7 @@ describe("istGenauBestimmt", () => {
    * sagen, was von beidem sie tut.
    */
   it("verlangt Adresse oder Koordinaten", () => {
-    expect(istGenauBestimmt(novotel)).toBe(true);
+    expect(istGenauBestimmt(amtshaus)).toBe(true);
     expect(istGenauBestimmt(ohneAdresse)).toBe(false);
     expect(istGenauBestimmt({ ...ohneAdresse, koordinaten: { breite: 52, laenge: 9 } })).toBe(true);
   });
@@ -74,23 +74,23 @@ describe("Verweise ohne Strasse", () => {
 
 describe("googleMapsVerweis", () => {
   it("nutzt das dokumentierte Suchmuster", () => {
-    expect(googleMapsVerweis(novotel)).toContain(
+    expect(googleMapsVerweis(amtshaus)).toContain(
       "https://www.google.com/maps/search/?api=1&query=",
     );
   });
 
   it("maskiert Sonderzeichen in der Adresse", () => {
-    const verweis = googleMapsVerweis(novotel);
+    const verweis = googleMapsVerweis(amtshaus);
 
     expect(verweis).not.toContain(" ");
     expect(decodeURIComponent(verweis.split("query=")[1]!)).toBe(
-      "Novotel Hildesheim, Bahnhofsallee 38, 31134 Hildesheim",
+      "Knochenhauer-Amtshaus, Markt 7, 31134 Hildesheim",
     );
   });
 
   /** Koordinaten sind eindeutig, eine Adresse muss erst gedeutet werden. */
   it("bevorzugt Koordinaten, wenn vorhanden", () => {
-    const mitKoordinaten = { ...novotel, koordinaten: { breite: 52.1553, laenge: 9.9512 } };
+    const mitKoordinaten = { ...amtshaus, koordinaten: { breite: 52.1553, laenge: 9.9512 } };
 
     expect(googleMapsVerweis(mitKoordinaten)).toContain("52.1553%2C9.9512");
   });
@@ -98,17 +98,17 @@ describe("googleMapsVerweis", () => {
 
 describe("appleKartenVerweis", () => {
   it("nutzt das dokumentierte Muster mit Name und Adresse", () => {
-    const verweis = appleKartenVerweis(novotel);
+    const verweis = appleKartenVerweis(amtshaus);
 
     expect(verweis).toContain("https://maps.apple.com/?");
     const felder = new URL(verweis).searchParams;
-    expect(felder.get("q")).toBe("Novotel Hildesheim");
-    expect(felder.get("address")).toBe("Bahnhofsallee 38, 31134 Hildesheim");
+    expect(felder.get("q")).toBe("Knochenhauer-Amtshaus");
+    expect(felder.get("address")).toBe("Markt 7, 31134 Hildesheim");
   });
 
   it("nutzt Koordinaten statt Adresse, wenn vorhanden", () => {
     const verweis = appleKartenVerweis({
-      ...novotel,
+      ...amtshaus,
       koordinaten: { breite: 52.1553, laenge: 9.9512 },
     });
     const felder = new URL(verweis).searchParams;
@@ -119,7 +119,7 @@ describe("appleKartenVerweis", () => {
 
   it("uebersteht Namen mit Sonderzeichen", () => {
     const verweis = appleKartenVerweis({
-      ...novotel,
+      ...amtshaus,
       name: "deseo Cafe . Restaurant . Bar",
     });
 
@@ -186,7 +186,7 @@ describe("alsKartenpunkte", () => {
   });
 
   it("liefert nichts, wenn keine Koordinaten vorliegen", () => {
-    expect(alsKartenpunkte([novotel, ohneAdresse])).toEqual([]);
+    expect(alsKartenpunkte([amtshaus, ohneAdresse])).toEqual([]);
   });
 
   it("uebergeht Orte ohne Koordinaten, statt sie falsch zu setzen", () => {

@@ -27,9 +27,9 @@ describe("Unterkünfte", () => {
   it("sind die fünf Hotels mit Abrufkontingent", () => {
     expect(unterkuenfte.map((u) => u.name)).toEqual([
       "B&B Hotel Hildesheim",
-      "HeyLou Hildesheim",
+      "HeyLou Hotel Hildesheim",
       "Schlafladen Hildesheim",
-      "Hotel Bürgermeisterkapelle",
+      "Hotel Bürgermeisterkapelle Hildesheim",
       "Van der Valk Hotel Hildesheim",
     ]);
   });
@@ -38,7 +38,8 @@ describe("Unterkünfte", () => {
     "%s nennt das Stichwort und einen Buchungslink",
     (_name, unterkunft) => {
       expect(unterkunft.kontingent).toBe(true);
-      expect(unterkunft.stichwort).toBe("Konrad-Adenauer-Stiftung");
+      // Wortlaut laut Programmheft - so wird er bei der Buchung angegeben.
+      expect(unterkunft.stichwort).toBe("Abrufkontingent, Stichwort: Konrad-Adenauer-Stiftung");
       expect(unterkunft.web).toMatch(/^https:\/\//);
     },
   );
@@ -59,12 +60,17 @@ describe("Unterkünfte", () => {
   );
 });
 
-/** Das Novotel ist kein Tagungshotel mehr und soll nirgends mehr auftauchen. */
+/**
+ * Beim Novotel findet nichts mehr statt. Es soll nirgends in der App
+ * auftauchen - weder in den Inhalten noch im Quelltext.
+ */
 describe("Novotel", () => {
-  it.each(readdirSync(inhalte).filter((datei) => datei.endsWith(".json")))(
-    "kommt in %s nicht mehr vor",
-    (datei) => {
-      expect(readFileSync(`${inhalte}/${datei}`, "utf8")).not.toMatch(/novotel|KAS - Holstein/i);
-    },
+  const quelltext = fileURLToPath(new URL("../../src", import.meta.url));
+  const textdateien = (readdirSync(quelltext, { recursive: true }) as string[]).filter((datei) =>
+    /\.(json|ts|astro|css|mjs)$/.test(datei),
   );
+
+  it.each(textdateien)("kommt in src/%s nicht vor", (datei) => {
+    expect(readFileSync(`${quelltext}/${datei}`, "utf8")).not.toMatch(/novotel|KAS - Holstein/i);
+  });
 });

@@ -6,7 +6,7 @@
     "ortId": "bb-hotel",
     "kontingent": true,
     "zeitraum": "06.05.2027 – 09.05.2027",
-    "stichwort": "Konrad-Adenauer-Stiftung",
+    "stichwort": "Abrufkontingent, Stichwort: Konrad-Adenauer-Stiftung",
     "zimmer": [
       {
         "typ": "Einzelzimmer",
@@ -23,11 +23,11 @@
   {
     "id": "hey-lou-hotel",
     "reihenfolge": 2,
-    "name": "HeyLou Hildesheim",
+    "name": "HeyLou Hotel Hildesheim",
     "ortId": "hey-lou",
     "kontingent": true,
     "zeitraum": "06.05.2027 – 09.05.2027",
-    "stichwort": "Konrad-Adenauer-Stiftung",
+    "stichwort": "Abrufkontingent, Stichwort: Konrad-Adenauer-Stiftung",
     "zimmer": [
       {
         "typ": "Einzelzimmer",
@@ -48,7 +48,7 @@
     "ortId": "schlafladen",
     "kontingent": true,
     "zeitraum": "06.05.2027 – 09.05.2027",
-    "stichwort": "Konrad-Adenauer-Stiftung",
+    "stichwort": "Abrufkontingent, Stichwort: Konrad-Adenauer-Stiftung",
     "zimmer": [
       {
         "typ": "Standard-Doppelzimmer (Straßenseite)",
@@ -82,11 +82,11 @@
   {
     "id": "buergermeisterkapelle",
     "reihenfolge": 4,
-    "name": "Hotel Bürgermeisterkapelle",
+    "name": "Hotel Bürgermeisterkapelle Hildesheim",
     "ortId": "buergermeisterkapelle",
     "kontingent": true,
     "zeitraum": "06.05.2027 – 09.05.2027",
-    "stichwort": "Konrad-Adenauer-Stiftung",
+    "stichwort": "Abrufkontingent, Stichwort: Konrad-Adenauer-Stiftung",
     "zimmer": [
       {
         "typ": "Einzelzimmer",
@@ -100,7 +100,7 @@
       }
     ],
     "fruehstueck": "inbegriffen",
-    "hinweis": "Das Kontingent verfällt ab Mitte März 2027. Danach gehen alle Zimmer in den freien Verkauf.",
+    "hinweis": "Das Abrufkontingent verfällt ab Mitte März 2027. Danach gehen die nicht abgerufenen Zimmer in den freien Verkauf.",
     "telefon": "+49 (0) 51 21 – 179 29 0",
     "email": "info@hotelbuergermeisterkapelle.de",
     "web": "https://hotelbuergermeisterkapelle.de/"
@@ -112,7 +112,7 @@
     "ortId": "van-der-valk",
     "kontingent": true,
     "zeitraum": "06.05.2027 – 09.05.2027",
-    "stichwort": "Konrad-Adenauer-Stiftung",
+    "stichwort": "Abrufkontingent, Stichwort: Konrad-Adenauer-Stiftung",
     "zimmer": [
       {
         "typ": "Einzel- oder Doppelzimmer",

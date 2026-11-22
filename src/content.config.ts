@@ -33,9 +33,9 @@ const ortszeit = z
  * Die Orte der Tagung, an EINER Stelle gepflegt.
  *
  * Vorher standen Ort und Adresse als Freitext in drei Sammlungen - mit
- * 17 Schreibweisen fuer 12 Orte. "Novotel", "Novotel Hildesheim" und
- * "Novotel, Raum 2" waren dasselbe Haus, und die Adresse stand genau einmal
- * da, obwohl das Haus 36-mal im Programm vorkommt. Das verstiess gegen
+ * 17 Schreibweisen fuer 12 Orte. Der damalige Tagungsort stand in drei
+ * Schreibweisen da, und seine Adresse genau einmal, obwohl das Haus 36-mal
+ * im Programm vorkam. Das verstiess gegen
  * Produktprinzip 2 und machte jede Kartenverknuepfung zum Gluecksspiel.
  *
  * Koordinaten sind freiwillig: Fuer die Weiterleitung an Karten-Apps genuegt

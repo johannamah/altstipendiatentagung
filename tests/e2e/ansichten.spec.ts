@@ -70,12 +70,14 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
 
     await expect(page.getByRole("heading", { level: 3 })).toHaveText([
       "B&B Hotel Hildesheim",
-      "HeyLou Hildesheim",
+      "HeyLou Hotel Hildesheim",
       "Schlafladen Hildesheim",
-      "Hotel Bürgermeisterkapelle",
+      "Hotel Bürgermeisterkapelle Hildesheim",
       "Van der Valk Hotel Hildesheim",
     ]);
-    await expect(page.getByText("„Konrad-Adenauer-Stiftung“").first()).toBeVisible();
+    await expect(
+      page.getByText("„Abrufkontingent, Stichwort: Konrad-Adenauer-Stiftung“").first(),
+    ).toBeVisible();
     await expect(page.getByText("77,68 € / Nacht")).toBeVisible();
     await expect(page.getByText(/verfällt ab Mitte März 2027/)).toBeVisible();
     await expect(
