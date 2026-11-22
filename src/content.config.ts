@@ -33,9 +33,9 @@ const ortszeit = z
  * Die Orte der Tagung, an EINER Stelle gepflegt.
  *
  * Vorher standen Ort und Adresse als Freitext in drei Sammlungen - mit
- * 17 Schreibweisen fuer 12 Orte. "Novotel", "Novotel Hildesheim" und
- * "Novotel, Raum 2" waren dasselbe Haus, und die Adresse stand genau einmal
- * da, obwohl das Haus 36-mal im Programm vorkommt. Das verstiess gegen
+ * 17 Schreibweisen fuer 12 Orte. Der damalige Tagungsort stand in drei
+ * Schreibweisen da, und seine Adresse genau einmal, obwohl das Haus 36-mal
+ * im Programm vorkam. Das verstiess gegen
  * Produktprinzip 2 und machte jede Kartenverknuepfung zum Gluecksspiel.
  *
  * Koordinaten sind freiwillig: Fuer die Weiterleitung an Karten-Apps genuegt
@@ -140,6 +140,8 @@ const unterkuenfte = defineCollection({
   loader: file("src/content/unterkuenfte.json"),
   schema: z.object({
     name: z.string().min(1),
+    /** Kleinere Zahl steht weiter oben - die Reihenfolge der Kontingentuebersicht. */
+    reihenfolge: z.number().int(),
     /** Verweist auf einen Eintrag in orte.json. */
     ortId: z.string().optional(),
     /** true = eigenes Kontingent fuer die Tagung, false = blosse Empfehlung. */
@@ -147,8 +149,21 @@ const unterkuenfte = defineCollection({
     zeitraum: z.string().optional(),
     stichwort: z.string().optional(),
     zimmer: z
-      .array(z.object({ typ: z.string(), anzahl: z.number().int(), preis: z.string() }))
+      .array(
+        z.object({
+          typ: z.string(),
+          /** Reservierte Zimmer; fehlt, wenn das Hotel keine Zahl nennt. */
+          anzahl: z.number().int().positive().optional(),
+          preis: z.string(),
+          /** Weitere Belegung, Ausstattung, z. B. "bei Einzelnutzung 74,00 € / Nacht". */
+          hinweis: z.string().optional(),
+        }),
+      )
       .default([]),
+    /** z. B. "inbegriffen" oder "nicht inbegriffen, 9,90 € pro Person". */
+    fruehstueck: z.string().optional(),
+    /** Bedingungen des Kontingents, etwa eine Verfallsfrist. Oeffentlich sichtbar. */
+    hinweis: z.string().optional(),
     adresse: z.string().optional(),
     telefon: z.string().optional(),
     email: z.string().optional(),
