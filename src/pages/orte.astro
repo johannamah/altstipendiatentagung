@@ -1,10 +1,13 @@
 ---
+import { getImage, Image } from "astro:assets";
 import { getCollection } from "astro:content";
 
 import Basis from "../layouts/Basis.astro";
 import Seitenkopf from "../components/Seitenkopf.astro";
-import Platzhalterhinweis from "../components/Platzhalterhinweis.astro";
+import Ikone from "../components/Ikone.astro";
 import Ortsangabe from "../components/Ortsangabe.astro";
+import stadtplan from "../assets/orte/stadtplan-hildesheim.png";
+import { AUSGANGSORT_ID, WEGE_IM_STADTPLAN } from "../daten/stadtplan.ts";
 import { alsKartenpunkte, ARTBEZEICHNUNG, ARTREIHENFOLGE, type Ort } from "../lib/orte.ts";
 
 const orte: Ort[] = (await getCollection("orte")).map((eintrag) => ({
@@ -12,6 +15,28 @@ const orte: Ort[] = (await getCollection("orte")).map((eintrag) => ({
   ...eintrag.data,
 }));
 
+/* Ein Tippfehler in src/daten/stadtplan.ts soll den Bau anhalten, statt einen
+   Ort stillschweigend aus der Textalternative fallen zu lassen. */
+const nachKennung = new Map(orte.map((ort) => [ort.id, ort]));
+const ortZu = (id: string): Ort => {
+  const ort = nachKennung.get(id);
+  if (!ort) throw new Error(`Stadtplan: Ort "${id}" fehlt in src/content/orte.json.`);
+  return ort;
+};
+
+const ausgangsort = ortZu(AUSGANGSORT_ID);
+const wege = WEGE_IM_STADTPLAN.map(({ ortId, zusatz, weg }) => {
+  const ort = ortZu(ortId);
+  return { ziel: zusatz ? `${ort.name} (${zusatz})` : ort.name, adresse: ort.adresse, weg };
+});
+
+/* Zum Vergroessern auf dem Smartphone: der ganze Plan in voller Aufloesung,
+   aber als WebP statt des rund 2 MB grossen PNG aus dem Repository. */
+const vollbild = await getImage({ src: stadtplan, format: "webp", quality: 90 });
+
+/* Die selbst gezeichnete Koordinatenkarte erscheint weiterhin, sobald Orte
+   Koordinaten haben. Ob sie neben dem Stadtplan dann noch gebraucht wird, ist
+   eine Produktfrage - bis dahin bleibt sie still. */
 const punkte = alsKartenpunkte(orte);
 const ohneKoordinaten = orte.length - punkte.length;
 
@@ -32,7 +57,49 @@ const gruppen = ARTREIHENFOLGE.map((art) => ({
     einleitung="Alle Orte der Tagung auf einen Blick. Tippt bei einem Ort auf Google Maps oder Apple Karten, um euch dorthin führen zu lassen."
   />
 
-  {punkte.length > 0 ? (
+  {/* Ein Bild aus dem eigenen Build statt eines eingebetteten Kartendienstes:
+      Es wird nichts an Dritte übertragen, es braucht keine Einwilligung, und
+      der Service Worker hält den Plan nach dem ersten Aufruf auch ohne Netz
+      bereit. `priority` lädt ihn sofort und vorrangig: Er ist das Erste, was
+      man auf der Seite sieht. */}
+  <figure class="stadtplan">
+    <Image
+      class="plan"
+      src={stadtplan}
+      alt={`Illustrierter Stadtplan der Hildesheimer Innenstadt. In der Mitte liegt das ${ausgangsort.name}; gepunktete Linien führen von dort mit Gehzeiten zu den Veranstaltungsorten und Hotels. Alle Wege stehen auch als Liste unter dem Plan.`}
+      widths={[400, 800, stadtplan.width]}
+      sizes="(min-width: 50rem) 46rem, calc(100vw - 3.75rem)"
+      quality={85}
+      priority
+    />
+    <figcaption>
+      <p>Die Zeiten sind ungefähre Gehzeiten ab dem {ausgangsort.name}.</p>
+      {/* Neuer Tab: In der installierten App gäbe es sonst keinen Weg zurück. */}
+      <a class="vollbild" href={vollbild.src} target="_blank" rel="noopener">
+        Stadtplan in voller Größe öffnen<span class="nur-vorlesen"> – öffnet in neuem Tab</span>
+      </a>
+    </figcaption>
+  </figure>
+
+  {/* Textalternative zum Plan (WCAG 1.1.1) und zugleich lesbar, ohne das Bild
+      zu vergrößern. Zugeklappt, damit die Ortsliste nicht weit nach unten
+      rutscht. */}
+  <details class="karte wege">
+    <summary>
+      <span>Wege ab dem {ausgangsort.name}</span>
+      <Ikone name="arrow-right" class="pfeil" />
+    </summary>
+    <ul aria-label={`Wege ab dem ${ausgangsort.name}`}>
+      {wege.map(({ ziel, adresse, weg }) => (
+        <li>
+          <strong>{ziel}</strong>
+          {adresse && `, ${adresse}`}: {weg}
+        </li>
+      ))}
+    </ul>
+  </details>
+
+  {punkte.length > 0 && (
     /* Selbst gezeichnet statt ein Kartendienst eingebettet: So wird nichts
          an Dritte übertragen, es braucht keine Einwilligung, und die Karte
          funktioniert auch ohne Netz. Sie zeigt die Lage zueinander, keine
@@ -65,12 +132,6 @@ const gruppen = ARTREIHENFOLGE.map((art) => ({
         )}
       </figcaption>
     </figure>
-  ) : (
-    <Platzhalterhinweis>
-      Für die Übersichtskarte fehlen noch die Koordinaten der Orte. Sobald sie in
-      <code>src/content/orte.json</code> eingetragen sind, erscheint die Karte hier automatisch. Die
-      Adressen und Wegbeschreibungen unten funktionieren bereits.
-    </Platzhalterhinweis>
   )}
 
   {gruppen.map((gruppe) => (
@@ -89,6 +150,96 @@ const gruppen = ARTREIHENFOLGE.map((art) => ({
 </Basis>
 
 <style>
+  /* Schmaler als die Seite: In voller Breite wäre der hochformatige Plan auf
+     dem Desktop rund 1500 px hoch. Feinheiten zeigt die volle Größe. */
+  .stadtplan,
+  .wege {
+    max-width: 48rem;
+  }
+
+  .stadtplan {
+    padding: var(--raum-3);
+    margin: 0 0 var(--raum-4);
+    background: var(--karte);
+    border: 1px solid var(--rand);
+    border-radius: var(--radius);
+    box-shadow: var(--schatten);
+  }
+
+  .plan {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: calc(var(--radius) - var(--raum-3));
+  }
+
+  .stadtplan figcaption p {
+    margin: 0;
+  }
+
+  .vollbild {
+    /* Mindestgröße für Berührung (Regel 7). */
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-weight: 600;
+  }
+
+  .wege {
+    padding: 0;
+    margin: 0 0 var(--raum-8);
+  }
+
+  .wege summary {
+    /* Mindestgröße für Berührung (Regel 7). */
+    display: flex;
+    gap: var(--raum-3);
+    align-items: center;
+    justify-content: space-between;
+    min-height: 44px;
+    padding: var(--raum-3) var(--raum-4);
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* Wie bei den Programmpunkten: eigener Pfeil statt Dreieck, er dreht sich
+     beim Aufklappen. */
+  .wege summary::marker {
+    content: "";
+  }
+
+  .wege summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .wege summary:hover {
+    background: var(--hover);
+  }
+
+  .wege[open] summary {
+    border-bottom: 1px solid var(--rand);
+  }
+
+  .pfeil {
+    flex: none;
+    color: var(--text-leise);
+    transform: rotate(90deg);
+    transition: transform var(--dauer-kurz) ease;
+  }
+
+  .wege[open] .pfeil {
+    transform: rotate(-90deg);
+  }
+
+  .wege ul {
+    padding: var(--raum-3) var(--raum-4) var(--raum-4) var(--raum-8);
+    margin: 0;
+  }
+
+  .wege li + li {
+    margin-top: var(--raum-2);
+  }
+
   .karte-flaeche {
     padding: var(--raum-4);
     margin: 0 0 var(--raum-8);
