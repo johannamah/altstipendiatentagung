@@ -1,12 +1,18 @@
 [
   {
+    "id": "mariano-josephinum",
+    "name": "Mariano-Josephinum",
+    "stadt": "Hildesheim",
+    "art": "tagungsort",
+    "hinweis": "Hauptveranstaltungsort der Jahrestagung"
+  },
+  {
     "id": "novotel",
     "name": "Novotel Hildesheim",
     "adresse": "Bahnhofsallee 38",
     "plz": "31134",
     "stadt": "Hildesheim",
-    "art": "tagungsort",
-    "hinweis": "Hauptveranstaltungsort der Jahrestagung"
+    "art": "uebernachtung"
   },
   {
     "id": "deseo",
@@ -59,8 +65,8 @@
   },
   {
     "id": "helo-sports",
-    "name": "Helo Sports",
-    "adresse": "Schinkelstraße 17",
+    "name": "helo sports",
+    "adresse": "Schinkelstraße 15",
     "plz": "31137",
     "stadt": "Hildesheim",
     "art": "exkursion"
@@ -69,13 +75,9 @@
     "id": "bosch",
     "name": "Bosch Hildesheim",
     "stadt": "Hildesheim",
-    "art": "exkursion"
-  },
-  {
-    "id": "zah-wertstoffhof",
-    "name": "ZAH Wertstoffhof Hildesheim",
-    "stadt": "Hildesheim",
-    "art": "exkursion"
+    "art": "exkursion",
+    "adresse": "Robert-Bosch-Straße 200",
+    "plz": "31139"
   },
   {
     "id": "bb-hotel",
@@ -134,5 +136,55 @@
     "stadt": "Hildesheim",
     "art": "gastronomie",
     "hinweis": "Café und Bar"
+  },
+  {
+    "id": "knochenhaueramtshaus",
+    "name": "Knochenhauer-Amtshaus",
+    "stadt": "Hildesheim",
+    "art": "rahmenprogramm",
+    "hinweis": "am Historischen Marktplatz"
+  },
+  {
+    "id": "st-godehard",
+    "name": "Basilika St. Godehard",
+    "stadt": "Hildesheim",
+    "art": "rahmenprogramm"
+  },
+  {
+    "id": "halle39",
+    "name": "Halle39",
+    "stadt": "Hildesheim",
+    "art": "rahmenprogramm"
+  },
+  {
+    "id": "tourist-information",
+    "name": "Tourist-Information am Marktplatz",
+    "adresse": "Rathausstraße 20",
+    "plz": "31134",
+    "stadt": "Hildesheim",
+    "art": "exkursion",
+    "hinweis": "Treffpunkt der Stadtführungen"
+  },
+  {
+    "id": "willi-hennies",
+    "name": "Willi Hennies Recycling",
+    "stadt": "Hildesheim",
+    "art": "exkursion",
+    "hinweis": "Genauer Standort wird noch bekanntgegeben."
+  },
+  {
+    "id": "sprengel-museum",
+    "name": "Sprengel Museum Hannover",
+    "adresse": "Kurt-Schwitters-Platz",
+    "plz": "30169",
+    "stadt": "Hannover",
+    "art": "exkursion"
+  },
+  {
+    "id": "continental",
+    "name": "Continental",
+    "stadt": "Hannover",
+    "art": "exkursion",
+    "hinweis": "Genauer Standort wird noch bekanntgegeben."
   }
 ]

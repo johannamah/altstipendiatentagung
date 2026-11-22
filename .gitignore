@@ -32,4 +32,4 @@ lighthouse-bericht/
 # Quelldokumente des Orga-Teams. Sie koennen Kontaktdaten von Ansprechpersonen
 # enthalten und gehoeren nicht in das oeffentliche Repository; uebernommen
 # werden nur die freigegebenen Texte nach src/content/.
-src/daten/*.docx
+src/**/*.docx

@@ -18,37 +18,36 @@ test("zeigt alle fuenf Tagungstage in zeitlicher Reihenfolge", async ({ page }) 
 });
 
 /**
- * Der Kern von Issue #8: Die sieben Exkursionen am Freitag sind Alternativen
+ * Der Kern von Issue #8: Die zehn Exkursionen am Freitag sind Alternativen
  * zueinander. Eine schlichte Liste liest sich wie eine Abfolge - dann meint man,
- * man koenne alle sieben mitnehmen.
+ * man koenne alle mitnehmen.
  */
 test("weist gleichzeitige Exkursionen als Auswahl aus", async ({ page }) => {
-  await expect(page.getByText("Exkursionen · 7 zur Wahl")).toBeVisible();
-  await expect(page.getByText("Parallele Vorträge · 3 zur Wahl").first()).toBeVisible();
+  await expect(page.getByText("Exkursionen · 10 zur Wahl")).toBeVisible();
 });
 
 /**
- * Am Donnerstag laufen Mitgliederversammlung und Partnerprogramm beide von
- * 15:00 bis 17:00 - man muss sich entscheiden. Eine Liste, die beide
+ * Am Donnerstag laufen Mitgliederversammlung und die beiden Partnerprogramme
+ * von 15:00 bis 17:00 - man muss sich entscheiden. Eine Liste, die beide
  * untereinander zeigt, verschweigt das.
  */
 test("weist auch gleichzeitige Hauptprogrammpunkte als Auswahl aus", async ({ page }) => {
-  await expect(page.getByText("Gleichzeitig · 2 zur Wahl")).toBeVisible();
+  await expect(page.getByText("Gleichzeitig · 3 zur Wahl")).toBeVisible();
 });
 
-test("zeigt die aktualisierten Zeiten und Orte aus der Programmvorlage", async ({ page }) => {
-  // Die Einfuehrung beginnt jetzt um 13:30 - die Ueberschneidung mit der
-  // Begruessung ist damit aufgeloest.
+test("zeigt die aktualisierten Zeiten und Orte aus dem Programmheft", async ({ page }) => {
   await expect(page.getByText("13:30–14:30 Uhr")).toBeVisible();
   // Das Weinfest endet um Mitternacht: im Deutschen 24:00, nicht 00:00.
   await expect(page.getByText("20:00–24:00 Uhr")).toBeVisible();
-  await expect(page.getByText("deseo Cafe . Restaurant . Bar")).toBeVisible();
+  // Der Abschluss am Sonntag beginnt jetzt um 10:30.
+  await expect(page.getByText("10:30–12:00 Uhr")).toBeVisible();
+  await expect(page.getByText("Mariano-Josephinum").first()).toBeVisible();
+  await expect(page.getByText("deseo Cafe . Restaurant . Bar").first()).toBeVisible();
   await expect(page.getByRole("heading", { name: /Verabschiedung und Rückreise/ })).toBeVisible();
 });
 
 test("kennzeichnet unbestaetigte Punkte als Text, nicht nur farblich", async ({ page }) => {
   await expect(page.getByText("noch nicht bestätigt").first()).toBeVisible();
-  await expect(page.getByText("Platzhalter").first()).toBeVisible();
 });
 
 /**
@@ -62,7 +61,7 @@ test("ein Programmpunkt laesst sich aufklappen und zeigt dann mehr", async ({ pa
   // Zeit, Titel und Ortsname sind auch zugeklappt zu sehen.
   await expect(punkt.getByText("10:00–11:30 Uhr")).toBeVisible();
   await expect(punkt.getByRole("heading", { name: /Europas Zukunft sichern/ })).toBeVisible();
-  await expect(punkt.getByText("Novotel Hildesheim").first()).toBeVisible();
+  await expect(punkt.getByText("Mariano-Josephinum").first()).toBeVisible();
 
   await punkt.locator("summary").click();
   await expect(punkt).toHaveAttribute("open", "");
@@ -174,3 +173,14 @@ for (const darstellung of ["hell", "dunkel"] as const) {
     expect(ergebnis.violations).toEqual([]);
   });
 }
+
+/** Mitwirkende aus dem Programmheft erscheinen beim Aufklappen. */
+test("nennt die Mitwirkenden eines Programmpunkts", async ({ page }) => {
+  const punkt = page.locator('.punkt[data-id="panel-nie-wieder"]');
+  await punkt.locator("summary").click();
+
+  const mitwirkende = punkt.getByRole("list", { name: "Mitwirkende" });
+  await expect(mitwirkende.getByText("Prof. Dr. Norbert Lammert")).toBeVisible();
+  await expect(mitwirkende.getByText("Julia Ruhs")).toBeVisible();
+  await expect(mitwirkende.getByText("Moderation")).toBeVisible();
+});

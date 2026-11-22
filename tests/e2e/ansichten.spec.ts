@@ -233,7 +233,7 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
     await expect(namen).toHaveCount(3);
     await expect(namen.nth(0)).toContainText("Matthias Wilkes");
     await expect(namen.nth(1)).toContainText("Annegret Kramp-Karrenbauer");
-    await expect(namen.nth(2)).toContainText("Sebastian Lechner");
+    await expect(namen.nth(2)).toContainText("Ingo Meyer");
   });
 
   /**

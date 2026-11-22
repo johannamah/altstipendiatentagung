@@ -7,7 +7,9 @@ import Seitenkopf from "../components/Seitenkopf.astro";
 import Ikone from "../components/Ikone.astro";
 import Ortsangabe from "../components/Ortsangabe.astro";
 
-const tagungsort = (await getCollection("orte")).find((eintrag) => eintrag.id === "novotel");
+const tagungsort = (await getCollection("orte")).find(
+  (eintrag) => eintrag.data.art === "tagungsort",
+);
 const eintraege = await getCollection("kontakte");
 const kontakte = eintraege
   .map((eintrag) => eintrag.data)
