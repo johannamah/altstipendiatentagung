@@ -7,7 +7,7 @@ import Platzhalterhinweis from "../components/Platzhalterhinweis.astro";
  * Datenschutzerklaerung - Grundfassung.
  *
  * Beschrieben ist nur, was die Anwendung tatsaechlich tut: statische Seiten bei
- * Cloudflare, Speicherung allein auf dem Geraet, Verweise auf Microsoft Forms,
+ * Vercel, Ankuendigungen aus Supabase, Speicherung allein auf dem Geraet, Verweise auf Microsoft Forms,
  * SharePoint und Karten-Apps. Was der Verein festlegen muss (Speicherdauer,
  * Datenschutzbeauftragter, Anmeldedaten nach F4), steht NICHT erfunden im Text,
  * sondern im Platzhalterhinweis. Der Vorstand prueft und gibt frei, bevor die
@@ -30,9 +30,10 @@ import Platzhalterhinweis from "../components/Platzhalterhinweis.astro";
 
   <Platzhalterhinweis>
     Grundfassung, vom Vorstand vor der Veröffentlichung zu prüfen. Offen sind: ob ein
-    Datenschutzbeauftragter benannt ist, wie lange Cloudflare Zugriffsprotokolle aufbewahrt, der
-    Abschluss der Auftragsverarbeitung mit Cloudflare, welche Daten die Anmeldung erhebt und wie
-    lange sie aufbewahrt werden (F4), sowie das Datum dieser Fassung.
+    Datenschutzbeauftragter benannt ist, die Auftragsverarbeitung mit Vercel und Supabase, auf
+    welcher Grundlage beide Daten in die USA übermitteln dürfen, wie lange Vercel Zugriffsprotokolle
+    aufbewahrt, in welcher Region die Supabase-Datenbank liegt, welche Daten die Anmeldung erhebt
+    und wie lange sie aufbewahrt werden (F4), sowie das Datum dieser Fassung.
   </Platzhalterhinweis>
 
   <section class="karte">
@@ -62,26 +63,29 @@ import Platzhalterhinweis from "../components/Platzhalterhinweis.astro";
   <section class="karte">
     <h2>Bereitstellung der Anwendung</h2>
     <p>
-      Die Anwendung wird über Cloudflare ausgeliefert (Cloudflare, Inc., 101 Townsend St., San
-      Francisco, CA 94107, USA). Beim Aufruf einer Seite verarbeitet Cloudflare technisch notwendige
-      Daten: IP-Adresse, Zeitpunkt, aufgerufene Adresse sowie Angaben zu Browser und Betriebssystem.
-      Das ist erforderlich, um die Seiten auszuliefern und den Dienst vor Angriffen zu schützen.
+      Die Anwendung wird über Vercel ausgeliefert (Vercel Inc., USA). Beim Aufruf einer Seite
+      verarbeitet Vercel technisch notwendige Daten: IP-Adresse, Zeitpunkt, aufgerufene Adresse
+      sowie Angaben zu Browser und Betriebssystem. Das ist erforderlich, um die Seiten auszuliefern
+      und den Dienst vor Angriffen zu schützen.
     </p>
     <p>
       Rechtsgrundlage ist Art.&nbsp;6 Abs.&nbsp;1 lit.&nbsp;f DSGVO; unser berechtigtes Interesse
-      liegt in einer sicheren und zuverlässigen Bereitstellung. Cloudflare kann Daten in den USA
-      verarbeiten und ist nach dem EU-US Data Privacy Framework zertifiziert.
+      liegt in einer sicheren und zuverlässigen Bereitstellung. Vercel kann Daten in den USA
+      verarbeiten.
     </p>
   </section>
 
   <section class="karte">
-    <h2>Zugang während der Vorabphase</h2>
+    <h2>Ankündigungen</h2>
     <p>
-      Solange die Anwendung noch nicht veröffentlicht ist, ist sie nur für freigegebene Personen
-      erreichbar. Dafür geben Sie Ihre E-Mail-Adresse ein und erhalten einen einmaligen Code
-      (Cloudflare Access). Verarbeitet werden dabei Ihre E-Mail-Adresse und der Zeitpunkt der
-      Anmeldung, allein um den Zugang zu prüfen. Rechtsgrundlage ist Art.&nbsp;6 Abs.&nbsp;1
-      lit.&nbsp;f DSGVO. Mit der Veröffentlichung entfällt diese Abfrage.
+      Die Ankündigungen lädt Ihr Browser beim Öffnen der Seite direkt aus einer Datenbank bei
+      Supabase (Supabase Inc., USA). Dabei erhält Supabase Ihre IP-Adresse, den Zeitpunkt und
+      Angaben zum Browser. Sie geben dabei keine Daten ein; abgerufen werden nur die
+      veröffentlichten Ankündigungen.
+    </p>
+    <p>
+      Rechtsgrundlage ist Art.&nbsp;6 Abs.&nbsp;1 lit.&nbsp;f DSGVO; unser berechtigtes Interesse
+      liegt darin, kurzfristige Änderungen ohne Verzögerung bekannt zu machen.
     </p>
   </section>
 
@@ -94,7 +98,12 @@ import Platzhalterhinweis from "../components/Platzhalterhinweis.astro";
     <ul>
       <li>Ihre Merkliste im Programm,</li>
       <li>die gewählte Darstellung (hell, dunkel oder nach Systemeinstellung),</li>
-      <li>eine Kopie der Seiten, damit Programm und Orte auch ohne Netz verfügbar sind.</li>
+      <li>eine Kopie der Seiten, damit Programm und Orte auch ohne Netz verfügbar sind,</li>
+      <li>die zuletzt geladenen Ankündigungen, damit sie auch ohne Netz lesbar bleiben,</li>
+      <li>
+        solange die Anwendung im Aufbau ist: die Bestätigung, dass Sie das Zugangswort eingegeben
+        haben.
+      </li>
     </ul>
     <p>
       Diese Daten verlassen Ihr Gerät nicht. Rechtsgrundlage ist §&nbsp;25 Abs.&nbsp;2 Nr.&nbsp;2
