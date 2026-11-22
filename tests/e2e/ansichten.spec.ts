@@ -60,13 +60,23 @@ test.describe("Zurück zur Übersicht", () => {
 });
 
 test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
-  test("Unterbringung zeigt Kontingent, Stichwort und Preise", async ({ page }) => {
+  test("Unterbringung zeigt Kontingente, Stichwort, Preise und Buchungslinks", async ({ page }) => {
     await page.goto("/unterbringung");
 
-    await expect(page.getByRole("heading", { name: "Novotel Hildesheim" })).toBeVisible();
-    await expect(page.getByText("KAS - Holstein")).toBeVisible();
-    await expect(page.getByText("89,00 € / Nacht")).toBeVisible();
-    await expect(page.getByRole("heading", { name: "B&B Hotel Hildesheim" })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 3 })).toHaveText([
+      "B&B Hotel Hildesheim",
+      "HeyLou Hildesheim",
+      "Schlafladen Hildesheim",
+      "Hotel Bürgermeisterkapelle",
+      "Van der Valk Hotel Hildesheim",
+    ]);
+    await expect(page.getByText("„Konrad-Adenauer-Stiftung“").first()).toBeVisible();
+    await expect(page.getByText("77,68 € / Nacht")).toBeVisible();
+    await expect(page.getByText(/verfällt ab Mitte März 2027/)).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: /Buchen: Schlafladen Hildesheim/ }),
+    ).toHaveAttribute("href", "https://schlafladen.de/");
+    await expect(page.getByText("Novotel")).toHaveCount(0);
   });
 
   /**

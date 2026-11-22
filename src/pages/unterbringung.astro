@@ -5,6 +5,7 @@ import Basis from "../layouts/Basis.astro";
 import Seitenkopf from "../components/Seitenkopf.astro";
 import Ikone from "../components/Ikone.astro";
 import Ortsangabe from "../components/Ortsangabe.astro";
+import { telefonVerweis } from "../lib/text.ts";
 
 const orte = new Map(
   (await getCollection("orte")).map((eintrag) => [eintrag.id, { id: eintrag.id, ...eintrag.data }]),
@@ -21,7 +22,7 @@ const empfehlungen = alle.filter((eintrag) => !eintrag.data.kontingent);
   <Seitenkopf
     ikone="bed"
     titel="Unterbringung"
-    einleitung="Für die Jahrestagung sind Zimmerkontingente reserviert. Bitte bucht frühzeitig – die Kontingente sind begrenzt und werden von den Hotels selbst nach dem Prinzip „first come, first served“ vergeben."
+    einleitung="Für die Jahrestagung sind in mehreren Hotels Abrufkontingente reserviert. Bitte bucht frühzeitig direkt beim Hotel – die Kontingente sind begrenzt und werden von den Hotels selbst nach dem Prinzip „first come, first served“ vergeben."
   />
 
   <h2>Hotels mit Zimmerkontingent</h2>
@@ -58,8 +59,11 @@ const empfehlungen = alle.filter((eintrag) => !eintrag.data.kontingent);
             <tbody>
               {haus.zimmer.map((zimmer) => (
                 <tr>
-                  <th scope="row">{zimmer.typ}</th>
-                  <td>{zimmer.anzahl}</td>
+                  <th scope="row">
+                    {zimmer.typ}
+                    {zimmer.hinweis && <span class="zimmerhinweis">{zimmer.hinweis}</span>}
+                  </th>
+                  <td>{zimmer.anzahl ?? "keine Angabe"}</td>
                   <td>{zimmer.preis}</td>
                 </tr>
               ))}
@@ -67,11 +71,31 @@ const empfehlungen = alle.filter((eintrag) => !eintrag.data.kontingent);
           </table>
         </div>
       )}
+      {haus.fruehstueck && (
+        <p class="zeile">
+          <Ikone name="coffee" />
+          <span>Frühstück: {haus.fruehstueck}</span>
+        </p>
+      )}
+      {haus.hinweis && (
+        <p class="kontingenthinweis">
+          <Ikone name="alert" />
+          <span>{haus.hinweis}</span>
+        </p>
+      )}
+      {haus.web && (
+        <p>
+          <a class="buchen" href={haus.web} target="_blank" rel="noopener">
+            <Ikone name="globe" />
+            Buchen<span class="nur-vorlesen">: {haus.name}</span>
+          </a>
+        </p>
+      )}
       {haus.ortId && orte.get(haus.ortId) && <Ortsangabe ort={orte.get(haus.ortId)!} />}
       {haus.telefon && (
         <p class="zeile">
           <Ikone name="phone" />
-          <a href={`tel:${haus.telefon.replace(/\s/g, "")}`}>{haus.telefon}</a>
+          <a href={telefonVerweis(haus.telefon)}>{haus.telefon}</a>
         </p>
       )}
       {haus.email && (
@@ -83,40 +107,46 @@ const empfehlungen = alle.filter((eintrag) => !eintrag.data.kontingent);
     </section>
   ))}
 
-  <h2>Weitere Übernachtungsempfehlungen</h2>
-  <p class="einleitung">
-    Diese Hotels haben kein eigenes Zimmerkontingent für die Tagung – die Buchung erfolgt
-    individuell direkt beim Hotel.
-  </p>
+  {/* Seit dem Programmheft 2027 haben alle Hotels ein Kontingent. Kommen
+      Empfehlungen ohne Kontingent dazu, erscheint der Abschnitt wieder. */}
+  {empfehlungen.length > 0 && (
+    <>
+      <h2>Weitere Übernachtungsempfehlungen</h2>
+      <p class="einleitung">
+        Diese Hotels haben kein eigenes Zimmerkontingent für die Tagung – die Buchung erfolgt
+        individuell direkt beim Hotel.
+      </p>
 
-  <ul class="empfehlungen">
-    {empfehlungen.map(({ data: haus }) => (
-      <li class="karte">
-        <h3>{haus.name}</h3>
-        {haus.ortId && orte.get(haus.ortId) && <Ortsangabe ort={orte.get(haus.ortId)!} />}
-        {haus.telefon && (
-          <p class="zeile">
-            <Ikone name="phone" />
-            <a href={`tel:${haus.telefon.replace(/\s/g, "")}`}>{haus.telefon}</a>
-          </p>
-        )}
-        {haus.email && (
-          <p class="zeile">
-            <Ikone name="mail" />
-            <a href={`mailto:${haus.email}`}>{haus.email}</a>
-          </p>
-        )}
-        {haus.web && (
-          <p class="zeile">
-            <Ikone name="globe" />
-            <a href={haus.web} target="_blank" rel="noopener">
-              Website des Hotels
-            </a>
-          </p>
-        )}
-      </li>
-    ))}
-  </ul>
+      <ul class="empfehlungen">
+        {empfehlungen.map(({ data: haus }) => (
+          <li class="karte">
+            <h3>{haus.name}</h3>
+            {haus.ortId && orte.get(haus.ortId) && <Ortsangabe ort={orte.get(haus.ortId)!} />}
+            {haus.telefon && (
+              <p class="zeile">
+                <Ikone name="phone" />
+                <a href={telefonVerweis(haus.telefon)}>{haus.telefon}</a>
+              </p>
+            )}
+            {haus.email && (
+              <p class="zeile">
+                <Ikone name="mail" />
+                <a href={`mailto:${haus.email}`}>{haus.email}</a>
+              </p>
+            )}
+            {haus.web && (
+              <p class="zeile">
+                <Ikone name="globe" />
+                <a href={haus.web} target="_blank" rel="noopener">
+                  Website des Hotels
+                </a>
+              </p>
+            )}
+          </li>
+        ))}
+      </ul>
+    </>
+  )}
 </Basis>
 
 <style>
@@ -130,6 +160,37 @@ const empfehlungen = alle.filter((eintrag) => !eintrag.data.kontingent);
 
   h3 {
     font-size: var(--schrift-h3);
+  }
+
+  .zimmerhinweis {
+    display: block;
+    font-size: var(--schrift-klein);
+    font-weight: 400;
+    color: var(--text-leise);
+  }
+
+  .kontingenthinweis {
+    display: flex;
+    gap: var(--raum-2);
+    align-items: flex-start;
+    padding: var(--raum-2) var(--raum-3);
+    color: var(--hinweis-text);
+    background: var(--hinweis-flaeche);
+    border: 1px solid var(--hinweis-rand);
+    border-radius: var(--radius-klein);
+  }
+
+  .buchen {
+    display: inline-flex;
+    gap: var(--raum-2);
+    align-items: center;
+    min-height: 44px;
+    padding: var(--raum-2) var(--raum-6);
+    font-weight: 700;
+    color: var(--kachel-blau-text);
+    text-decoration: none;
+    background: var(--kachel-blau-von);
+    border-radius: 999px;
   }
 
   .stichwort {

@@ -147,8 +147,21 @@ const unterkuenfte = defineCollection({
     zeitraum: z.string().optional(),
     stichwort: z.string().optional(),
     zimmer: z
-      .array(z.object({ typ: z.string(), anzahl: z.number().int(), preis: z.string() }))
+      .array(
+        z.object({
+          typ: z.string(),
+          /** Reservierte Zimmer; fehlt, wenn das Hotel keine Zahl nennt. */
+          anzahl: z.number().int().positive().optional(),
+          preis: z.string(),
+          /** Weitere Belegung, Ausstattung, z. B. "bei Einzelnutzung 74,00 € / Nacht". */
+          hinweis: z.string().optional(),
+        }),
+      )
       .default([]),
+    /** z. B. "inbegriffen" oder "nicht inbegriffen, 9,90 € pro Person". */
+    fruehstueck: z.string().optional(),
+    /** Bedingungen des Kontingents, etwa eine Verfallsfrist. Oeffentlich sichtbar. */
+    hinweis: z.string().optional(),
     adresse: z.string().optional(),
     telefon: z.string().optional(),
     email: z.string().optional(),
