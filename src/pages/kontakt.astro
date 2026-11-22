@@ -208,6 +208,13 @@ const alleOhneKontaktdaten = kontakte.filter(
     font-size: var(--schrift-klein);
   }
 
+  /* Touch-Ziele mindestens 44 px hoch (Designregel 7, WCAG 2.5.8). */
+  .zeile a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
   .offen {
     font-style: italic;
     color: var(--text-leise);
