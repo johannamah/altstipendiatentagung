@@ -52,8 +52,8 @@ frühere Version geht im Vercel-Dashboard mit einem Klick.
 - **Tarif:** Der Hobby-Tarif von Vercel ist laut Nutzungsbedingungen auf private,
   nicht kommerzielle Nutzung beschränkt. Ob eine Vereinsseite darunter fällt oder
   ein Pro-Tarif nötig ist, muss vor dem Go-Live geklärt werden (F2).
-- Vercel verarbeitet IP-Adressen aller Besucher (Vercel Inc., USA). Das gehört in
-  die Datenschutzerklärung; die Auftragsverarbeitung klärt der Vorstand.
+- Vercel verarbeitet IP-Adressen aller Besucher (Vercel Inc., USA). Das steht in
+  der Datenschutzerklärung; der Verein hat die Verarbeitung akzeptiert (F2).
 - Zwei Wege führen zu Vercel (Git-Anbindung für Vorschauen, Workflow für
   Produktion). Wer `vercel.json` ändert, muss beide im Blick haben.
 

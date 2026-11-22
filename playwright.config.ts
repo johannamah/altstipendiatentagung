@@ -38,6 +38,12 @@ export default defineConfig({
     url: "http://localhost:4321",
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
-    env: { ASTRO_TELEMETRY_DISABLED: "1" },
+    env: {
+      ASTRO_TELEMETRY_DISABLED: "1",
+      // Keine echte Datenbank: tests/e2e/ankuendigungen.spec.ts faengt die
+      // Anfragen an diese Adresse ab.
+      PUBLIC_SUPABASE_URL: "https://supabase.test",
+      PUBLIC_SUPABASE_KEY: "sb_publishable_test",
+    },
   },
 });

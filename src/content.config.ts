@@ -154,17 +154,6 @@ const unterkuenfte = defineCollection({
   }),
 });
 
-const ankuendigungen = defineCollection({
-  loader: file("src/content/ankuendigungen.json"),
-  schema: z.object({
-    datum: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Erwartet wird JJJJ-MM-TT"),
-    titel: z.string().min(1),
-    text: z.string().min(1),
-    /** "wichtig" hebt hervor; sparsam einsetzen, sonst nutzt es sich ab. */
-    gewicht: z.enum(["wichtig", "info"]).default("info"),
-  }),
-});
-
 /**
  * Ansprechpersonen des Orga-Teams.
  *
@@ -312,7 +301,6 @@ export const collections = {
   programm,
   exkursionen,
   unterkuenfte,
-  ankuendigungen,
   kontakte,
   faq,
   grussworte,

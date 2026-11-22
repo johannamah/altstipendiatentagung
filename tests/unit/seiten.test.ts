@@ -54,6 +54,8 @@ describe("Bereiche und Seiten", () => {
       "index",
       // Fehlerseite fuer unbekannte Adressen, nie direkt verlinkt.
       "404",
+      // Nur fuer die Admins der Ankuendigungen; sie kennen die Adresse.
+      "verwaltung",
     ]);
     const verwaist = seiten
       .filter((datei) => datei.endsWith(".astro"))

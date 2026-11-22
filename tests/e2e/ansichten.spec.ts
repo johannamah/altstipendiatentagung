@@ -225,12 +225,6 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
     await expect(page.getByText(/die Verweise suchen nach dem Namen/).first()).toBeVisible();
   });
 
-  test("Ankündigungen zeigt die Einträge, neueste zuerst", async ({ page }) => {
-    await page.goto("/ankuendigungen");
-
-    await expect(page.locator(".liste > li")).toHaveCount(2);
-  });
-
   test("Begrüßung zeigt drei Grußworte in fester Reihenfolge", async ({ page }) => {
     await page.goto("/begruessung");
 
