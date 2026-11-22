@@ -140,6 +140,8 @@ const unterkuenfte = defineCollection({
   loader: file("src/content/unterkuenfte.json"),
   schema: z.object({
     name: z.string().min(1),
+    /** Kleinere Zahl steht weiter oben - die Reihenfolge der Kontingentuebersicht. */
+    reihenfolge: z.number().int(),
     /** Verweist auf einen Eintrag in orte.json. */
     ortId: z.string().optional(),
     /** true = eigenes Kontingent fuer die Tagung, false = blosse Empfehlung. */

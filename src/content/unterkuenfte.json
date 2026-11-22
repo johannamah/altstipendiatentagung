@@ -1,6 +1,7 @@
 [
   {
     "id": "bb-hotel",
+    "reihenfolge": 1,
     "name": "B&B Hotel Hildesheim",
     "ortId": "bb-hotel",
     "kontingent": true,
@@ -21,6 +22,7 @@
   },
   {
     "id": "hey-lou-hotel",
+    "reihenfolge": 2,
     "name": "HeyLou Hildesheim",
     "ortId": "hey-lou",
     "kontingent": true,
@@ -41,6 +43,7 @@
   },
   {
     "id": "schlafladen",
+    "reihenfolge": 3,
     "name": "Schlafladen Hildesheim",
     "ortId": "schlafladen",
     "kontingent": true,
@@ -78,6 +81,7 @@
   },
   {
     "id": "buergermeisterkapelle",
+    "reihenfolge": 4,
     "name": "Hotel Bürgermeisterkapelle",
     "ortId": "buergermeisterkapelle",
     "kontingent": true,
@@ -103,6 +107,7 @@
   },
   {
     "id": "van-der-valk",
+    "reihenfolge": 5,
     "name": "Van der Valk Hotel Hildesheim",
     "ortId": "van-der-valk",
     "kontingent": true,

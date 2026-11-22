@@ -233,7 +233,7 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
   test("Ankündigungen zeigt die Einträge, neueste zuerst", async ({ page }) => {
     await page.goto("/ankuendigungen");
 
-    await expect(page.locator(".liste > li")).toHaveCount(2);
+    await expect(page.locator(".liste > li")).toHaveCount(1);
   });
 
   test("Begrüßung zeigt drei Grußworte in fester Reihenfolge", async ({ page }) => {

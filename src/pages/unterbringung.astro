@@ -10,7 +10,9 @@ import { telefonVerweis } from "../lib/text.ts";
 const orte = new Map(
   (await getCollection("orte")).map((eintrag) => [eintrag.id, { id: eintrag.id, ...eintrag.data }]),
 );
-const alle = await getCollection("unterkuenfte");
+const alle = (await getCollection("unterkuenfte")).sort(
+  (a, b) => a.data.reihenfolge - b.data.reihenfolge,
+);
 const mitKontingent = alle.filter((eintrag) => eintrag.data.kontingent);
 const empfehlungen = alle.filter((eintrag) => !eintrag.data.kontingent);
 ---
