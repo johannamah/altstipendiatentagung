@@ -74,7 +74,7 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
     await expect(page.getByText("77,68 € / Nacht")).toBeVisible();
     await expect(page.getByText(/verfällt ab Mitte März 2027/)).toBeVisible();
     await expect(
-      page.getByRole("link", { name: /Buchen: Schlafladen Hildesheim/ }),
+      page.getByRole("link", { name: /Buchen\s*:\s*Schlafladen Hildesheim/ }),
     ).toHaveAttribute("href", "https://schlafladen.de/");
     await expect(page.getByText("Novotel")).toHaveCount(0);
   });
