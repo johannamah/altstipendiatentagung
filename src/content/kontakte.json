@@ -5,7 +5,8 @@
     "name": "Konstantin Gerbrich",
     "bereich": "[Zuständigkeitsbereich einfügen]",
     "telefon": "+49 1515 6675547",
-    "email": "konstantin.gerbrich@web.de"
+    "email": "konstantin.gerbrich@web.de",
+    "bild": "../assets/kontakte/konstantin-gerbrich.jpg"
   },
   {
     "id": "torben-burdorf",
@@ -13,7 +14,8 @@
     "name": "Torben Burdorf",
     "bereich": "[Zuständigkeitsbereich einfügen]",
     "telefon": "+49 178 8345299",
-    "email": "t.burdorf@altstipendiaten.de"
+    "email": "t.burdorf@altstipendiaten.de",
+    "bild": "../assets/kontakte/torben-burdorf.jpg"
   },
   {
     "id": "pia-gerbrich",
@@ -21,7 +23,8 @@
     "name": "Pia Gerbrich",
     "bereich": "[Zuständigkeitsbereich einfügen]",
     "telefon": "[Telefonnummer einfügen]",
-    "email": "[E-Mail einfügen]"
+    "email": "[E-Mail einfügen]",
+    "bild": "../assets/kontakte/pia-gerbrich.jpg"
   },
   {
     "id": "johanna-mahler",
