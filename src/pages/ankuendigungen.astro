@@ -1,16 +1,15 @@
 ---
-import { getCollection } from "astro:content";
-
 import Basis from "../layouts/Basis.astro";
 import Seitenkopf from "../components/Seitenkopf.astro";
-import Platzhalterhinweis from "../components/Platzhalterhinweis.astro";
-import { formatiereDatum } from "../lib/programm.ts";
 
-const eintraege = await getCollection("ankuendigungen");
-// Neueste zuerst - bei Aenderungen am Programm zaehlt, was zuletzt kam.
-const ankuendigungen = eintraege
-  .map((eintrag) => eintrag.data)
-  .sort((a, b) => b.datum.localeCompare(a.datum));
+/**
+ * Ankuendigungen kommen zur Laufzeit aus Supabase (ADR-0014), nicht aus dem
+ * Build: Eine Raumaenderung am Tagungsmorgen darf nicht auf ein Deployment
+ * warten. Ohne Netz zeigt die Seite die zuletzt geladene Kopie.
+ *
+ * Die Eintraege entstehen im Browser. Scoped Styles erreichen sie deshalb nur
+ * ueber :global() unterhalb von .ankuendigungen.
+ */
 ---
 
 <Basis
@@ -23,46 +22,148 @@ const ankuendigungen = eintraege
     einleitung="Hier informieren wir kurzfristig über Neuigkeiten und Änderungen rund um die Jahrestagung."
   />
 
-  <Platzhalterhinweis>
-    Die folgenden Einträge sind Beispiele. Das Orga-Team pflegt sie in
-    <code>src/content/ankuendigungen.json</code>.
-  </Platzhalterhinweis>
+  <div class="ankuendigungen" data-ankuendigungen aria-live="polite" aria-busy="true" tabindex="-1">
+    <p class="karte">Ankündigungen werden geladen …</p>
+  </div>
 
-  {ankuendigungen.length === 0 ? (
-    <p class="karte">
-      Derzeit gibt es keine Ankündigungen. Sobald sich kurzfristig etwas ändert, steht es hier.
-    </p>
-  ) : (
-    <ol class="liste">
-      {ankuendigungen.map((eintrag) => (
-        <li class="karte" data-gewicht={eintrag.gewicht}>
-          <p class="datum">
-            {formatiereDatum(eintrag.datum)}
-            {eintrag.gewicht === "wichtig" && <span class="marke">Wichtig</span>}
-          </p>
-          <h2>{eintrag.titel}</h2>
-          <p>{eintrag.text}</p>
-        </li>
-      ))}
-    </ol>
-  )}
+  <noscript>
+    <p class="karte">Zum Anzeigen der Ankündigungen wird JavaScript benötigt.</p>
+  </noscript>
 </Basis>
 
+<script>
+  import {
+    formatiereZeitpunkt,
+    ladeAnkuendigungen,
+    ladeKopie,
+    speichereKopie,
+    type Ankuendigung,
+  } from "../lib/ankuendigungen.ts";
+
+  const LEER =
+    "Derzeit gibt es keine Ankündigungen. Sobald sich kurzfristig etwas ändert, steht es hier.";
+
+  const bereich = document.querySelector<HTMLElement>("[data-ankuendigungen]");
+  const url = import.meta.env.PUBLIC_SUPABASE_URL;
+  const schluessel = import.meta.env.PUBLIC_SUPABASE_KEY;
+
+  /* localStorage kann werfen (privates Fenster, gesperrte Website-Daten). */
+  function speicher(): Storage | null {
+    try {
+      return localStorage;
+    } catch {
+      return null;
+    }
+  }
+
+  /* Nur textContent, nie innerHTML: Die Texte kommen aus einer Datenbank. */
+  function element<K extends keyof HTMLElementTagNameMap>(
+    name: K,
+    text?: string,
+    klasse?: string,
+  ): HTMLElementTagNameMap[K] {
+    const knoten = document.createElement(name);
+    if (text !== undefined) knoten.textContent = text;
+    if (klasse) knoten.className = klasse;
+    return knoten;
+  }
+
+  function liste(ankuendigungen: Ankuendigung[]): HTMLElement {
+    if (ankuendigungen.length === 0) return element("p", LEER, "karte");
+
+    const ol = element("ol", undefined, "liste");
+    for (const eintrag of ankuendigungen) {
+      const li = element("li", undefined, "karte");
+      li.dataset.gewicht = eintrag.gewicht;
+
+      const datum = element("p", undefined, "datum");
+      const zeit = element("time", formatiereZeitpunkt(eintrag.veroeffentlichtAm));
+      zeit.dateTime = eintrag.veroeffentlichtAm;
+      datum.append(zeit);
+      // Die Marke traegt die Information, der Balken ist nur die Zugabe (Regel 19).
+      if (eintrag.gewicht === "wichtig") datum.append(element("span", "Wichtig", "marke"));
+
+      li.append(datum, element("h2", eintrag.titel), element("p", eintrag.text, "text"));
+      ol.append(li);
+    }
+    return ol;
+  }
+
+  function zeige(...knoten: HTMLElement[]) {
+    bereich?.replaceChildren(...knoten);
+    bereich?.setAttribute("aria-busy", "false");
+  }
+
+  async function laden(aufWunsch = false) {
+    if (!bereich) return;
+
+    if (!url || !schluessel) {
+      zeige(
+        element("p", "Die Ankündigungen sind noch nicht mit der Datenbank verbunden.", "karte"),
+      );
+      return;
+    }
+
+    bereich.setAttribute("aria-busy", "true");
+    try {
+      const ankuendigungen = await ladeAnkuendigungen({ url, schluessel });
+      speichereKopie(speicher(), ankuendigungen, new Date());
+      zeige(liste(ankuendigungen));
+    } catch {
+      const kopie = ladeKopie(speicher());
+      if (kopie) {
+        zeige(
+          element(
+            "p",
+            `Keine Verbindung – angezeigt wird der Stand vom ${formatiereZeitpunkt(kopie.stand)}.`,
+            "karte hinweis",
+          ),
+          liste(kopie.ankuendigungen),
+        );
+      } else {
+        const karte = element("div", undefined, "karte");
+        const knopf = element("button", "Erneut versuchen", "knopf");
+        knopf.type = "button";
+        knopf.addEventListener("click", () => laden(true));
+        karte.append(
+          element(
+            "p",
+            "Die Ankündigungen konnten gerade nicht geladen werden. Bitte prüfen Sie die Verbindung.",
+          ),
+          knopf,
+        );
+        zeige(karte);
+      }
+    }
+
+    // Der Knopf ist nach dem Neuladen weg - der Fokus soll nicht ins Leere fallen.
+    if (aufWunsch) bereich.focus();
+  }
+
+  void laden();
+</script>
+
 <style>
-  .liste {
+  .ankuendigungen :global(.liste) {
     padding: 0;
     margin: 0;
     list-style: none;
   }
 
-  /* Der Balken ist die Zugabe, die Marke "Wichtig" traegt die Information -
-     Farbe allein sagt nichts (Regel 19). */
-  .karte[data-gewicht="wichtig"] {
+  .ankuendigungen :global(.karte[data-gewicht="wichtig"]) {
     border-left: 4px solid var(--kachel-rot-von);
   }
 
-  .datum {
+  .ankuendigungen :global(.hinweis) {
+    font-size: var(--schrift-klein);
+    color: var(--hinweis-text);
+    background: var(--hinweis-flaeche);
+    border: 1px solid var(--hinweis-rand);
+  }
+
+  .ankuendigungen :global(.datum) {
     display: flex;
+    flex-wrap: wrap;
     gap: var(--raum-2);
     align-items: center;
     margin-bottom: var(--raum-1);
@@ -70,7 +171,7 @@ const ankuendigungen = eintraege
     color: var(--text-leise);
   }
 
-  .marke {
+  .ankuendigungen :global(.marke) {
     padding: 2px var(--raum-2);
     font-weight: 700;
     color: var(--kachel-rot-text);
@@ -78,7 +179,27 @@ const ankuendigungen = eintraege
     border-radius: 999px;
   }
 
-  h2 {
+  .ankuendigungen :global(h2) {
     font-size: var(--schrift-h3);
+  }
+
+  /* Zeilenumbrueche aus dem Table Editor bleiben erhalten. */
+  .ankuendigungen :global(.text) {
+    margin-bottom: 0;
+    white-space: pre-line;
+  }
+
+  .ankuendigungen :global(.knopf) {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: var(--raum-3) var(--raum-6);
+    font: inherit;
+    font-weight: 700;
+    color: var(--kachel-blau-text);
+    cursor: pointer;
+    background: var(--kachel-blau-von);
+    border: 0;
+    border-radius: 999px;
   }
 </style>

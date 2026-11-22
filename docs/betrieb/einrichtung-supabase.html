@@ -1,0 +1,649 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Einrichtung Supabase</title>
+    <style>
+      :root {
+        --flaeche: #f7f8fa;
+        --karte: #ffffff;
+        --text: #1b2430;
+        --text-leise: #505c6b;
+        --rand: #d9dee5;
+        --akzent: #004684;
+        --code-flaeche: #eef1f5;
+        --achtung-flaeche: #fff4e5;
+        --achtung-rand: #e0a040;
+        --hinweis-flaeche: #eaf2fb;
+        --hinweis-rand: #6b9bd1;
+        --erledigt: #2e7d4f;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+          --flaeche: #12161c;
+          --karte: #1a2028;
+          --text: #e6eaef;
+          --text-leise: #a6b0bc;
+          --rand: #2e3743;
+          --akzent: #8bbcf0;
+          --code-flaeche: #232b35;
+          --achtung-flaeche: #33270f;
+          --achtung-rand: #b8822c;
+          --hinweis-flaeche: #172636;
+          --hinweis-rand: #3f6c9c;
+          --erledigt: #6cc596;
+        }
+      }
+
+      :root[data-theme="dark"] {
+        --flaeche: #12161c;
+        --karte: #1a2028;
+        --text: #e6eaef;
+        --text-leise: #a6b0bc;
+        --rand: #2e3743;
+        --akzent: #8bbcf0;
+        --code-flaeche: #232b35;
+        --achtung-flaeche: #33270f;
+        --achtung-rand: #b8822c;
+        --hinweis-flaeche: #172636;
+        --hinweis-rand: #3f6c9c;
+        --erledigt: #6cc596;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font:
+          17px/1.6 system-ui,
+          -apple-system,
+          "Segoe UI",
+          sans-serif;
+        color: var(--text);
+        background: var(--flaeche);
+      }
+
+      .rahmen {
+        display: grid;
+        gap: 2rem;
+        max-width: 72rem;
+        padding: 2rem 16px 4rem;
+        margin: 0 auto;
+      }
+
+      @media (min-width: 60rem) {
+        .rahmen {
+          grid-template-columns: 15rem minmax(0, 1fr);
+        }
+
+        nav.inhalt {
+          position: sticky;
+          top: 1rem;
+          align-self: start;
+        }
+      }
+
+      header {
+        grid-column: 1 / -1;
+      }
+
+      h1 {
+        margin: 0 0 0.5rem;
+        font-size: 2rem;
+        line-height: 1.2;
+      }
+
+      h2 {
+        margin: 0 0 1rem;
+        font-size: 1.4rem;
+        line-height: 1.3;
+      }
+
+      h3 {
+        margin: 1.5rem 0 0.5rem;
+        font-size: 1.1rem;
+      }
+
+      .leise {
+        color: var(--text-leise);
+      }
+
+      a {
+        color: var(--akzent);
+      }
+
+      nav.inhalt ol {
+        padding-left: 1.2rem;
+        margin: 0;
+        font-size: 0.95rem;
+      }
+
+      nav.inhalt li {
+        margin-bottom: 0.3rem;
+      }
+
+      main section {
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        background: var(--karte);
+        border: 1px solid var(--rand);
+        border-radius: 12px;
+      }
+
+      code,
+      kbd {
+        padding: 0.1em 0.35em;
+        font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+        font-size: 0.9em;
+        overflow-wrap: anywhere;
+        background: var(--code-flaeche);
+        border-radius: 4px;
+      }
+
+      pre {
+        padding: 0.8rem 1rem;
+        overflow-x: auto;
+        background: var(--code-flaeche);
+        border-radius: 8px;
+      }
+
+      pre code {
+        padding: 0;
+        background: none;
+      }
+
+      .kasten {
+        padding: 0.8rem 1rem;
+        margin: 1rem 0;
+        border-left: 4px solid;
+        border-radius: 6px;
+      }
+
+      .kasten p:first-child {
+        margin-top: 0;
+      }
+
+      .kasten p:last-child {
+        margin-bottom: 0;
+      }
+
+      .achtung {
+        background: var(--achtung-flaeche);
+        border-color: var(--achtung-rand);
+      }
+
+      .hinweis {
+        background: var(--hinweis-flaeche);
+        border-color: var(--hinweis-rand);
+      }
+
+      .tabelle {
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        font-size: 0.95rem;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        padding: 0.5rem;
+        text-align: left;
+        vertical-align: top;
+        border-bottom: 1px solid var(--rand);
+      }
+
+      th {
+        font-weight: 600;
+      }
+
+      ol.schritte > li {
+        margin-bottom: 0.6rem;
+      }
+
+      .pruefliste {
+        padding: 0;
+        list-style: none;
+      }
+
+      .pruefliste li {
+        margin-bottom: 0.4rem;
+      }
+
+      .pruefliste label {
+        display: flex;
+        gap: 0.6rem;
+        align-items: flex-start;
+        cursor: pointer;
+      }
+
+      .pruefliste input {
+        flex: none;
+        width: 1.15rem;
+        height: 1.15rem;
+        margin-top: 0.25rem;
+        accent-color: var(--erledigt);
+      }
+
+      .pruefliste input:checked + span {
+        color: var(--text-leise);
+        text-decoration: line-through;
+      }
+
+      :focus-visible {
+        outline: 3px solid var(--akzent);
+        outline-offset: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="rahmen">
+      <header>
+        <h1>Einrichtung und Pflege: Supabase für Ankündigungen</h1>
+        <p class="leise">
+          Für die Seite „Ankündigungen" unter <strong>altstipendiaten-jahrestagung.de</strong>.
+          Entscheidung und Begründung:
+          <code>docs/decisions/0014-ankuendigungen-aus-supabase.md</code>. Die Häkchen merkt sich
+          nur dieser Browser.
+        </p>
+      </header>
+
+      <nav class="inhalt" aria-label="Inhalt">
+        <ol>
+          <li><a href="#ueberblick">So funktioniert es</a></li>
+          <li><a href="#informationen">Was noch gebraucht wird</a></li>
+          <li><a href="#projekt">Projekt anlegen</a></li>
+          <li><a href="#tabelle">Tabelle anlegen</a></li>
+          <li><a href="#schluessel">Adresse und Schlüssel</a></li>
+          <li><a href="#vercel">In Vercel eintragen</a></li>
+          <li><a href="#pruefen">Schutz prüfen</a></li>
+          <li><a href="#pflegen">Ankündigung veröffentlichen</a></li>
+          <li><a href="#zugaenge">Zugänge für das Orga-Team</a></li>
+          <li><a href="#fehler">Fehlerbehebung</a></li>
+          <li><a href="#betrieb">Laufender Betrieb</a></li>
+        </ol>
+      </nav>
+
+      <main>
+        <section id="ueberblick">
+          <h2>1. So funktioniert es</h2>
+          <p>
+            Die App selbst bleibt eine statische Website bei Vercel. Nur die Seite „Ankündigungen"
+            fragt beim Öffnen eine Tabelle bei Supabase ab und zeigt, was dort steht. Eine neue
+            Ankündigung ist deshalb <strong>ohne Deployment</strong> sichtbar, sobald jemand die
+            Seite neu lädt. Ohne Netz zeigt die Seite die zuletzt geladene Kopie mit ihrem Stand.
+          </p>
+          <ul>
+            <li>
+              <strong>Lesen</strong> darf jeder, aber nur Einträge mit <code>sichtbar</code> = an.
+              Der Schlüssel dafür steht ohnehin in jedem Browser, er ist dafür gemacht.
+            </li>
+            <li>
+              <strong>Schreiben</strong> geht nur im Supabase-Dashboard. Über die App oder die
+              Schnittstelle kann niemand etwas ändern. Das ist in der Datenbank selbst festgelegt
+              (Row Level Security).
+            </li>
+          </ul>
+          <div class="kasten achtung">
+            <p>
+              <strong>Den geheimen Schlüssel nie herausgeben.</strong> Supabase zeigt zwei Arten:
+              <em>publishable</em> (darf in die App) und <em>secret</em> bzw.
+              <code>service_role</code> (umgeht jeden Schutz). In Vercel, in <code>.env</code> und
+              in der App steht nur der veröffentlichbare.
+            </p>
+          </div>
+        </section>
+
+        <section id="informationen">
+          <h2>2. Was noch gebraucht wird</h2>
+          <ul class="pruefliste">
+            <li>
+              <label
+                ><input type="checkbox" data-id="i-konto" /><span
+                  ><strong>Wem gehört das Supabase-Konto?</strong> Am besten eine Organisation, in
+                  der beide Entwickler Mitglied sind, nicht ein Einzelkonto.</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="i-region" /><span
+                  ><strong>Region:</strong> Empfehlung <em>Central EU (Frankfurt)</em>. Sie lässt
+                  sich nach dem Anlegen nicht mehr ändern.</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="i-wer" /><span
+                  ><strong>Wer schreibt Ankündigungen (F8)?</strong> Nur die Entwickler, oder
+                  bekommt das Orga-Team einen eigenen Zugang (Schritt 9)?</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="i-tarif" /><span
+                  ><strong>Tarif:</strong> Im kostenfreien Tarif pausiert Supabase ein Projekt nach
+                  etwa einer Woche ohne Aktivität. Während der Tagung darf das nicht passieren.
+                  Klären, ob Free reicht oder ob Pro nötig ist (F2).</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="i-avv" /><span
+                  ><strong>Vorstand:</strong> Auftragsverarbeitung (Data Processing Addendum) mit
+                  Supabase und die Region für die Datenschutzerklärung.</span
+                ></label
+              >
+            </li>
+          </ul>
+        </section>
+
+        <section id="projekt">
+          <h2>3. Projekt anlegen</h2>
+          <ol class="schritte">
+            <li>
+              Auf <a href="https://supabase.com/dashboard">supabase.com/dashboard</a> registrieren,
+              Zwei-Faktor-Anmeldung einschalten (<em>Account → Security</em>).
+            </li>
+            <li>
+              <em>New organization</em>, z. B. „ASeV Jahrestagung", Tarif nach Schritt 2. Den
+              zweiten Entwickler unter <em>Team</em> einladen.
+            </li>
+            <li>
+              <em>New project</em>:
+              <ul>
+                <li>Name: <code>altstipendiaten-jahrestagung</code></li>
+                <li>
+                  Database Password: <em>Generate a password</em> und im Passwortmanager ablegen. Es
+                  wird für die App nicht gebraucht, aber für Notfälle und die Kommandozeile.
+                </li>
+                <li>Region: <strong>Central EU (Frankfurt)</strong></li>
+                <li>
+                  Unter <em>Security</em> bzw. den erweiterten Optionen:
+                  <em>Data API</em> eingeschaltet lassen. Darüber liest die App.
+                </li>
+              </ul>
+            </li>
+            <li>Warten, bis das Projekt bereit ist (1–2 Minuten).</li>
+          </ol>
+        </section>
+
+        <section id="tabelle">
+          <h2>4. Tabelle anlegen</h2>
+          <ol class="schritte">
+            <li>
+              Im Repository die Datei
+              <code>supabase/migrations/20261122000000_ankuendigungen.sql</code> öffnen und den
+              ganzen Inhalt kopieren.
+            </li>
+            <li>
+              In Supabase links <em>SQL Editor</em> → <em>New query</em> → einfügen →
+              <strong>Run</strong>. Erwartet: „Success. No rows returned".
+            </li>
+            <li>
+              <em>Table Editor</em> öffnen. Die Tabelle <code>ankuendigungen</code> ist da. Neben
+              dem Namen steht <strong>nicht</strong> „RLS disabled" bzw. „Unrestricted".
+            </li>
+          </ol>
+          <div class="kasten hinweis">
+            <p>
+              Spätere Änderungen an der Struktur kommen als <em>neue</em> Datei in
+              <code>supabase/migrations/</code>, per Pull Request mit Review, und werden genauso im
+              SQL Editor ausgeführt. Alternativ mit der Kommandozeile:
+              <code>npx supabase link</code> und <code>npx supabase db push</code>.
+            </p>
+          </div>
+        </section>
+
+        <section id="schluessel">
+          <h2>5. Adresse und Schlüssel</h2>
+          <ul>
+            <li>
+              <strong>Projektadresse:</strong> <em>Project Settings → Data API</em> (oder Startseite
+              des Projekts, „Project URL"). Sie hat die Form
+              <code>https://xxxxxxxx.supabase.co</code>.
+            </li>
+            <li>
+              <strong>Veröffentlichbarer Schlüssel:</strong> <em>Project Settings → API Keys</em> →
+              <strong>Publishable key</strong> (beginnt mit <code>sb_publishable_</code>). Bei
+              älteren Projekten heißt er <em>anon public</em> und beginnt mit <code>eyJ</code>.
+              Beides funktioniert.
+            </li>
+          </ul>
+        </section>
+
+        <section id="vercel">
+          <h2>6. In Vercel eintragen</h2>
+          <ol class="schritte">
+            <li>
+              Vercel → Projekt → <em>Settings → Environment Variables</em>:
+              <ul>
+                <li><code>PUBLIC_SUPABASE_URL</code> = Projektadresse</li>
+                <li><code>PUBLIC_SUPABASE_KEY</code> = veröffentlichbarer Schlüssel</li>
+              </ul>
+              Jeweils für <em>Production</em> und <em>Preview</em>. Nicht als „Sensitive" markieren
+              nötig: Die Werte stehen später ohnehin im Quelltext der Seite.
+            </li>
+            <li>
+              Die Werte wirken erst nach dem nächsten Bauen: GitHub →
+              <em>Actions → Deployment → Run workflow</em> und freigeben. Vorschauen bekommen sie
+              mit dem nächsten Push.
+            </li>
+            <li>
+              Lokal: <code>.env.example</code> nach <code>.env</code> kopieren und dieselben Werte
+              eintragen. <code>.env</code> wird nie committet.
+            </li>
+          </ol>
+        </section>
+
+        <section id="pruefen">
+          <h2>7. Schutz prüfen</h2>
+          <p>Im Terminal, mit den Werten aus Schritt 5:</p>
+          <pre><code>URL=https://xxxxxxxx.supabase.co
+KEY=sb_publishable_…
+
+# Lesen: erlaubt, liefert nur sichtbare Einträge
+curl -s "$URL/rest/v1/ankuendigungen?select=titel,sichtbar" -H "apikey: $KEY"
+
+# Schreiben: muss scheitern
+curl -s -X POST "$URL/rest/v1/ankuendigungen" -H "apikey: $KEY" \
+  -H "Content-Type: application/json" -d '{"titel":"Test","text":"Test"}'</code></pre>
+          <p class="leise">
+            Erwartet: beim Lesen <code>[]</code> oder nur Einträge mit <code>"sichtbar":true</code>.
+            Beim Schreiben eine Fehlermeldung mit
+            <code>permission denied for table ankuendigungen</code>.
+            <strong>Kommt beim Schreiben etwas anderes zurück, ist die Tabelle ungeschützt.</strong>
+            Dann Schritt 4 wiederholen.
+          </p>
+        </section>
+
+        <section id="pflegen">
+          <h2>8. Eine Ankündigung veröffentlichen</h2>
+          <p>Für alle, die Ankündigungen schreiben:</p>
+          <ol class="schritte">
+            <li>
+              <a href="https://supabase.com/dashboard">supabase.com/dashboard</a> → Projekt →
+              <em>Table Editor</em> → <code>ankuendigungen</code>.
+            </li>
+            <li>
+              <em>Insert → Insert row</em>:
+              <ul>
+                <li><strong>titel:</strong> kurz und eindeutig, z. B. „Raumänderung am Freitag"</li>
+                <li><strong>text:</strong> die Nachricht, Zeilenumbrüche sind erlaubt</li>
+                <li>
+                  <strong>gewicht:</strong> <code>info</code> oder <code>wichtig</code>. „Wichtig"
+                  erscheint mit roter Marke. Sparsam verwenden, sonst nutzt es sich ab.
+                </li>
+                <li><strong>sichtbar:</strong> zunächst aus lassen (<code>false</code>)</li>
+                <li>Die übrigen Felder füllt Supabase selbst.</li>
+              </ul>
+              → <em>Save</em>.
+            </li>
+            <li>
+              Text noch einmal lesen, dann in der Zeile <code>sichtbar</code> auf
+              <code>true</code> setzen. Ab jetzt sieht jeder die Ankündigung, der die Seite neu
+              lädt.
+            </li>
+            <li>In der App unter „Ankündigungen" kontrollieren.</li>
+          </ol>
+          <h3>Ändern und zurückziehen</h3>
+          <ul>
+            <li>Ändern: Zelle im Table Editor anklicken, bearbeiten, speichern.</li>
+            <li>
+              Zurückziehen: <code>sichtbar</code> auf <code>false</code>. Besser als löschen, weil
+              der Text erhalten bleibt.
+            </li>
+            <li>
+              Reihenfolge: Neueste stehen oben, maßgeblich ist <code>veroeffentlicht_am</code>.
+            </li>
+          </ul>
+          <div class="kasten hinweis">
+            <p>
+              Wer die Seite schon offen hat, sieht die Änderung erst nach dem Neuladen. Geräte ohne
+              Netz zeigen den zuletzt geladenen Stand und sagen dazu, von wann er ist. Für wirklich
+              dringende Änderungen vor Ort zusätzlich einen zweiten Weg nutzen (F9).
+            </p>
+          </div>
+        </section>
+
+        <section id="zugaenge">
+          <h2>9. Zugänge für das Orga-Team</h2>
+          <p>
+            Supabase kennt keine Rolle „darf nur Ankündigungen schreiben". Wer den Table Editor
+            benutzen kann, hat Zugriff auf das ganze Projekt.
+          </p>
+          <ul class="pruefliste">
+            <li>
+              <label
+                ><input type="checkbox" data-id="z-wenige" /><span
+                  >Nur wenige, namentlich bekannte Personen einladen:
+                  <em>Organization → Team → Invite</em>, Rolle <strong>Developer</strong>. Die Rolle
+                  kann Daten bearbeiten, aber keine Abrechnung und keine Mitglieder verwalten.</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="z-2fa" /><span
+                  >Von allen Eingeladenen Zwei-Faktor-Anmeldung verlangen.</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="z-ende" /><span
+                  >Nach der Tagung die Zugänge wieder entfernen.</span
+                ></label
+              >
+            </li>
+          </ul>
+          <p class="leise">
+            Eine eigene Pflegeoberfläche mit fein begrenzten Rechten ist möglich, setzt aber
+            geklärte Rollen voraus (F3, F8). Siehe ADR-0014.
+          </p>
+        </section>
+
+        <section id="fehler">
+          <h2>10. Fehlerbehebung</h2>
+          <div class="tabelle">
+            <table>
+              <thead>
+                <tr>
+                  <th>Die Seite zeigt …</th>
+                  <th>Ursache und Abhilfe</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>„noch nicht mit der Datenbank verbunden"</td>
+                  <td>
+                    <code>PUBLIC_SUPABASE_URL</code> oder <code>PUBLIC_SUPABASE_KEY</code> fehlten
+                    beim Bauen. In Vercel eintragen, dann neu deployen (Schritt 6).
+                  </td>
+                </tr>
+                <tr>
+                  <td>„konnten gerade nicht geladen werden"</td>
+                  <td>
+                    Projekt pausiert (Dashboard zeigt „Paused" → <em>Restore</em>), Schlüssel falsch
+                    oder gelöscht (Antwort <code>401</code>), oder das Gerät ist offline. Mit dem
+                    <code>curl</code>-Befehl aus Schritt 7 prüfen.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Eine Ankündigung fehlt</td>
+                  <td>
+                    <code>sichtbar</code> steht auf <code>false</code>, oder die Seite wurde noch
+                    nicht neu geladen.
+                  </td>
+                </tr>
+                <tr>
+                  <td>„Keine Verbindung – angezeigt wird der Stand vom …"</td>
+                  <td>Das Gerät erreicht Supabase gerade nicht. Kein Fehler der App.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="betrieb">
+          <h2>11. Laufender Betrieb</h2>
+          <h3>Pausieren</h3>
+          <p>
+            Im kostenfreien Tarif pausiert Supabase Projekte nach etwa einer Woche ohne Aktivität
+            und schickt vorher eine E-Mail. Wiederherstellen: Dashboard → Projekt →
+            <em>Restore project</em>. Vor und während der Tagung regelmäßig nachsehen, oder einen
+            Tarif ohne Pausieren wählen.
+          </p>
+          <h3>Schlüssel wechseln</h3>
+          <p>
+            <em>Project Settings → API Keys</em> → neuen veröffentlichbaren Schlüssel anlegen, in
+            Vercel eintragen, neu deployen, danach den alten löschen. Geräte mit einer alten Version
+            der Seite zeigen bis zum Neuladen die Kopie.
+          </p>
+          <h3>Datensicherung</h3>
+          <p>
+            Was der Tarif sichert, steht unter <em>Database → Backups</em>. Ankündigungen sind
+            kurzlebig. Wichtig ist vor allem, dass die Tabellenstruktur im Repository liegt und sich
+            jederzeit neu anlegen lässt (Schritt 4).
+          </p>
+          <h3>Nach der Tagung</h3>
+          <p>
+            Klären, ob das Projekt bestehen bleibt oder gelöscht wird, und wer es verwaltet (F2).
+          </p>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      /* Haekchen nur fuer diesen Browser. Ohne Speicher (privates Fenster) funktioniert
+         die Seite trotzdem, die Haekchen bleiben dann eben nicht stehen. */
+      const SCHLUESSEL = "einrichtung-supabase";
+      let stand = {};
+      try {
+        stand = JSON.parse(localStorage.getItem(SCHLUESSEL) || "{}");
+      } catch {
+        stand = {};
+      }
+      for (const kasten of document.querySelectorAll("input[data-id]")) {
+        kasten.checked = stand[kasten.dataset.id] === true;
+        kasten.addEventListener("change", () => {
+          stand[kasten.dataset.id] = kasten.checked;
+          try {
+            localStorage.setItem(SCHLUESSEL, JSON.stringify(stand));
+          } catch {
+            /* Ohne Speicher bleibt es beim Haken fuer diese Sitzung. */
+          }
+        });
+      }
+    </script>
+  </body>
+</html>
