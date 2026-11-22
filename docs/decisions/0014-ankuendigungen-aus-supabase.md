@@ -23,9 +23,13 @@ App bleibt statisch (ADR-0013).
 2. **Lesen:** Der Browser fragt die REST-Schnittstelle von Supabase direkt ab, mit dem
    veröffentlichbaren Schlüssel und ohne Supabase-SDK. Row Level Security lässt nur
    Zeilen mit `sichtbar = true` durch.
-3. **Schreiben:** Über die Schnittstelle gar nicht. `anon` und `authenticated` haben
-   nur `select`. Ankündigungen entstehen im Supabase-Dashboard (Table Editor). Neue
-   Einträge sind zunächst unsichtbar und werden bewusst sichtbar geschaltet.
+3. **Schreiben:** Nur zwei Admins, und nur Ankündigungen. Sie melden sich auf der
+   nicht verlinkten Seite `/verwaltung` mit E-Mail und Passwort an (Supabase Auth)
+   und bekommen **keinen** Zugang zum Supabase-Dashboard. Wer Admin ist, steht in
+   `public.ankuendigungen_admins`; Row Level Security erlaubt Anlegen, Ändern und
+   Löschen nur diesen Konten. Admins ernennen keine weiteren Admins, das geht nur im
+   SQL Editor. Öffentliche Registrierung ist in Supabase abgeschaltet.
+   Die Regeln sind gegen ein echtes Postgres getestet (`tests/unit/datenbank.test.ts`).
 4. **Offline:** Die zuletzt geladenen Ankündigungen liegen im `localStorage` des
    Geräts. Ohne Netz zeigt die Seite diese Kopie mit ihrem Stand.
 5. **Konfiguration:** `PUBLIC_SUPABASE_URL` und `PUBLIC_SUPABASE_KEY` kommen beim
@@ -35,18 +39,19 @@ App bleibt statisch (ADR-0013).
 ## Konsequenzen
 
 **Positiv:** Eine Ankündigung ist ohne Deployment auf allen Geräten, sobald sie die
-Seite neu laden. Die Schreibrechte liegen nicht im Browser, ein Fehler in der App
-kann also nichts in die Datenbank schreiben. Das Bundle bleibt klein, weil es kein
-SDK gibt.
+Seite neu laden. Die Admins haben genau ein Recht: Ankündigungen pflegen. Was sie
+dürfen, entscheidet die Datenbank, nicht die Oberfläche; ein Fehler in der App kann
+die Regeln nicht umgehen. Das Bundle bleibt klein, weil es kein SDK gibt.
 
 **Negativ:**
 
-- Ein weiterer Dienstleister, der die IP-Adressen der Besucher sieht (Supabase Inc.,
-  USA). Das gehört in die Datenschutzerklärung, die Region der Datenbank und die
-  Auftragsverarbeitung muss der Vorstand klären.
-- **Wer im Dashboard schreibt, hat weitreichende Rechte** auf das ganze Projekt, je
-  nach Rolle bis zum Löschen. Deshalb nur wenige Personen; es gibt keine
-  Freigabe durch eine zweite Person und keine Änderungshistorie.
+- Ein weiterer Dienstleister, der die IP-Adressen der Besucher und die E-Mail-Adressen
+  der Admins verarbeitet (Supabase Inc., USA). Das steht in der Datenschutzerklärung;
+  der Verein hat die Verarbeitung akzeptiert (F2).
+- Es gibt keine Freigabe durch eine zweite Person und keine Änderungshistorie.
+- Eine eigene Oberfläche ist Code, der gepflegt werden muss. Passwörter vergibt und
+  erneuert ein Entwickler im Supabase-Dashboard; eine Selbstbedienung zum
+  Zurücksetzen gibt es nicht.
 - Im kostenfreien Tarif pausiert Supabase Projekte nach längerer Inaktivität. Dann
   zeigt die App nur noch die Kopie oder eine Fehlermeldung, bis jemand das Projekt
   im Dashboard wieder startet.
@@ -62,15 +67,16 @@ SDK gibt.
   bräuchte wieder ein Deployment.
 - **Supabase-SDK (`@supabase/supabase-js`).** Bequemer, aber für eine einzige
   lesende Abfrage ein Vielfaches an Code auf jedem Smartphone.
-- **Eigene Pflegeoberfläche mit Supabase Auth.** Würde Schreibrechte fein begrenzen,
-  setzt aber geklärte Rollen voraus (F3, F8) und ist ein eigenes Vorhaben.
+- **Pflege im Supabase-Dashboard (Table Editor).** Kein eigener Code, aber jede Rolle
+  dort hat Rechte auf das ganze Projekt, nicht nur auf Ankündigungen.
+- **Anmeldung per E-Mail-Link statt Passwort.** Braucht einen eigenen Mailversand
+  (SMTP); der eingebaute Versand von Supabase ist dafür nicht gedacht.
 - **Echtzeit-Updates (Supabase Realtime).** Hält eine dauerhafte Verbindung offen,
   was Akku und Datenvolumen kostet. Neu laden genügt.
 
 ## Offene Punkte
 
-- **F8:** Wer schreibt Ankündigungen? Bekommt das Orga-Team Zugang zum Dashboard
-  (mit welcher Rolle), oder schickt es Texte an die Entwickler?
+- Welche zwei Personen Admin werden. Die Konten legen die Entwickler an.
 - Region des Supabase-Projekts. Empfehlung: Frankfurt (`eu-central-1`).
 - Tarif und Pausieren bei Inaktivität. Spätestens zur Tagung muss das Projekt
   zuverlässig laufen (F2).

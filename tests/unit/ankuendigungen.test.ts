@@ -1,6 +1,3 @@
-import { readFileSync, readdirSync } from "node:fs";
-import { fileURLToPath } from "node:url";
-
 import { describe, expect, it, vi } from "vitest";
 
 import {
@@ -161,32 +158,5 @@ describe("Datum", () => {
     expect(formatiereZeitpunkt("2026-11-21T23:30:00Z")).toBe(
       "Sonntag, 22. November 2026, 00:30 Uhr",
     );
-  });
-});
-
-/**
- * Die Datenbank ist von aussen erreichbar; der veroeffentlichbare Schluessel
- * steht in jedem Browser. Schutz bietet allein die Migration.
- */
-describe("Datenbankmigration", () => {
-  const verzeichnis = fileURLToPath(new URL("../../supabase/migrations", import.meta.url));
-  const sql = readdirSync(verzeichnis)
-    .filter((datei) => datei.endsWith(".sql"))
-    .map((datei) => readFileSync(`${verzeichnis}/${datei}`, "utf8"))
-    .join("\n")
-    .toLowerCase();
-
-  it("schaltet Row Level Security fuer die Ankuendigungen ein", () => {
-    expect(sql).toContain("alter table public.ankuendigungen enable row level security");
-  });
-
-  it("gibt anonymen Besuchern nur Leserechte", () => {
-    expect(sql).toMatch(/revoke all on table public\.ankuendigungen from anon, authenticated/);
-    expect(sql).toMatch(/grant select on table public\.ankuendigungen to anon, authenticated/);
-    expect(sql).not.toMatch(/grant (insert|update|delete|all)[^;]* to [^;]*anon/);
-  });
-
-  it("zeigt nur Ankuendigungen, die sichtbar geschaltet sind", () => {
-    expect(sql).toMatch(/for select\s+to anon, authenticated\s+using \(sichtbar\)/);
   });
 });

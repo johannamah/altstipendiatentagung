@@ -1,0 +1,575 @@
+---
+import Basis from "../layouts/Basis.astro";
+import Seitenkopf from "../components/Seitenkopf.astro";
+import { GRENZEN } from "../lib/verwaltung.ts";
+
+/**
+ * Verwaltung der Ankuendigungen fuer die Admins (ADR-0014).
+ *
+ * Die Seite ist nicht verlinkt, aber auch nicht geheim: Schutz bietet allein
+ * die Datenbank. Wer kein Admin ist, kann hier nichts aendern, auch nicht mit
+ * eigenem Code - das pruefen tests/unit/datenbank.test.ts.
+ *
+ * Alle Ansichten stehen im HTML und werden per hidden umgeschaltet. Die
+ * Eintraege der Liste entstehen im Browser; Scoped Styles erreichen sie nur
+ * ueber :global() unterhalb von .verwaltung.
+ */
+---
+
+<Basis
+  titel="Ankündigungen verwalten – Jahrestagung 2027"
+  beschreibung="Verwaltung der Ankündigungen für die Admins der Jahrestagung."
+  indexieren={false}
+>
+  <Seitenkopf
+    ikone="edit"
+    titel="Ankündigungen verwalten"
+    einleitung="Nur für die Admins der Ankündigungen. Was hier sichtbar geschaltet wird, sehen alle unter „Ankündigungen“."
+  />
+
+  <div class="verwaltung" data-verwaltung>
+    <p class="karte" data-ansicht="laden">
+      Wird geladen …
+    </p>
+
+    <p class="karte" data-ansicht="nicht-verbunden" hidden>
+      Die Verwaltung ist noch nicht mit der Datenbank verbunden.
+    </p>
+
+    <form class="karte formular" data-ansicht="anmeldung" data-anmeldung hidden novalidate>
+      <h2>Anmelden</h2>
+      <p class="meldung" role="alert" data-meldung hidden></p>
+
+      <label for="email">E-Mail-Adresse</label>
+      <input id="email" name="email" type="email" autocomplete="username" required />
+
+      <label for="passwort">Passwort</label>
+      <input
+        id="passwort"
+        name="passwort"
+        type="password"
+        autocomplete="current-password"
+        required
+      />
+
+      <button class="knopf" type="submit">
+        Anmelden
+      </button>
+    </form>
+
+    <div class="karte" data-ansicht="kein-admin" hidden>
+      <p>Dieses Konto darf keine Ankündigungen verwalten.</p>
+      <button class="knopf knopf-leise" type="button" data-abmelden>
+        Abmelden
+      </button>
+    </div>
+
+    <div data-ansicht="admin" hidden>
+      <p class="angemeldet">
+        <span>
+          Angemeldet als <strong data-email></strong>
+        </span>
+        <button class="knopf knopf-leise" type="button" data-abmelden>
+          Abmelden
+        </button>
+      </p>
+
+      <form class="karte formular" data-entwurf novalidate>
+        <h2 data-entwurf-ueberschrift>Neue Ankündigung</h2>
+        <p class="meldung" role="alert" data-meldung hidden></p>
+
+        <label for="titel">Titel</label>
+        <input
+          id="titel"
+          name="titel"
+          maxlength={GRENZEN.titel}
+          aria-describedby="titel-fehler"
+          required
+        />
+        <p class="feldfehler" id="titel-fehler" hidden></p>
+
+        <label for="text">Text</label>
+        <textarea
+          id="text"
+          name="text"
+          rows="6"
+          maxlength={GRENZEN.text}
+          aria-describedby="text-fehler"
+          required
+        ></textarea>
+        <p class="feldfehler" id="text-fehler" hidden></p>
+
+        <label class="auswahl">
+          <input type="checkbox" name="wichtig" />
+          Als wichtig markieren
+        </label>
+        <label class="auswahl">
+          <input type="checkbox" name="sichtbar" />
+          Sofort sichtbar
+        </label>
+
+        <p class="aktionen">
+          <button class="knopf" type="submit">
+            Speichern
+          </button>
+          <button class="knopf knopf-leise" type="button" data-abbrechen hidden>
+            Abbrechen
+          </button>
+        </p>
+        <p class="bestaetigung" role="status" data-status></p>
+      </form>
+
+      <h2>Alle Ankündigungen</h2>
+      <ol class="liste" data-liste></ol>
+    </div>
+  </div>
+</Basis>
+
+<script>
+  import { formatiereZeitpunkt } from "../lib/ankuendigungen.ts";
+  import {
+    abmelden,
+    anmelden,
+    erneuern,
+    istAdmin,
+    ladeAlle,
+    laeuftAb,
+    loesche,
+    pruefeEntwurf,
+    setzeSichtbar,
+    sitzungLaden,
+    sitzungSpeichern,
+    speichere,
+    VerwaltungsFehler,
+    type Entwurf,
+    type Sitzung,
+    type VerwalteteAnkuendigung,
+  } from "../lib/verwaltung.ts";
+
+  const wurzel = document.querySelector<HTMLElement>("[data-verwaltung]")!;
+  const url = import.meta.env.PUBLIC_SUPABASE_URL;
+  const schluessel = import.meta.env.PUBLIC_SUPABASE_KEY;
+
+  const anmeldeformular = wurzel.querySelector<HTMLFormElement>("[data-anmeldung]")!;
+  const entwurfsformular = wurzel.querySelector<HTMLFormElement>("[data-entwurf]")!;
+  const liste = wurzel.querySelector<HTMLOListElement>("[data-liste]")!;
+  const status = wurzel.querySelector<HTMLElement>("[data-status]")!;
+
+  let sitzung: Sitzung | null = null;
+  /** Kennung der Ankuendigung, die gerade bearbeitet wird; null = neue. */
+  let bearbeitet: string | null = null;
+
+  /* sessionStorage kann werfen (privates Fenster, gesperrte Website-Daten). */
+  function speicher(): Storage | null {
+    try {
+      return sessionStorage;
+    } catch {
+      return null;
+    }
+  }
+
+  function zeige(ansicht: string) {
+    for (const element of wurzel.querySelectorAll<HTMLElement>("[data-ansicht]")) {
+      element.hidden = element.dataset.ansicht !== ansicht;
+    }
+  }
+
+  function melde(formular: HTMLFormElement, text: string | null) {
+    const meldung = formular.querySelector<HTMLElement>("[data-meldung]")!;
+    meldung.textContent = text ?? "";
+    meldung.hidden = text === null;
+  }
+
+  function zurAnmeldung(hinweis: string | null = null) {
+    sitzung = null;
+    sitzungSpeichern(speicher(), null);
+    anmeldeformular.reset();
+    melde(anmeldeformular, hinweis);
+    zeige("anmeldung");
+  }
+
+  /** Ein frisches Token, bevor es gebraucht wird. */
+  async function aktuelleSitzung(): Promise<Sitzung> {
+    if (!sitzung) throw new VerwaltungsFehler("abgelaufen", "Nicht angemeldet.");
+    if (laeuftAb(sitzung, new Date())) {
+      sitzung = await erneuern({ url: url!, schluessel: schluessel! }, sitzung);
+      sitzungSpeichern(speicher(), sitzung);
+    }
+    return sitzung;
+  }
+
+  /** Einheitliche Fehlerbehandlung fuer alles, was nach der Anmeldung passiert. */
+  async function versuche(aktion: () => Promise<void>) {
+    try {
+      await aktion();
+    } catch (fehler) {
+      if (fehler instanceof VerwaltungsFehler && fehler.art === "abgelaufen") {
+        zurAnmeldung("Die Anmeldung ist abgelaufen. Bitte erneut anmelden.");
+      } else if (fehler instanceof VerwaltungsFehler && fehler.art === "berechtigung") {
+        melde(
+          entwurfsformular,
+          "Dieses Konto darf das nicht (mehr). Bitte an die Entwickler wenden.",
+        );
+      } else {
+        melde(
+          entwurfsformular,
+          "Supabase ist gerade nicht erreichbar. Bitte später erneut versuchen.",
+        );
+      }
+    }
+  }
+
+  function element<K extends keyof HTMLElementTagNameMap>(
+    name: K,
+    text?: string,
+    klasse?: string,
+  ): HTMLElementTagNameMap[K] {
+    const knoten = document.createElement(name);
+    if (text !== undefined) knoten.textContent = text;
+    if (klasse) knoten.className = klasse;
+    return knoten;
+  }
+
+  /** Knopf mit sichtbarem Wort und vorgelesenem Titel, wie im Programm. */
+  function knopf(wort: string, titel: string, wenn: () => void, klasse = "knopf knopf-leise") {
+    const b = element("button", undefined, klasse);
+    b.type = "button";
+    b.append(wort, element("span", `: ${titel}`, "nur-vorlesen"));
+    b.addEventListener("click", wenn);
+    return b;
+  }
+
+  function zeigeListe(eintraege: VerwalteteAnkuendigung[]) {
+    if (eintraege.length === 0) {
+      liste.replaceChildren(element("li", "Noch keine Ankündigungen.", "karte"));
+      return;
+    }
+
+    liste.replaceChildren(
+      ...eintraege.map((eintrag) => {
+        const li = element("li", undefined, "karte");
+        li.dataset.sichtbar = String(eintrag.sichtbar);
+
+        const kopf = element("p", undefined, "datum");
+        if (eintrag.veroeffentlichtAm) {
+          kopf.append(element("span", formatiereZeitpunkt(eintrag.veroeffentlichtAm)));
+        }
+        kopf.append(
+          element(
+            "span",
+            eintrag.sichtbar ? "sichtbar" : "verborgen",
+            eintrag.sichtbar ? "marke marke-sichtbar" : "marke marke-verborgen",
+          ),
+        );
+        if (eintrag.gewicht === "wichtig")
+          kopf.append(element("span", "wichtig", "marke marke-wichtig"));
+
+        const aktionen = element("p", undefined, "aktionen");
+        aktionen.append(
+          knopf("Bearbeiten", eintrag.titel, () => bearbeite(eintrag)),
+          knopf(eintrag.sichtbar ? "Verbergen" : "Sichtbar schalten", eintrag.titel, () =>
+            versuche(async () => {
+              await setzeSichtbar(
+                verbindung(),
+                await aktuelleSitzung(),
+                eintrag.id,
+                !eintrag.sichtbar,
+              );
+              await ladeListe();
+            }),
+          ),
+          knopf("Löschen", eintrag.titel, () => {
+            if (!confirm(`„${eintrag.titel}“ endgültig löschen?`)) return;
+            void versuche(async () => {
+              await loesche(verbindung(), await aktuelleSitzung(), eintrag.id);
+              if (bearbeitet === eintrag.id) neuerEntwurf();
+              await ladeListe();
+            });
+          }),
+        );
+
+        li.append(kopf, element("h3", eintrag.titel), element("p", eintrag.text, "text"), aktionen);
+        return li;
+      }),
+    );
+  }
+
+  const verbindung = () => ({ url: url!, schluessel: schluessel! });
+
+  async function ladeListe() {
+    zeigeListe(await ladeAlle(verbindung(), await aktuelleSitzung()));
+  }
+
+  function feld(name: string) {
+    return entwurfsformular.elements.namedItem(name) as HTMLInputElement | HTMLTextAreaElement;
+  }
+
+  function setzeFeldfehler(name: "titel" | "text", text: string | undefined) {
+    const eingabe = feld(name);
+    const hinweis = wurzel.querySelector<HTMLElement>(`#${name}-fehler`)!;
+    hinweis.textContent = text ?? "";
+    hinweis.hidden = text === undefined;
+    if (text) eingabe.setAttribute("aria-invalid", "true");
+    else eingabe.removeAttribute("aria-invalid");
+  }
+
+  function neuerEntwurf() {
+    bearbeitet = null;
+    entwurfsformular.reset();
+    setzeFeldfehler("titel", undefined);
+    setzeFeldfehler("text", undefined);
+    wurzel.querySelector("[data-entwurf-ueberschrift]")!.textContent = "Neue Ankündigung";
+    wurzel.querySelector<HTMLElement>("[data-abbrechen]")!.hidden = true;
+  }
+
+  function bearbeite(eintrag: VerwalteteAnkuendigung) {
+    bearbeitet = eintrag.id;
+    feld("titel").value = eintrag.titel;
+    feld("text").value = eintrag.text;
+    (feld("wichtig") as HTMLInputElement).checked = eintrag.gewicht === "wichtig";
+    (feld("sichtbar") as HTMLInputElement).checked = eintrag.sichtbar;
+    wurzel.querySelector("[data-entwurf-ueberschrift]")!.textContent = "Ankündigung bearbeiten";
+    wurzel.querySelector<HTMLElement>("[data-abbrechen]")!.hidden = false;
+    status.textContent = "";
+    feld("titel").focus();
+  }
+
+  async function oeffne() {
+    const admin = await istAdmin(verbindung(), await aktuelleSitzung());
+    wurzel.querySelectorAll<HTMLElement>("[data-email]").forEach((e) => {
+      e.textContent = sitzung?.email ?? "";
+    });
+    if (!admin) {
+      zeige("kein-admin");
+      return;
+    }
+    zeige("admin");
+    await ladeListe();
+  }
+
+  anmeldeformular.addEventListener("submit", async (ereignis) => {
+    ereignis.preventDefault();
+    const senden = anmeldeformular.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+    const daten = new FormData(anmeldeformular);
+    senden.disabled = true;
+    melde(anmeldeformular, null);
+
+    try {
+      sitzung = await anmelden(
+        verbindung(),
+        String(daten.get("email")),
+        String(daten.get("passwort")),
+      );
+      sitzungSpeichern(speicher(), sitzung);
+      anmeldeformular.reset();
+      await versuche(oeffne);
+    } catch (fehler) {
+      melde(
+        anmeldeformular,
+        fehler instanceof VerwaltungsFehler && fehler.art === "anmeldung"
+          ? fehler.message
+          : "Supabase ist gerade nicht erreichbar. Bitte später erneut versuchen.",
+      );
+    } finally {
+      senden.disabled = false;
+    }
+  });
+
+  entwurfsformular.addEventListener("submit", async (ereignis) => {
+    ereignis.preventDefault();
+    status.textContent = "";
+    melde(entwurfsformular, null);
+
+    const entwurf: Entwurf = {
+      titel: feld("titel").value,
+      text: feld("text").value,
+      gewicht: (feld("wichtig") as HTMLInputElement).checked ? "wichtig" : "info",
+      sichtbar: (feld("sichtbar") as HTMLInputElement).checked,
+    };
+
+    const fehler = pruefeEntwurf(entwurf);
+    setzeFeldfehler("titel", fehler.titel);
+    setzeFeldfehler("text", fehler.text);
+    if (fehler.titel || fehler.text) {
+      feld(fehler.titel ? "titel" : "text").focus();
+      return;
+    }
+
+    const senden = entwurfsformular.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+    senden.disabled = true;
+    await versuche(async () => {
+      await speichere(verbindung(), await aktuelleSitzung(), entwurf, bearbeitet);
+      neuerEntwurf();
+      status.textContent = "Gespeichert.";
+      await ladeListe();
+    });
+    senden.disabled = false;
+  });
+
+  wurzel.querySelector("[data-abbrechen]")!.addEventListener("click", () => {
+    neuerEntwurf();
+    status.textContent = "";
+  });
+
+  for (const knopfAbmelden of wurzel.querySelectorAll("[data-abmelden]")) {
+    knopfAbmelden.addEventListener("click", async () => {
+      if (sitzung) await abmelden(verbindung(), sitzung);
+      neuerEntwurf();
+      zurAnmeldung();
+    });
+  }
+
+  if (!url || !schluessel) {
+    zeige("nicht-verbunden");
+  } else {
+    sitzung = sitzungLaden(speicher());
+    if (sitzung) void versuche(oeffne);
+    else zeige("anmeldung");
+  }
+</script>
+
+<style>
+  .formular {
+    display: grid;
+    gap: var(--raum-2);
+  }
+
+  .formular h2 {
+    margin: 0 0 var(--raum-2);
+    font-size: var(--schrift-h3);
+  }
+
+  label {
+    font-weight: 700;
+  }
+
+  input:not([type="checkbox"]),
+  textarea {
+    width: 100%;
+    min-height: 44px;
+    padding: var(--raum-2) var(--raum-3);
+    font: inherit;
+    color: inherit;
+    background: var(--karte);
+    border: 1px solid var(--feldrand);
+    border-radius: var(--radius-klein);
+  }
+
+  input[aria-invalid="true"],
+  textarea[aria-invalid="true"] {
+    border: 2px solid var(--kachel-rot-text);
+  }
+
+  .auswahl {
+    display: flex;
+    gap: var(--raum-2);
+    align-items: center;
+    min-height: 44px;
+    font-weight: 400;
+  }
+
+  .auswahl input {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .feldfehler,
+  .meldung {
+    margin: 0;
+    font-weight: 700;
+    color: var(--kachel-rot-text);
+  }
+
+  .meldung {
+    padding: var(--raum-2) var(--raum-3);
+    background: var(--kachel-rot-von);
+    border-radius: var(--radius-klein);
+  }
+
+  .bestaetigung {
+    margin: 0;
+  }
+
+  .angemeldet {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--raum-3);
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .verwaltung :global(.aktionen) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--raum-2);
+    margin: var(--raum-2) 0 0;
+  }
+
+  .verwaltung :global(.knopf) {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: var(--raum-2) var(--raum-4);
+    font: inherit;
+    font-weight: 700;
+    color: var(--kachel-blau-text);
+    cursor: pointer;
+    background: var(--kachel-blau-von);
+    border: 0;
+    border-radius: 999px;
+  }
+
+  .verwaltung :global(.knopf-leise) {
+    color: inherit;
+    background: transparent;
+    border: 1px solid currentColor;
+  }
+
+  .verwaltung :global(.knopf:disabled) {
+    cursor: progress;
+    opacity: 0.6;
+  }
+
+  .verwaltung :global(.liste) {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .verwaltung :global(.liste h3) {
+    margin: 0 0 var(--raum-1);
+    font-size: var(--schrift-h3);
+  }
+
+  .verwaltung :global(.liste .text) {
+    margin: 0;
+    white-space: pre-line;
+  }
+
+  .verwaltung :global(.liste li[data-sichtbar="false"]) {
+    border-left: 4px dashed var(--text-leise);
+  }
+
+  .verwaltung :global(.datum) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--raum-2);
+    align-items: center;
+    margin: 0 0 var(--raum-1);
+    font-size: var(--schrift-klein);
+    color: var(--text-leise);
+  }
+
+  .verwaltung :global(.marke) {
+    padding: 2px var(--raum-2);
+    font-weight: 700;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+  }
+
+  .verwaltung :global(.marke-wichtig) {
+    color: var(--kachel-rot-text);
+    background: var(--kachel-rot-von);
+    border-color: transparent;
+  }
+</style>

@@ -86,8 +86,13 @@ Die Datenbankstruktur steht in `supabase/migrations/`. Eine Änderung daran ist 
 Datenmodelländerung: früh abstimmen, neue Migrationsdatei statt die alte ändern, und
 im SQL Editor von Supabase ausführen (siehe
 [docs/betrieb/einrichtung-supabase.html](docs/betrieb/einrichtung-supabase.html)). In
-Tests wird Supabase nie angefragt; `tests/e2e/ankuendigungen.spec.ts` fängt die
-Anfragen ab.
+Tests wird Supabase nie angefragt; die E2E-Tests fangen die Anfragen ab.
+
+Zwei Admins pflegen die Ankündigungen auf `/verwaltung`. Was sie dürfen, regelt allein
+Row Level Security. `tests/unit/datenbank.test.ts` spielt dazu alle Migrationen in ein
+echtes Postgres im Prozess (PGlite) und probiert aus, was Besucher, angemeldete Konten
+und Admins lesen und schreiben können. Wer eine Migration ändert, sieht dort sofort,
+ob sich Rechte verschieben.
 
 ## Aufbau
 

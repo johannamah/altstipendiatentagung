@@ -32,6 +32,7 @@ export interface Verbindung {
 export interface Speicher {
   getItem(schluessel: string): string | null;
   setItem(schluessel: string, wert: string): void;
+  removeItem?(schluessel: string): void;
 }
 
 export interface Kopie {

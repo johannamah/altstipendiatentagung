@@ -263,8 +263,8 @@
           <li><a href="#schluessel">Adresse und Schlüssel</a></li>
           <li><a href="#vercel">In Vercel eintragen</a></li>
           <li><a href="#pruefen">Schutz prüfen</a></li>
+          <li><a href="#admins">Admins einrichten</a></li>
           <li><a href="#pflegen">Ankündigung veröffentlichen</a></li>
-          <li><a href="#zugaenge">Zugänge für das Orga-Team</a></li>
           <li><a href="#fehler">Fehlerbehebung</a></li>
           <li><a href="#betrieb">Laufender Betrieb</a></li>
         </ol>
@@ -285,9 +285,9 @@
               Der Schlüssel dafür steht ohnehin in jedem Browser, er ist dafür gemacht.
             </li>
             <li>
-              <strong>Schreiben</strong> geht nur im Supabase-Dashboard. Über die App oder die
-              Schnittstelle kann niemand etwas ändern. Das ist in der Datenbank selbst festgelegt
-              (Row Level Security).
+              <strong>Schreiben</strong> dürfen nur zwei Admins, und nur Ankündigungen. Sie melden
+              sich in der App unter <code>/verwaltung</code> an und brauchen keinen Zugang zum
+              Supabase-Dashboard. Das ist in der Datenbank selbst festgelegt (Row Level Security).
             </li>
           </ul>
           <div class="kasten achtung">
@@ -322,8 +322,9 @@
             <li>
               <label
                 ><input type="checkbox" data-id="i-wer" /><span
-                  ><strong>Wer schreibt Ankündigungen (F8)?</strong> Nur die Entwickler, oder
-                  bekommt das Orga-Team einen eigenen Zugang (Schritt 9)?</span
+                  ><strong>Die zwei Admins:</strong> Namen und E-Mail-Adressen der beiden Personen,
+                  die Ankündigungen veröffentlichen. Die Adressen kommen nur in Supabase, nie ins
+                  Repository.</span
                 ></label
               >
             </li>
@@ -333,14 +334,6 @@
                   ><strong>Tarif:</strong> Im kostenfreien Tarif pausiert Supabase ein Projekt nach
                   etwa einer Woche ohne Aktivität. Während der Tagung darf das nicht passieren.
                   Klären, ob Free reicht oder ob Pro nötig ist (F2).</span
-                ></label
-              >
-            </li>
-            <li>
-              <label
-                ><input type="checkbox" data-id="i-avv" /><span
-                  ><strong>Vorstand:</strong> Auftragsverarbeitung (Data Processing Addendum) mit
-                  Supabase und die Region für die Datenschutzerklärung.</span
                 ></label
               >
             </li>
@@ -381,17 +374,20 @@
           <h2>4. Tabelle anlegen</h2>
           <ol class="schritte">
             <li>
-              Im Repository die Datei
-              <code>supabase/migrations/20261122000000_ankuendigungen.sql</code> öffnen und den
-              ganzen Inhalt kopieren.
+              Im Repository den Ordner <code>supabase/migrations/</code> öffnen. Dort liegen die
+              Dateien in der Reihenfolge, in der sie ausgeführt werden müssen:
+              <code>20261122000000_ankuendigungen.sql</code>, dann
+              <code>20261123000000_ankuendigungen_admins.sql</code>.
             </li>
             <li>
-              In Supabase links <em>SQL Editor</em> → <em>New query</em> → einfügen →
-              <strong>Run</strong>. Erwartet: „Success. No rows returned".
+              In Supabase links <em>SQL Editor</em> → <em>New query</em> → Inhalt der ersten Datei
+              einfügen → <strong>Run</strong>. Erwartet: „Success. No rows returned". Dasselbe mit
+              der zweiten Datei.
             </li>
             <li>
-              <em>Table Editor</em> öffnen. Die Tabelle <code>ankuendigungen</code> ist da. Neben
-              dem Namen steht <strong>nicht</strong> „RLS disabled" bzw. „Unrestricted".
+              <em>Table Editor</em> öffnen. Die Tabellen <code>ankuendigungen</code> und
+              <code>ankuendigungen_admins</code> sind da. Neben den Namen steht
+              <strong>nicht</strong> „RLS disabled" bzw. „Unrestricted".
             </li>
           </ol>
           <div class="kasten hinweis">
@@ -466,90 +462,119 @@ curl -s -X POST "$URL/rest/v1/ankuendigungen" -H "apikey: $KEY" \
           </p>
         </section>
 
-        <section id="pflegen">
-          <h2>8. Eine Ankündigung veröffentlichen</h2>
-          <p>Für alle, die Ankündigungen schreiben:</p>
-          <ol class="schritte">
-            <li>
-              <a href="https://supabase.com/dashboard">supabase.com/dashboard</a> → Projekt →
-              <em>Table Editor</em> → <code>ankuendigungen</code>.
-            </li>
-            <li>
-              <em>Insert → Insert row</em>:
-              <ul>
-                <li><strong>titel:</strong> kurz und eindeutig, z. B. „Raumänderung am Freitag"</li>
-                <li><strong>text:</strong> die Nachricht, Zeilenumbrüche sind erlaubt</li>
-                <li>
-                  <strong>gewicht:</strong> <code>info</code> oder <code>wichtig</code>. „Wichtig"
-                  erscheint mit roter Marke. Sparsam verwenden, sonst nutzt es sich ab.
-                </li>
-                <li><strong>sichtbar:</strong> zunächst aus lassen (<code>false</code>)</li>
-                <li>Die übrigen Felder füllt Supabase selbst.</li>
-              </ul>
-              → <em>Save</em>.
-            </li>
-            <li>
-              Text noch einmal lesen, dann in der Zeile <code>sichtbar</code> auf
-              <code>true</code> setzen. Ab jetzt sieht jeder die Ankündigung, der die Seite neu
-              lädt.
-            </li>
-            <li>In der App unter „Ankündigungen" kontrollieren.</li>
-          </ol>
-          <h3>Ändern und zurückziehen</h3>
-          <ul>
-            <li>Ändern: Zelle im Table Editor anklicken, bearbeiten, speichern.</li>
-            <li>
-              Zurückziehen: <code>sichtbar</code> auf <code>false</code>. Besser als löschen, weil
-              der Text erhalten bleibt.
-            </li>
-            <li>
-              Reihenfolge: Neueste stehen oben, maßgeblich ist <code>veroeffentlicht_am</code>.
-            </li>
-          </ul>
-          <div class="kasten hinweis">
-            <p>
-              Wer die Seite schon offen hat, sieht die Änderung erst nach dem Neuladen. Geräte ohne
-              Netz zeigen den zuletzt geladenen Stand und sagen dazu, von wann er ist. Für wirklich
-              dringende Änderungen vor Ort zusätzlich einen zweiten Weg nutzen (F9).
-            </p>
-          </div>
-        </section>
-
-        <section id="zugaenge">
-          <h2>9. Zugänge für das Orga-Team</h2>
-          <p>
-            Supabase kennt keine Rolle „darf nur Ankündigungen schreiben". Wer den Table Editor
-            benutzen kann, hat Zugriff auf das ganze Projekt.
-          </p>
+        <section id="admins">
+          <h2>8. Admins einrichten</h2>
+          <p>Einmalig, durch einen Entwickler. Die Admins selbst brauchen kein Supabase-Konto.</p>
+          <h3>Registrierung abschalten</h3>
           <ul class="pruefliste">
             <li>
               <label
-                ><input type="checkbox" data-id="z-wenige" /><span
-                  >Nur wenige, namentlich bekannte Personen einladen:
-                  <em>Organization → Team → Invite</em>, Rolle <strong>Developer</strong>. Die Rolle
-                  kann Daten bearbeiten, aber keine Abrechnung und keine Mitglieder verwalten.</span
+                ><input type="checkbox" data-id="a-signup" /><span
+                  ><em>Authentication → Sign In / Providers</em> (bzw. <em>Settings</em>):
+                  <strong>Allow new users to sign up</strong> aus. Sonst könnte sich jeder ein Konto
+                  anlegen. Schreiben dürfte es zwar nichts, aber Konten soll es nur für die Admins
+                  geben.</span
                 ></label
               >
             </li>
             <li>
               <label
-                ><input type="checkbox" data-id="z-2fa" /><span
-                  >Von allen Eingeladenen Zwei-Faktor-Anmeldung verlangen.</span
+                ><input type="checkbox" data-id="a-email" /><span
+                  >Provider <strong>Email</strong> bleibt an. Andere Anmeldewege (Google, Magic Link
+                  usw.) werden nicht gebraucht.</span
                 ></label
               >
             </li>
             <li>
               <label
-                ><input type="checkbox" data-id="z-ende" /><span
-                  >Nach der Tagung die Zugänge wieder entfernen.</span
+                ><input type="checkbox" data-id="a-laenge" /><span
+                  >Unter den Passwort-Einstellungen eine Mindestlänge von
+                  <strong>12 Zeichen</strong> setzen.</span
                 ></label
               >
             </li>
           </ul>
-          <p class="leise">
-            Eine eigene Pflegeoberfläche mit fein begrenzten Rechten ist möglich, setzt aber
-            geklärte Rollen voraus (F3, F8). Siehe ADR-0014.
-          </p>
+          <h3>Die zwei Konten anlegen</h3>
+          <ol class="schritte">
+            <li>
+              <em>Authentication → Users → Add user → Create new user</em>: E-Mail-Adresse, ein
+              langes zufälliges Passwort, <strong>Auto Confirm User</strong> anhaken. Für die zweite
+              Person wiederholen.
+            </li>
+            <li>
+              Das Passwort auf einem anderen Weg als per E-Mail weitergeben, z. B. am Telefon oder
+              über einen Passwortmanager.
+            </li>
+            <li>
+              In der Benutzerliste die <strong>User UID</strong> beider Konten kopieren (Form
+              <code>xxxxxxxx-xxxx-…</code>).
+            </li>
+            <li>
+              <em>SQL Editor → New query</em>, die beiden UIDs einsetzen und ausführen:
+              <pre><code>insert into public.ankuendigungen_admins (user_id) values
+  ('UID-DER-ERSTEN-PERSON'),
+  ('UID-DER-ZWEITEN-PERSON');</code></pre>
+            </li>
+          </ol>
+          <h3>Später ändern</h3>
+          <ul>
+            <li>
+              <strong>Passwort vergessen:</strong> <em>Authentication → Users</em> → Konto →
+              <em>Reset password</em> bzw. neues Passwort setzen. Eine Selbstbedienung in der App
+              gibt es nicht.
+            </li>
+            <li>
+              <strong>Admin-Recht entziehen:</strong> Konto unter
+              <em>Authentication → Users</em> löschen. Der Eintrag in
+              <code>ankuendigungen_admins</code> verschwindet damit von selbst.
+            </li>
+            <li><strong>Nach der Tagung</strong> beide Konten löschen.</li>
+          </ul>
+        </section>
+
+        <section id="pflegen">
+          <h2>9. Eine Ankündigung veröffentlichen</h2>
+          <p>Für die beiden Admins:</p>
+          <ol class="schritte">
+            <li>
+              <code>https://altstipendiaten-jahrestagung.de/verwaltung/</code> öffnen (am besten als
+              Lesezeichen speichern) und mit E-Mail-Adresse und Passwort anmelden.
+            </li>
+            <li>
+              Unter „Neue Ankündigung":
+              <ul>
+                <li><strong>Titel:</strong> kurz und eindeutig, z. B. „Raumänderung am Freitag"</li>
+                <li><strong>Text:</strong> die Nachricht, Zeilenumbrüche sind erlaubt</li>
+                <li>
+                  <strong>Als wichtig markieren:</strong> erscheint mit roter Marke. Sparsam
+                  verwenden, sonst nutzt es sich ab.
+                </li>
+                <li>
+                  <strong>Sofort sichtbar:</strong> ohne Haken wird die Ankündigung nur gespeichert
+                  und ist für niemanden sonst zu sehen.
+                </li>
+              </ul>
+              → <em>Speichern</em>.
+            </li>
+            <li>
+              In der Liste darunter lässt sich jede Ankündigung <em>bearbeiten</em>,
+              <em>verbergen</em> bzw. <em>sichtbar schalten</em> und <em>löschen</em>. Verbergen ist
+              meist besser als Löschen, weil der Text erhalten bleibt.
+            </li>
+            <li>In der App unter „Ankündigungen" kontrollieren.</li>
+          </ol>
+          <div class="kasten hinweis">
+            <p>
+              Wer die Seite „Ankündigungen" schon offen hat, sieht die Änderung erst nach dem
+              Neuladen. Geräte ohne Netz zeigen den zuletzt geladenen Stand und sagen dazu, von wann
+              er ist. Für wirklich dringende Änderungen vor Ort zusätzlich einen zweiten Weg nutzen
+              (F9).
+            </p>
+            <p>
+              Die Anmeldung gilt, bis der Browser-Tab geschlossen oder <em>Abmelden</em> gedrückt
+              wird. Auf fremden Geräten immer abmelden.
+            </p>
+          </div>
         </section>
 
         <section id="fehler">
@@ -577,6 +602,17 @@ curl -s -X POST "$URL/rest/v1/ankuendigungen" -H "apikey: $KEY" \
                     oder gelöscht (Antwort <code>401</code>), oder das Gerät ist offline. Mit dem
                     <code>curl</code>-Befehl aus Schritt 7 prüfen.
                   </td>
+                </tr>
+                <tr>
+                  <td>Verwaltung: „E-Mail-Adresse oder Passwort stimmen nicht"</td>
+                  <td>
+                    Tippfehler, oder das Konto wurde ohne <em>Auto Confirm User</em> angelegt.
+                    Passwort im Dashboard neu setzen (Schritt 8).
+                  </td>
+                </tr>
+                <tr>
+                  <td>Verwaltung: „Dieses Konto darf keine Ankündigungen verwalten"</td>
+                  <td>Die UID fehlt in <code>ankuendigungen_admins</code> (Schritt 8, SQL).</td>
                 </tr>
                 <tr>
                   <td>Eine Ankündigung fehlt</td>
