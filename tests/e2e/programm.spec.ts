@@ -28,12 +28,12 @@ test("weist gleichzeitige Exkursionen als Auswahl aus", async ({ page }) => {
 });
 
 /**
- * Am Donnerstag laufen Mitgliederversammlung und Partnerprogramm beide von
- * 15:00 bis 17:00 - man muss sich entscheiden. Eine Liste, die beide
+ * Am Donnerstag laufen Mitgliederversammlung und die beiden Partnerprogramme
+ * von 15:00 bis 17:00 - man muss sich entscheiden. Eine Liste, die beide
  * untereinander zeigt, verschweigt das.
  */
 test("weist auch gleichzeitige Hauptprogrammpunkte als Auswahl aus", async ({ page }) => {
-  await expect(page.getByText("Gleichzeitig · 2 zur Wahl")).toBeVisible();
+  await expect(page.getByText("Gleichzeitig · 3 zur Wahl")).toBeVisible();
 });
 
 test("zeigt die aktualisierten Zeiten und Orte aus der Programmvorlage", async ({ page }) => {
@@ -42,7 +42,7 @@ test("zeigt die aktualisierten Zeiten und Orte aus der Programmvorlage", async (
   await expect(page.getByText("13:30–14:30 Uhr")).toBeVisible();
   // Das Weinfest endet um Mitternacht: im Deutschen 24:00, nicht 00:00.
   await expect(page.getByText("20:00–24:00 Uhr")).toBeVisible();
-  await expect(page.getByText("deseo Cafe . Restaurant . Bar")).toBeVisible();
+  await expect(page.getByText("deseo Cafe . Restaurant . Bar").first()).toBeVisible();
   await expect(page.getByRole("heading", { name: /Verabschiedung und Rückreise/ })).toBeVisible();
 });
 
