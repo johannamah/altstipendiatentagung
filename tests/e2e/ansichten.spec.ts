@@ -13,7 +13,11 @@ test.describe("alle Bereiche sind erreichbar", () => {
   for (const bereich of SEITENBEREICHE) {
     test(`${bereich.titel} öffnet sich von der Startseite aus`, async ({ page }) => {
       await page.goto("/");
-      await page.getByRole("link", { name: new RegExp(bereich.titel, "i") }).click();
+      // Nur im Inhalt: Das Logo in der Kopfleiste heisst "Jahrestagung 2027 Hildesheim".
+      await page
+        .getByRole("main")
+        .getByRole("link", { name: new RegExp(bereich.titel, "i") })
+        .click();
 
       await expect(page).toHaveURL(new RegExp(`/${bereich.slug}/?$`));
       // Jede Seite hat genau eine Hauptüberschrift.
@@ -44,7 +48,8 @@ test.describe("Zurück zur Übersicht", () => {
    */
   test("die Startseite zeigt keinen Zurück-Knopf", async ({ page }) => {
     await page.goto("/");
-    await expect(page.getByRole("link", { name: "Übersicht" })).toHaveCount(0);
+    // exact: Die Kachel "Orte & Anfahrt" nennt eine "Übersichtskarte".
+    await expect(page.getByRole("link", { name: "Übersicht", exact: true })).toHaveCount(0);
   });
 
   /**
@@ -184,7 +189,7 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
     await page.goto("/hildesheim");
 
     await expect(page.locator(".zahlen dt")).toHaveCount(9);
-    await expect(page.getByText("104.712")).toBeVisible();
+    await expect(page.getByText("104.712", { exact: true })).toBeVisible();
     await expect(page.getByText("92,19 km²")).toBeVisible();
   });
 
@@ -203,7 +208,7 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
     await page.goto("/hildesheim");
 
     await expect(page.getByText(/Tausendjährige Rosenstock/)).toBeVisible();
-    await expect(page.getByText(/Knochenhauer-Amtshaus/)).toBeVisible();
+    await expect(page.getByText("Marktplatz mit Knochenhauer-Amtshaus")).toBeVisible();
     await expect(page.getByText(/22. März 1945/)).toBeVisible();
   });
 

@@ -246,6 +246,14 @@ const empfehlungen = alle.filter((eintrag) => !eintrag.data.kontingent);
     color: var(--text-leise);
   }
 
+  /* Touch-Ziele mindestens 44 px hoch (Designregel 7, WCAG 2.5.8): Telefon und
+     E-Mail stehen dicht neben "Adresse kopieren". */
+  .zeile a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
   .empfehlungen {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));

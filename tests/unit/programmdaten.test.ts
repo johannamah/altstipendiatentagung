@@ -29,7 +29,8 @@ interface Eintrag {
 }
 
 const punkte = inhalt("programm.json") as Eintrag[];
-const ortIds = new Set((inhalt("orte.json") as { id: string }[]).map((o) => o.id));
+const orte = inhalt("orte.json") as { id: string; name: string; adresse?: string; plz?: string }[];
+const ortIds = new Set(orte.map((o) => o.id));
 const exkursionen = new Map(
   (inhalt("exkursionen.json") as { id: string; info?: string }[]).map((e) => [e.id, e]),
 );
@@ -87,6 +88,20 @@ describe("Programmdaten", () => {
       expect(ortIds.has(ortId!), `${ortId} fehlt in orte.json`).toBe(true);
     },
   );
+
+  /** Anschriften der Veranstaltungsorte laut Programmheft 2027 (Abschnitt "Tagungsorte"). */
+  it.each([
+    ["deseo", "Hindenburgplatz 3", "31134"],
+    ["mariano-josephinum", "Domhof 7", "31134"],
+    ["knochenhaueramtshaus", "Markt 7", "31134"],
+    ["halle39", "Schinkelstraße 7", "31137"],
+    ["marktplatz", "Markt 1", "31134"],
+    ["dom", "Domhof 3", "31134"],
+  ])("Ort %s hat die Anschrift %s, %s Hildesheim", (id, adresse, plz) => {
+    const ort = orte.find((o) => o.id === id);
+    expect(ort?.adresse).toBe(adresse);
+    expect(ort?.plz).toBe(plz);
+  });
 
   /** Die Beschreibung einer Exkursion steht in exkursionen.json (programm.astro). */
   it.each(punkte.filter((p) => p.spur === "exkursion").map((p) => p.id))(
