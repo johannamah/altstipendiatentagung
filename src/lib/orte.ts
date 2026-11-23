@@ -53,7 +53,7 @@ export function vollstaendigeAdresse(ort: Ort): string {
 /**
  * Suchbegriff fuer die Karten-App: Name UND Adresse.
  *
- * Der Name allein ist mehrdeutig ("Novotel" gibt es oft), die Adresse allein
+ * Der Name allein ist mehrdeutig ("Van der Valk" gibt es oft), die Adresse allein
  * verliert die Information, worum es geht. Zusammen findet jede Karten-App
  * den richtigen Punkt.
  */

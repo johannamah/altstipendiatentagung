@@ -1,41 +1,127 @@
 [
   {
-    "id": "novotel-hildesheim",
-    "name": "Novotel Hildesheim",
+    "id": "bb-hotel",
+    "reihenfolge": 1,
+    "name": "B&B Hotel Hildesheim",
+    "ortId": "bb-hotel",
     "kontingent": true,
-    "zeitraum": "05.05.2027 – 09.05.2027",
-    "stichwort": "KAS - Holstein",
+    "zeitraum": "06.05.2027 – 09.05.2027",
+    "stichwort": "Abrufkontingent, Stichwort: Konrad-Adenauer-Stiftung",
+    "zimmer": [
+      {
+        "typ": "Einzelzimmer",
+        "anzahl": 70,
+        "preis": "77,68 € / Nacht",
+        "hinweis": "auch als Doppelzimmer buchbar: 87,68 € / Nacht"
+      }
+    ],
+    "fruehstueck": "nicht inbegriffen, 9,90 € pro Person",
+    "telefon": "+49 6146 815350-7",
+    "email": "hildesheim@hotelbb.com",
+    "web": "https://www.hotel-bb.com/de/hotel/hildesheim"
+  },
+  {
+    "id": "hey-lou-hotel",
+    "reihenfolge": 2,
+    "name": "HeyLou Hotel Hildesheim",
+    "ortId": "hey-lou",
+    "kontingent": true,
+    "zeitraum": "06.05.2027 – 09.05.2027",
+    "stichwort": "Abrufkontingent, Stichwort: Konrad-Adenauer-Stiftung",
     "zimmer": [
       {
         "typ": "Einzelzimmer",
         "anzahl": 20,
-        "preis": "89,00 € / Nacht"
+        "preis": "95,00 € / Nacht",
+        "hinweis": "auch als Doppelzimmer buchbar: 115,00 € / Nacht"
+      }
+    ],
+    "fruehstueck": "inbegriffen",
+    "telefon": "+49 (0) 5121 912 870 0",
+    "email": "info.hil@heylouhotels.com",
+    "web": "https://hil.heylouhotels.com/de/"
+  },
+  {
+    "id": "schlafladen",
+    "reihenfolge": 3,
+    "name": "Schlafladen Hildesheim",
+    "ortId": "schlafladen",
+    "kontingent": true,
+    "zeitraum": "06.05.2027 – 09.05.2027",
+    "stichwort": "Abrufkontingent, Stichwort: Konrad-Adenauer-Stiftung",
+    "zimmer": [
+      {
+        "typ": "Standard-Doppelzimmer (Straßenseite)",
+        "anzahl": 7,
+        "preis": "89,00 € / Nacht",
+        "hinweis": "bei Einzelnutzung 74,00 € / Nacht"
+      },
+      {
+        "typ": "Comfort-Doppelzimmer (Hofseite)",
+        "anzahl": 6,
+        "preis": "99,00 € / Nacht",
+        "hinweis": "bei Einzelnutzung 84,00 € / Nacht"
+      },
+      {
+        "typ": "Juniorsuite",
+        "anzahl": 1,
+        "preis": "124,00 € / Nacht bei Einzelnutzung",
+        "hinweis": "jede weitere Person +15,00 € / Nacht; Doppelbett, Einzelbett und Doppelschlafsofa, Platz für bis zu 5 Personen"
+      },
+      {
+        "typ": "Suite",
+        "anzahl": 2,
+        "preis": "144,00 € / Nacht bei Einzelnutzung",
+        "hinweis": "jede weitere Person +15,00 € / Nacht; zwei separate Zimmer: Schlafzimmer mit Doppelbett, Wohnzimmer mit Doppelschlafcouch"
+      }
+    ],
+    "telefon": "05121 93593-55",
+    "email": "info@schlafladen.de",
+    "web": "https://schlafladen.de/"
+  },
+  {
+    "id": "buergermeisterkapelle",
+    "reihenfolge": 4,
+    "name": "Hotel Bürgermeisterkapelle Hildesheim",
+    "ortId": "buergermeisterkapelle",
+    "kontingent": true,
+    "zeitraum": "06.05.2027 – 09.05.2027",
+    "stichwort": "Abrufkontingent, Stichwort: Konrad-Adenauer-Stiftung",
+    "zimmer": [
+      {
+        "typ": "Einzelzimmer",
+        "anzahl": 11,
+        "preis": "75,00 € / Nacht"
       },
       {
         "typ": "Doppelzimmer",
-        "anzahl": 40,
-        "preis": "103,00 € / Nacht"
+        "anzahl": 7,
+        "preis": "90,00 € / Nacht"
       }
     ],
-    "telefon": "+49 5121 17170",
-    "email": "H5396@accor.com",
-    "ortId": "novotel"
+    "fruehstueck": "inbegriffen",
+    "hinweis": "Das Abrufkontingent verfällt ab Mitte März 2027. Danach gehen die nicht abgerufenen Zimmer in den freien Verkauf.",
+    "telefon": "+49 (0) 51 21 – 179 29 0",
+    "email": "info@hotelbuergermeisterkapelle.de",
+    "web": "https://hotelbuergermeisterkapelle.de/"
   },
   {
-    "id": "bb-hotel",
-    "name": "B&B Hotel Hildesheim",
-    "kontingent": false,
-    "telefon": "+49 6146 815350-7",
-    "email": "hildesheim@hotelbb.com",
-    "ortId": "bb-hotel"
-  },
-  {
-    "id": "hey-lou-hotel",
-    "name": "Hey Lou Hotel Hildesheim",
-    "kontingent": false,
-    "telefon": "+49 (0) 5121 912 870 0",
-    "email": "info.hil@heylouhotels.com",
-    "web": "https://hil.heylouhotels.com/de/",
-    "ortId": "hey-lou"
+    "id": "van-der-valk",
+    "reihenfolge": 5,
+    "name": "Van der Valk Hotel Hildesheim",
+    "ortId": "van-der-valk",
+    "kontingent": true,
+    "zeitraum": "06.05.2027 – 09.05.2027",
+    "stichwort": "Abrufkontingent, Stichwort: Konrad-Adenauer-Stiftung",
+    "zimmer": [
+      {
+        "typ": "Einzel- oder Doppelzimmer",
+        "preis": "124,00 € / Nacht"
+      }
+    ],
+    "fruehstueck": "nicht inbegriffen, 23,50 € pro Person",
+    "telefon": "+49 5121 300 0",
+    "email": "info@hildesheim.valk.com",
+    "web": "https://hildesheim.vandervalk.de/"
   }
 ]

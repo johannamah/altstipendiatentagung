@@ -65,13 +65,25 @@ test.describe("Zurück zur Übersicht", () => {
 });
 
 test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
-  test("Unterbringung zeigt Kontingent, Stichwort und Preise", async ({ page }) => {
+  test("Unterbringung zeigt Kontingente, Stichwort, Preise und Buchungslinks", async ({ page }) => {
     await page.goto("/unterbringung");
 
-    await expect(page.getByRole("heading", { name: "Novotel Hildesheim" })).toBeVisible();
-    await expect(page.getByText("KAS - Holstein")).toBeVisible();
-    await expect(page.getByText("89,00 € / Nacht")).toBeVisible();
-    await expect(page.getByRole("heading", { name: "B&B Hotel Hildesheim" })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 3 })).toHaveText([
+      "B&B Hotel Hildesheim",
+      "HeyLou Hotel Hildesheim",
+      "Schlafladen Hildesheim",
+      "Hotel Bürgermeisterkapelle Hildesheim",
+      "Van der Valk Hotel Hildesheim",
+    ]);
+    await expect(
+      page.getByText("„Abrufkontingent, Stichwort: Konrad-Adenauer-Stiftung“").first(),
+    ).toBeVisible();
+    await expect(page.getByText("77,68 € / Nacht")).toBeVisible();
+    await expect(page.getByText(/verfällt ab Mitte März 2027/)).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: /Buchen\s*:\s*Schlafladen Hildesheim/ }),
+    ).toHaveAttribute("href", "https://schlafladen.de/");
+    await expect(page.getByText("Novotel")).toHaveCount(0);
   });
 
   /**
@@ -228,7 +240,7 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
   test("Ankündigungen zeigt die Einträge, neueste zuerst", async ({ page }) => {
     await page.goto("/ankuendigungen");
 
-    await expect(page.locator(".liste > li")).toHaveCount(2);
+    await expect(page.locator(".liste > li")).toHaveCount(1);
   });
 
   test("Begrüßung zeigt drei Grußworte in fester Reihenfolge", async ({ page }) => {

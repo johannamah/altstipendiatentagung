@@ -3,6 +3,7 @@ import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
 
 import Basis from "../layouts/Basis.astro";
+import { telefonVerweis } from "../lib/text.ts";
 import Seitenkopf from "../components/Seitenkopf.astro";
 import Ikone from "../components/Ikone.astro";
 import Ortsangabe from "../components/Ortsangabe.astro";
@@ -95,7 +96,7 @@ const alleOhneKontaktdaten = kontakte.filter(
           {istPlatzhalter(person.telefon) ? (
             <span class="offen">noch nicht hinterlegt</span>
           ) : (
-            <a href={`tel:${person.telefon!.replace(/\s/g, "")}`}>{person.telefon}</a>
+            <a href={telefonVerweis(person.telefon!)}>{person.telefon}</a>
           )}
         </p>
 
