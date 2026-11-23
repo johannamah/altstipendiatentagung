@@ -4,6 +4,7 @@ import Ortsangabe from "./Ortsangabe.astro";
 import type { Ort } from "../lib/orte.ts";
 import { formatiereZeitraum, STATUS_TEXT, type Programmpunkt as Punkt } from "../lib/programm.ts";
 import { istExportierbar } from "../lib/kalender.ts";
+import { inAbsaetze } from "../lib/text.ts";
 
 /**
  * Ein Programmpunkt, aufklappbar.
@@ -69,7 +70,7 @@ const exportierbar = istExportierbar(punkt);
 
   <div class="inhalt">
     {punkt.beschreibung ? (
-      <p class="beschreibung">{punkt.beschreibung}</p>
+      inAbsaetze(punkt.beschreibung).map((absatz) => <p class="beschreibung">{absatz}</p>)
     ) : (
       <p class="ohne-beschreibung">Zu diesem Punkt liegt noch keine Beschreibung vor.</p>
     )}

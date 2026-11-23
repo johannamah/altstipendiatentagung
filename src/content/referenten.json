@@ -1,0 +1,30 @@
+[
+  {
+    "id": "norbert-lammert",
+    "reihenfolge": 1,
+    "name": "Prof. Dr. Norbert Lammert",
+    "rolle": "Präsident des Deutschen Bundestages a. D.",
+    "absaetze": [
+      "Norbert Lammert gehörte von 1980 bis 2017 dem Deutschen Bundestag an und war von 2005 bis 2017 dessen Präsident.",
+      "Anschließend stand er als Vorsitzender an der Spitze der Konrad-Adenauer-Stiftung."
+    ]
+  },
+  {
+    "id": "annegret-kramp-karrenbauer",
+    "reihenfolge": 2,
+    "name": "Annegret Kramp-Karrenbauer",
+    "rolle": "Vorsitzende der Konrad-Adenauer-Stiftung e. V.",
+    "absaetze": [
+      "Annegret Kramp-Karrenbauer war von 2011 bis 2018 Ministerpräsidentin des Saarlandes, von 2018 bis 2021 Bundesvorsitzende der CDU und von 2019 bis 2021 Bundesministerin der Verteidigung."
+    ]
+  },
+  {
+    "id": "christian-wulff",
+    "reihenfolge": 3,
+    "name": "Christian Wulff",
+    "rolle": "Bundespräsident a. D.",
+    "absaetze": [
+      "Christian Wulff war von 2003 bis 2010 Ministerpräsident des Landes Niedersachsen und von 2010 bis 2012 Bundespräsident der Bundesrepublik Deutschland."
+    ]
+  }
+]

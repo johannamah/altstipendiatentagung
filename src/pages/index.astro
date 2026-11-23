@@ -1,22 +1,60 @@
 ---
+import { getCollection } from "astro:content";
+
 import Basis from "../layouts/Basis.astro";
 import Kachel from "../components/Kachel.astro";
 import Ikone from "../components/Ikone.astro";
+import Jetztkarte from "../components/Jetztkarte.astro";
+import Standanzeige from "../components/Standanzeige.astro";
 import { BEREICHE } from "../daten/bereiche.ts";
+import type { Ort } from "../lib/orte.ts";
+import type { Programmpunkt } from "../lib/programm.ts";
+
+const orte = new Map<string, Ort>(
+  (await getCollection("orte")).map((eintrag) => [eintrag.id, { id: eintrag.id, ...eintrag.data }]),
+);
+const punkte: Programmpunkt[] = (await getCollection("programm")).map((eintrag) => ({
+  id: eintrag.id,
+  ...eintrag.data,
+}));
+
+/* Nur das, was die Karte braucht: Titel, Zeiten, Ort. Das vollstaendige
+   Programm hier mitzuschicken waere Ballast auf der Seite, die am haeufigsten
+   geoeffnet wird. */
+const kartendaten = {
+  punkte: punkte
+    .filter((punkt) => punkt.beginn !== undefined)
+    .map((punkt) => ({
+      id: punkt.id,
+      titel: punkt.titel,
+      beginn: punkt.beginn,
+      ende: punkt.ende,
+      zeitHinweis: punkt.zeitHinweis,
+      ort: punkt.ortId ? (orte.get(punkt.ortId)?.name ?? null) : null,
+      raum: punkt.raum ?? null,
+    })),
+};
 ---
 
 <Basis
   titel="Jahrestagung 2027 – Hildesheim | Altstipendiaten der Konrad-Adenauer-Stiftung"
   beschreibung="Programm, Anmeldung und Informationen zur Altstipendiatentagung 2027 der Altstipendiaten der Konrad-Adenauer-Stiftung in Hildesheim."
 >
+  <Standanzeige />
+
   <div class="aufmacher">
-    <img
-      class="aufmacher-logo"
-      src="/logo-full.png"
-      alt="Altstipendiaten der Konrad-Adenauer-Stiftung e. V."
-      width="560"
-      height="180"
-    />
+    {/* Freigestellte Fassung: Die Ausgangsdatei hat das Weiss eingebrannt und
+        stand im Dunkelmodus als harter weisser Block auf der Seite. Die
+        Originaldateien bleiben unveraendert - die App-Symbole brauchen ihren
+        weissen Grund. */}
+    <div class="aufmacher-logo">
+      <img
+        src="/logo-full-frei.png"
+        alt="Altstipendiaten der Konrad-Adenauer-Stiftung e. V."
+        width="560"
+        height="180"
+      />
+    </div>
     <h1>Altstipendiatentagung 2027 „Demokratie leben – Europa gestalten“</h1>
     <p>
       Willkommen! Hier findet ihr das gesamte Programm, könnt euch anmelden und alles Wichtige rund
@@ -28,6 +66,8 @@ import { BEREICHE } from "../daten/bereiche.ts";
     </p>
   </div>
 
+  <Jetztkarte punkte={punkte} orte={orte} />
+
   <nav aria-label="Bereiche">
     <h2 class="nur-vorlesen">Bereiche der Tagungsapp</h2>
     <ul class="kacheln">
@@ -38,7 +78,95 @@ import { BEREICHE } from "../daten/bereiche.ts";
       ))}
     </ul>
   </nav>
+  <script type="application/json" id="jetztdaten" set:html={JSON.stringify(kartendaten)} />
 </Basis>
+
+<script>
+  import { formatiereVorlauf, naechsteLage } from "../lib/jetzt.ts";
+  import { formatiereZeitraum, type Programmpunkt } from "../lib/programm.ts";
+  import { jetztAlsOrtszeit } from "../lib/zeit.ts";
+
+  /* Der Server kennt die Uhrzeit der Betrachtenden nicht und rendert deshalb
+     den Auftakt. Hier wird daraus der tatsaechliche Stand. */
+  const datenElement = document.getElementById("jetztdaten");
+  const karte = document.querySelector<HTMLElement>(".jetztkarte");
+
+  if (datenElement && karte) {
+    type Kartenpunkt = Programmpunkt & { ort: string | null; raum: string | null };
+    const { punkte }: { punkte: Kartenpunkt[] } = JSON.parse(
+      datenElement.textContent ?? '{"punkte":[]}',
+    );
+
+    const jetzt = jetztAlsOrtszeit();
+    const lage = naechsteLage(punkte, jetzt);
+    const ziel = lage.punkte[0] as Kartenpunkt | undefined;
+
+    const feld = (name: string) => karte.querySelector<HTMLElement>(`[data-${name}]`);
+
+    if (lage.art === "vorbei" || !ziel) {
+      /* Nach der Tagung einen vergangenen Termin zu zeigen waere irrefuehrend.
+         Stattdessen sagt die Karte, was Sache ist. */
+      feld("lage-text")!.textContent = "Jahrestagung 2027";
+      feld("titel")!.textContent = "Die Tagung ist beendet.";
+      for (const name of ["vorlauf", "gross", "weitere", "ort", "zeit", "ziel"]) {
+        feld(name)?.setAttribute("hidden", "");
+      }
+    } else {
+      karte.dataset.art = lage.art;
+
+      const beschriftung = {
+        vorher: "Zum Auftakt",
+        jetzt: "Jetzt",
+        gleich: "Als Nächstes",
+      }[lage.art];
+      feld("lage-text")!.textContent = beschriftung;
+
+      /* Die grosse Zeile traegt die Information, auf die es im Vorbeigehen
+         ankommt: wie lange noch. Laeuft etwas, ist das die Restzeit bis zum
+         Ende; sonst der Vorlauf bis zum Beginn. */
+      const gross = feld("gross")!;
+      const vorlauf =
+        lage.art === "jetzt"
+          ? ziel.ende
+            ? `noch ${formatiereVorlauf(jetzt, ziel.ende)?.replace(/^in /, "") ?? ""}`
+            : null
+          : formatiereVorlauf(jetzt, ziel.beginn!);
+
+      if (vorlauf) {
+        gross.textContent = vorlauf;
+        gross.hidden = false;
+      } else {
+        gross.hidden = true;
+      }
+
+      const vorlaufMarke = feld("vorlauf")!;
+      vorlaufMarke.textContent = ziel.beginn ? `· ${ziel.beginn.slice(11, 16)} Uhr` : "";
+
+      feld("titel")!.textContent = ziel.titel;
+
+      /* Am Freitag laufen sieben Exkursionen gleichzeitig - wer nur eine sieht,
+         haelt sie fuer das Programm. */
+      const weitere = feld("weitere")!;
+      if (lage.punkte.length > 1) {
+        weitere.textContent = `und ${lage.punkte.length - 1} weitere gleichzeitig – ihr wählt eine`;
+        weitere.hidden = false;
+      } else {
+        weitere.hidden = true;
+      }
+
+      const ort = feld("ort")!;
+      if (ziel.ort) {
+        feld("ort-text")!.textContent = ziel.raum ? `${ziel.ort}, ${ziel.raum}` : ziel.ort;
+        ort.hidden = false;
+      } else {
+        ort.hidden = true;
+      }
+
+      feld("zeit")!.textContent = formatiereZeitraum(ziel);
+      feld("ziel")!.setAttribute("href", `/programm#tag-${ziel.beginn!.slice(0, 10)}`);
+    }
+  }
+</script>
 
 <style>
   .aufmacher {
@@ -46,10 +174,32 @@ import { BEREICHE } from "../daten/bereiche.ts";
     text-align: center;
   }
 
+  /* In der hellen Darstellung traegt die Seite das Logo von selbst - dort
+     braucht es keine Flaeche. */
   .aufmacher-logo {
-    width: min(60%, 280px);
-    height: auto;
+    width: min(70%, 320px);
     margin: 0 auto var(--raum-4);
+  }
+
+  .aufmacher-logo img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* Im Dunkelmodus braucht der Schriftzug eine helle Flaeche: Er ist schwarz,
+     und freigestellt waere er auf dunklem Grund praktisch unsichtbar - das
+     laesst sich ohne eine Negativfassung des Logos nicht loesen, und eine
+     solche duerfen wir nicht selbst herstellen (AGENTS.md, Markenfuehrung).
+
+     Statt einer harten weissen Kante: gedaempftes Hellgrau, grosszuegiger
+     Innenabstand und runde Ecken - die greifen nur, weil das Logo jetzt
+     freigestellt ist. */
+  :global(:root[data-theme="dunkel"]) .aufmacher-logo,
+  :global(:root:not([data-theme="hell"])) .aufmacher-logo {
+    padding: var(--raum-4) var(--raum-6);
+    background: var(--logo-flaeche);
+    border-radius: var(--radius);
   }
 
   /* Die Absaetze des Aufmachers sind zentriert - dann muss auch die

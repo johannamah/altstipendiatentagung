@@ -1,7 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
-import { BEREICHE } from "../../src/daten/bereiche.ts";
+import { BEREICHE, kachelZiel } from "../../src/daten/bereiche.ts";
 
 /**
  * Geprueft wird beobachtbares Verhalten, nicht Markup (AGENTS.md).
@@ -22,7 +22,7 @@ test("zeigt Titel, Termin und alle Bereiche", async ({ page }) => {
   for (const bereich of BEREICHE) {
     const kachel = bereiche.getByRole("link", { name: new RegExp(bereich.titel, "i") });
     await expect(kachel, `Bereich fehlt: ${bereich.titel}`).toBeVisible();
-    await expect(kachel).toHaveAttribute("href", `/${bereich.slug}`);
+    await expect(kachel).toHaveAttribute("href", kachelZiel(bereich));
   }
 });
 

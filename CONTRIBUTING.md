@@ -36,6 +36,20 @@ Containern), setzt man dieselbe Variable auch lokal vor den Befehl.
 | `npm run test:e2e`     | End-to-End-Tests (Playwright, baut und startet selbst)      |
 | `npm run pruefen`      | Alles aus der schnellen Prüfstufe hintereinander            |
 
+### Zugangsabfrage
+
+Ohne gesetztes `ZUGANGSWORT` gibt es keine Sperre — so laufen Entwicklung und Tests.
+Für einen Stand, der auf einer erreichbaren Adresse liegt ([ADR-0010](docs/decisions/0010-zugangssperre.md)):
+
+```bash
+ZUGANGSWORT='…' npm run build
+```
+
+Das Wort gehört **nicht** ins Repository: Es wird beim Bauen gelesen, und nur sein
+Hashwert landet im Ergebnis. In GitHub Actions gehört es in ein Repository-Secret.
+Die Sperre hält Suchmaschinen und weitergereichte Links ab, ersetzt aber keine
+Zugriffskontrolle — das HTML steht trotzdem im Antwortkörper.
+
 Vor dem ersten `npm run test:e2e` einmalig:
 
 ```bash

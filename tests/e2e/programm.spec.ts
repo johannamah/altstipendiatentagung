@@ -28,12 +28,12 @@ test("weist gleichzeitige Exkursionen als Auswahl aus", async ({ page }) => {
 });
 
 /**
- * Am Donnerstag laufen Mitgliederversammlung und Partnerprogramm beide von
- * 15:00 bis 17:00 - man muss sich entscheiden. Eine Liste, die beide
+ * Am Donnerstag laufen Mitgliederversammlung und die beiden Partnerprogramme
+ * von 15:00 bis 17:00 - man muss sich entscheiden. Eine Liste, die beide
  * untereinander zeigt, verschweigt das.
  */
 test("weist auch gleichzeitige Hauptprogrammpunkte als Auswahl aus", async ({ page }) => {
-  await expect(page.getByText("Gleichzeitig · 2 zur Wahl")).toBeVisible();
+  await expect(page.getByText("Gleichzeitig · 3 zur Wahl")).toBeVisible();
 });
 
 test("zeigt die aktualisierten Zeiten und Orte aus der Programmvorlage", async ({ page }) => {
@@ -42,7 +42,7 @@ test("zeigt die aktualisierten Zeiten und Orte aus der Programmvorlage", async (
   await expect(page.getByText("13:30–14:30 Uhr")).toBeVisible();
   // Das Weinfest endet um Mitternacht: im Deutschen 24:00, nicht 00:00.
   await expect(page.getByText("20:00–24:00 Uhr")).toBeVisible();
-  await expect(page.getByText("deseo Cafe . Restaurant . Bar")).toBeVisible();
+  await expect(page.getByText("deseo Cafe . Restaurant . Bar").first()).toBeVisible();
   await expect(page.getByRole("heading", { name: /Verabschiedung und Rückreise/ })).toBeVisible();
 });
 
@@ -61,7 +61,7 @@ test("ein Programmpunkt laesst sich aufklappen und zeigt dann mehr", async ({ pa
   await expect(punkt).not.toHaveAttribute("open", "");
   // Zeit, Titel und Ortsname sind auch zugeklappt zu sehen.
   await expect(punkt.getByText("10:00–11:30 Uhr")).toBeVisible();
-  await expect(punkt.getByRole("heading", { name: /Europa unter Druck/ })).toBeVisible();
+  await expect(punkt.getByRole("heading", { name: /Europas Zukunft sichern/ })).toBeVisible();
   await expect(punkt.getByText("Novotel Hildesheim").first()).toBeVisible();
 
   await punkt.locator("summary").click();
@@ -112,10 +112,28 @@ test("eine Gruppe laesst sich einklappen und wieder ausklappen", async ({ page }
   await expect(page.locator('.eintrag[data-gruppe="2027-05-07-2"]').first()).toBeVisible();
 });
 
-test("zeigt Punkte ohne Termin, statt sie zu verschweigen", async ({ page }) => {
-  await expect(page.getByRole("heading", { name: "Noch ohne Termin" })).toBeVisible();
-  // Die Kaffeepause am Samstag hat weiterhin keine Uhrzeit.
-  await expect(page.getByRole("heading", { name: "Kaffeepause" }).last()).toBeVisible();
+/**
+ * Derzeit hat jeder Punkt eine Zeitangabe - der Abschnitt entfaellt deshalb.
+ * Er erscheint wieder, sobald ein Punkt ohne Termin hinzukommt; das ist der
+ * Punkt dieses Tests.
+ */
+test("blendet den Abschnitt fuer Punkte ohne Termin aus, solange es keine gibt", async ({
+  page,
+}) => {
+  await expect(page.getByRole("heading", { name: "Noch ohne Termin" })).toHaveCount(0);
+});
+
+/**
+ * Die Beschreibung kommt aus exkursionen.json, nicht aus dem Programm.
+ * Sie hat mehrere Absaetze; "Was erwartet Dich?" muss einen eigenen beginnen,
+ * statt im Fliesstext davor unterzugehen.
+ */
+test("zeigt die Beschreibung einer Exkursion beim Aufklappen", async ({ page }) => {
+  const punkt = page.locator('.punkt[data-id="exkursion-ndr"]');
+  await punkt.locator("summary").click();
+
+  await expect(punkt.getByText(/^Wie entstehen Nachrichten/)).toBeVisible();
+  await expect(punkt.getByText(/^Was erwartet Dich\? Bei einer Führung/)).toBeVisible();
 });
 
 test("weist einen Punkt ueber Mitternacht als solchen aus", async ({ page }) => {

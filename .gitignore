@@ -28,3 +28,8 @@ lighthouse-bericht/
 
 # Word-Sperrdateien (entstehen, solange ein Dokument geoeffnet ist)
 ~$*
+
+# Quelldokumente des Orga-Teams. Sie koennen Kontaktdaten von Ansprechpersonen
+# enthalten und gehoeren nicht in das oeffentliche Repository; uebernommen
+# werden nur die freigegebenen Texte nach src/content/.
+src/daten/*.docx

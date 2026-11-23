@@ -183,6 +183,11 @@ um 1174 px zu groß, obwohl sich nichts schieben ließ — und in einem anderen 
 umgekehrt. Der Helfer dafür steht in `tests/e2e/hilfen.ts` und grenzt im Fehlerfall die
 Ursache ein, statt sie den Lesenden zu überlassen.
 
+> **Nachtrag:** Die Zeitachsenansicht wurde inzwischen entfernt. Beide Regeln bleiben
+> gültig — die Einrückung der Gruppen im Programm trifft weiterhin auf das
+> `.nur-vorlesen`-Muster, und der Test dazu steht in
+> `tests/e2e/programm-funktionen.spec.ts`.
+
 ---
 
 ## Prüfliste für Pull Requests mit UI-Änderungen

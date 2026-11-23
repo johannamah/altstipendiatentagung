@@ -1,0 +1,94 @@
+{
+    "name": "altstipendiatentagung",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "args": {
+            "TZ": "${localEnv:TZ:Europe/Berlin}",
+            "CLAUDE_CODE_VERSION": "latest"
+        }
+    },
+    // --cap-add NET_ADMIN/NET_RAW: ohne sie kann init-firewall.sh keine iptables-Regeln
+    // setzen und bricht den Start ab.
+    // --name: ohne ihn vergibt Docker einen Zufallsnamen (relaxed_carver o. ae.) und der
+    // Container ist in der Rancher-Desktop-Containerliste nicht wiederzuerkennen. Bleibt
+    // beim Rebuild eine Leiche stehen, kollidiert der feste Name:
+    // docker rm -f altstipendiatentagung-dev
+    "runArgs": [
+        "--cap-add=NET_ADMIN",
+        "--cap-add=NET_RAW",
+        "--name",
+        "altstipendiatentagung-dev"
+    ],
+    // 8080 = Port aus start-server.sh (PREVIEW_PORT). Wird er geaendert, muss er an
+    // beiden Stellen geaendert werden.
+    // 4321 = Astro-Entwicklungsserver (`npm run dev -- --host 0.0.0.0`). Ohne festen
+    // Eintrag haengt die Erreichbarkeit vom Auto-Forwarding der Extension ab, das den
+    // im Hintergrund laufenden Server nicht zuverlaessig erkennt.
+    "forwardPorts": [
+        8080,
+        4321
+    ],
+    "portsAttributes": {
+        "8080": {
+            "label": "Website-Vorschau",
+            "onAutoForward": "notify"
+        },
+        "4321": {
+            "label": "Astro-Entwicklungsserver",
+            "onAutoForward": "notify"
+        }
+    },
+    "remoteUser": "node",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=delegated",
+    "workspaceFolder": "/workspace",
+    // ${devcontainerId} ist ueber Rebuilds hinweg stabil: Bash-Historie, Claude-Login
+    // und die gh-Authentifizierung ueberleben ein "Rebuild Container", ohne dass etwas
+    // davon im Repo landet.
+    // node_modules als Volume, obwohl das Repo heute keine Abhaengigkeiten hat: das
+    // Verzeichnis laege sonst auf dem 9p/drvfs-Bind-Mount von C:\ (jeder Dateizugriff
+    // ein Roundtrip zum Windows-Host). Kommt spaeter ein Build-Tool dazu, ist die
+    // Weiche schon gestellt; der Pfad bleibt /workspace/node_modules.
+    "mounts": [
+        "source=alt-bashhistory-${devcontainerId},target=/commandhistory,type=volume",
+        "source=alt-claude-${devcontainerId},target=/home/node/.claude,type=volume",
+        "source=alt-gh-${devcontainerId},target=/home/node/.config/gh,type=volume",
+        "source=alt-node-modules-${devcontainerId},target=/workspace/node_modules,type=volume"
+    ],
+    // NODE_OPTIONS: 2048, nicht 4096 — die WSL-VM ist per ~/.wslconfig begrenzt. Ein
+    // Heap-Limit in Groesse der ganzen VM heisst: der OOM-Killer holt den Prozess, bevor
+    // Nodes eigenes Limit greift, und man sieht statt eines sauberen "JavaScript heap out
+    // of memory" nur ein wortloses SIGKILL.
+    "containerEnv": {
+        "NODE_OPTIONS": "--max-old-space-size=2048",
+        "CLAUDE_CONFIG_DIR": "/home/node/.claude",
+        "PREVIEW_PORT": "8080"
+    },
+    // Der npm-ci-Zweig ist bewusst geguardet: das Repo hat eine package-lock.json OHNE
+    // package.json, und `npm ci` ohne package.json bricht ab. Ein von Null verschiedener
+    // Exit-Code laesst die Dev-Containers-Extension die gesamte Container-Erstellung als
+    // fehlgeschlagen melden. Der Guard auf node_modules/.bin verhindert zusaetzlich, dass
+    // bei jedem Rebuild neu installiert wird (npm ci loescht das Verzeichnis immer zuerst,
+    // das Volume bleibt aber bestehen). Nach Aenderungen an package.json bleibt `npm ci`
+    // Handarbeit — bewusst, damit ein Rebuild nicht minutenlang blockiert.
+    // safe.directory: /workspace ist ein Bind-Mount von C:\ — die Dateien gehoeren aus
+    // Sicht des Containers einer fremden UID, und git verweigert dann JEDEN Befehl mit
+    // "detected dubious ownership in repository at '/workspace'". Ohne diese Zeile ist im
+    // Container kein `git status` moeglich.
+    // core.autocrlf=input: die Dateien im Arbeitsverzeichnis haben CRLF (Windows-Git
+    // checkt mit autocrlf=true so aus), im Index stehen sie mit LF. Ohne diese Zeile
+    // vergleicht Git im Container CRLF gegen LF und meldet index.html, README.md,
+    // site.webmanifest und package-lock.json als geaendert, obwohl niemand sie angefasst
+    // hat — ein Commit aus dem Container heraus wuerde dann CRLF ins Repo schreiben.
+    // `input` normalisiert beim Commit auf LF und laesst die Datei auf der Platte in Ruhe.
+    "postCreateCommand": "git config --global --add safe.directory /workspace; git config --global core.autocrlf input; if [ -f package.json ] && [ ! -d /workspace/node_modules/.bin ]; then npm ci; fi",
+    "postStartCommand": "sudo /usr/local/bin/init-firewall.sh && /usr/local/bin/start-server.sh",
+    "postAttachCommand": "gh auth status >/dev/null 2>&1 || echo 'gh ist nicht authentifiziert. Ausfuehren: gh auth login --web   (VS Code leitet den Browser auf den Host weiter)'",
+    "waitFor": "postStartCommand",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "anthropic.claude-code"
+            ]
+        }
+    }
+}

@@ -2,7 +2,7 @@
   {
     "id": "anmeldung",
     "frage": "Wie melde ich mich an?",
-    "antwort": "Über den Bereich „Anmeldung“. Dort werden auch die Angaben zur Exkursion am Freitagnachmittag abgefragt. Die Anmeldung ist derzeit noch nicht freigeschaltet."
+    "antwort": "Über die Kachel „Anmeldung“ auf der Startseite. Sie öffnet das Anmeldeformular (Microsoft Forms) in einem neuen Tab; dort werden auch die Angaben zur Exkursion am Freitagnachmittag abgefragt."
   },
   {
     "id": "exkursion-waehlen",
@@ -23,6 +23,29 @@
     "id": "programm-als-pdf",
     "frage": "Kann ich das Programm ausdrucken oder in meinen Kalender übernehmen?",
     "antwort": "Im Programm könnt ihr einzelne Punkte merken und als Kalendereintrag herunterladen. Ein Druck-PDF ist in Vorbereitung; bis dahin lässt sich die Programmseite über die Druckfunktion des Browsers ausgeben."
+  },
+  {
+    "id": "startbildschirm-ios",
+    "frage": "Wie lege ich die App auf den Home-Bildschirm? (iPhone, iPad)",
+    "antwort": "In vier Schritten. Danach startet die App über ein eigenes Symbol und ohne Adressleiste – wie eine gewöhnliche App.",
+    "schritte": [
+      "Öffne diese Seite in Safari. Über einen anderen Browser steht der Weg auf dem iPhone nicht zuverlässig bereit.",
+      "Tippe unten in der Mitte auf das Teilen-Symbol – ein Quadrat mit einem Pfeil nach oben.",
+      "Streiche in der Liste nach unten und tippe auf „Zum Home-Bildschirm“.",
+      "Bestätige oben rechts mit „Hinzufügen“."
+    ],
+    "hinweis": "Es wird dabei nichts im eigentlichen Sinne installiert und es entsteht kein Konto: Das Symbol ist ein Verweis auf diese Seite. Entfernen lässt es sich wie jede andere App."
+  },
+  {
+    "id": "startbildschirm-android",
+    "frage": "Wie lege ich die App auf den Startbildschirm? (Android)",
+    "antwort": "In drei Schritten über das Chrome-Menü. Danach liegt die App im App-Drawer und startet in einem eigenen Fenster.",
+    "schritte": [
+      "Öffne diese Seite in Chrome.",
+      "Tippe oben rechts auf das Menü mit den drei Punkten.",
+      "Wähle „App installieren“. Steht dort stattdessen „Zum Startbildschirm hinzufügen“, ist das derselbe Weg."
+    ],
+    "hinweis": "Fehlt der Eintrag, prüfe, ob die Adresse mit https:// beginnt – ohne verschlüsselte Verbindung blendet Chrome ihn aus."
   },
   {
     "id": "fotos",

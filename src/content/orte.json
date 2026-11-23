@@ -36,6 +36,8 @@
   {
     "id": "marktplatz",
     "name": "Historischer Marktplatz",
+    "adresse": "Marktplatz 1",
+    "plz": "31134",
     "stadt": "Hildesheim",
     "art": "rahmenprogramm"
   },
@@ -64,17 +66,14 @@
     "art": "exkursion"
   },
   {
-    "id": "fagus-werk",
-    "name": "Fagus-Werk",
-    "adresse": "Hannoversche Str. 58",
-    "plz": "31061",
-    "stadt": "Alfeld (Leine)",
-    "art": "exkursion",
-    "hinweis": "UNESCO-Welterbe"
-  },
-  {
     "id": "bosch",
     "name": "Bosch Hildesheim",
+    "stadt": "Hildesheim",
+    "art": "exkursion"
+  },
+  {
+    "id": "zah-wertstoffhof",
+    "name": "ZAH Wertstoffhof Hildesheim",
     "stadt": "Hildesheim",
     "art": "exkursion"
   },

@@ -24,7 +24,22 @@ const eintraege = await getCollection("faq");
     {eintraege.map((eintrag) => (
       <details class="karte" name="faq">
         <summary>{eintrag.data.frage}</summary>
-        <p>{eintrag.data.antwort}</p>
+        <div class="antwort">
+          <p>{eintrag.data.antwort}</p>
+
+          {/* <ol> und nicht <p> mit Nummern im Text: Screenreader kuendigen die
+              Anzahl der Schritte an, und die Reihenfolge ist dann Semantik und
+              nicht bloss Schreibweise (Regel 42). */}
+          {eintrag.data.schritte && (
+            <ol class="schritte">
+              {eintrag.data.schritte.map((schritt) => (
+                <li>{schritt}</li>
+              ))}
+            </ol>
+          )}
+
+          {eintrag.data.hinweis && <p class="hinweis">{eintrag.data.hinweis}</p>}
+        </div>
       </details>
     ))}
   </div>
@@ -53,9 +68,36 @@ const eintraege = await getCollection("faq");
     border-bottom: 1px solid var(--rand);
   }
 
-  details p {
-    margin: 0;
+  .antwort {
     padding: var(--raum-4);
+  }
+
+  .antwort p {
+    margin: 0;
     color: var(--text-leise);
+  }
+
+  .schritte {
+    display: grid;
+    gap: var(--raum-3);
+    /* Platz fuer die Ziffern, damit der Text nicht am Rand des Kaertchens
+       klebt und bei zweistelligen Schritten nicht springt. */
+    padding-left: var(--raum-6);
+    margin: var(--raum-4) 0 0;
+    color: var(--text);
+  }
+
+  .schritte li {
+    padding-left: var(--raum-1);
+  }
+
+  .schritte li::marker {
+    font-weight: 700;
+    color: var(--akzent);
+  }
+
+  .hinweis {
+    margin-top: var(--raum-4);
+    font-size: var(--schrift-klein);
   }
 </style>
