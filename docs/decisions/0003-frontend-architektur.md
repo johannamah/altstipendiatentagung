@@ -68,3 +68,10 @@ Schritten laufen, damit stets etwas Lauffähiges existiert.
   `README.md` oder `CONTRIBUTING.md` zu dokumentieren (`AGENTS.md`: keine Befehle erfinden).
 - Verhältnis zu ADR-0004: Wenn die Anmeldung serverseitig läuft, ist zu entscheiden, ob
   Astro nur statisch erzeugt oder auch serverseitige Endpunkte übernimmt.
+
+## Nachtrag (23.11.2026)
+
+Alle Ansichten des Entwurfs stehen inzwischen in der Anwendung. Der Entwurf unter
+`archiv/` ist deshalb wie vorgesehen entfernt. Er enthielt zudem überholte Inhalte,
+etwa den früheren, inzwischen gestrichenen Tagungsort. In der Git-Historie bleibt er
+erhalten.

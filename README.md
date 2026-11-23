@@ -40,13 +40,6 @@ Farben, Abstände und Schriftgrößen kommen aus rollenbasierten Designtokens
 ([ADR-0007](docs/decisions/0007-designsystem.md)); ihre Kontraste werden bei jedem
 Lauf gegen WCAG 2.2 AA geprüft.
 
-## Der ursprüngliche Entwurf
-
-Liegt unter [archiv/](archiv/): ein eigenständiger Entwurf ohne Build-Werkzeuge, der
-als Referenz bestehen bleibt, bis alle Ansichten überführt sind. Er wird nicht
-weiterentwickelt — siehe [archiv/README.md](archiv/README.md) und
-[ADR-0003](docs/decisions/0003-frontend-architektur.md).
-
 ## Veröffentlichung
 
 Die App läuft unter **https://altstipendiaten-jahrestagung.de** auf Vercel

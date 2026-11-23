@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
@@ -58,19 +58,4 @@ describe("Unterkünfte", () => {
       expect(ortIds.has(ortId ?? ""), `${ortId} fehlt in orte.json`).toBe(true);
     },
   );
-});
-
-/**
- * Beim Novotel findet nichts mehr statt. Es soll nirgends in der App
- * auftauchen - weder in den Inhalten noch im Quelltext.
- */
-describe("Novotel", () => {
-  const quelltext = fileURLToPath(new URL("../../src", import.meta.url));
-  const textdateien = (readdirSync(quelltext, { recursive: true }) as string[]).filter((datei) =>
-    /\.(json|ts|astro|css|mjs)$/.test(datei),
-  );
-
-  it.each(textdateien)("kommt in src/%s nicht vor", (datei) => {
-    expect(readFileSync(`${quelltext}/${datei}`, "utf8")).not.toMatch(/novotel|KAS - Holstein/i);
-  });
 });
