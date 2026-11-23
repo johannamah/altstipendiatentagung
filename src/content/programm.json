@@ -5,7 +5,6 @@
     "zeitHinweis": "ab 19:00 Uhr",
     "beginn": "2027-05-05T19:00",
     "spur": "rahmen",
-    "status": "vorlaeufig",
     "ortId": "deseo",
     "optional": true
   },
@@ -54,7 +53,6 @@
     "titel": "Mitgliederversammlung",
     "beginn": "2027-05-06T15:00",
     "ende": "2027-05-06T17:00",
-    "status": "vorlaeufig",
     "ortId": "mariano-josephinum",
     "beschreibung": "Mitgliederversammlung des Vereins der Altstipendiaten der Konrad-Adenauer-Stiftung e. V."
   },
@@ -71,7 +69,6 @@
   {
     "id": "partnerprogramm-weinfest",
     "titel": "Partnerprogramm: Europa im Gespräch – Gemeinsam zum Hildesheimer Weinfest",
-    "status": "vorlaeufig",
     "beginn": "2027-05-06T15:00",
     "ende": "2027-05-06T17:00",
     "beschreibung": "Ein gemeinsamer Spaziergang verbindet den Austausch über das Tagungsmotto mit einem Besuch des Hildesheimer Weinfests. Im Mittelpunkt stehen Begegnungen und Gespräche über Demokratie und Europa in geselliger Atmosphäre.\n\nTreffpunkt: Haupteingang Mariano-Josephinum.",
@@ -132,7 +129,7 @@
   },
   {
     "id": "exkursion-stadt",
-    "titel": "Stadtführung I – Bräuche, Rituale und Traditionen",
+    "titel": "Stadtführung I: Hildesheim entdecken – Bräuche, Rituale und Traditionen",
     "beginn": "2027-05-07T12:30",
     "ende": "2027-05-07T17:00",
     "spur": "exkursion",
@@ -140,7 +137,7 @@
   },
   {
     "id": "exkursion-stadt-2",
-    "titel": "Stadtführung II – Sagenhaftes Fachwerkviertel: Vom Kesselflicker zum Domprobst",
+    "titel": "Stadtführung II: Hildesheim entdecken – Sagenhaftes Fachwerkviertel: Vom Kesselflicker zum Domprobst",
     "beginn": "2027-05-07T12:30",
     "ende": "2027-05-07T17:00",
     "spur": "exkursion",
@@ -228,7 +225,6 @@
     "titel": "Nie wieder? – Deutschlands Verantwortung für Frieden und Freiheit in Europa",
     "beginn": "2027-05-08T13:00",
     "ende": "2027-05-08T14:30",
-    "status": "vorlaeufig",
     "ortId": "mariano-josephinum",
     "beschreibung": "Am 8. Mai 2027 jährt sich das Ende des Zweiten Weltkriegs in Europa zum 82. Mal. Aus der historischen Verantwortung Deutschlands erwächst der Auftrag, Frieden, Freiheit und Demokratie zu bewahren. Das Panel diskutiert, was „Nie wieder“ angesichts neuer Kriege, geopolitischer Spannungen und wachsender Bedrohungen für Europas Sicherheit bedeutet.",
     "personen": [
@@ -275,7 +271,6 @@
     "titel": "Was hält uns zusammen? – Demokratie und Europa in bewegten Zeiten",
     "beginn": "2027-05-09T10:30",
     "ende": "2027-05-09T12:00",
-    "status": "vorlaeufig",
     "ortId": "mariano-josephinum",
     "beschreibung": "Zum Abschluss der Tagung steht mit Christian Wulff die Frage nach dem Zusammenhalt im Mittelpunkt. Der Programmtitel führt die Diskussionen über Demokratie und Europa zusammen und lädt dazu ein, die Eindrücke der vergangenen Tage weiterzudenken.",
     "personen": [
@@ -291,7 +286,6 @@
     "beginn": "2027-05-09T12:00",
     "ende": "2027-05-09T13:00",
     "spur": "rahmen",
-    "status": "vorlaeufig",
     "ortId": "dom",
     "personen": [
       {

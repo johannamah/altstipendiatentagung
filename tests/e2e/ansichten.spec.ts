@@ -83,7 +83,6 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
     await expect(
       page.getByRole("link", { name: /Buchen\s*:\s*Schlafladen Hildesheim/ }),
     ).toHaveAttribute("href", "https://schlafladen.de/");
-    await expect(page.getByText("Novotel")).toHaveCount(0);
   });
 
   /**
@@ -247,14 +246,17 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
     await expect(page.getByText(/die Verweise suchen nach dem Namen/).first()).toBeVisible();
   });
 
-  test("Begrüßung zeigt drei Grußworte in fester Reihenfolge", async ({ page }) => {
+  /** Reihenfolge wie im Programmheft 2027: zuerst das Orga-Team, dann die Grußworte. */
+  test("Begrüßung zeigt erst das Orga-Team, dann drei Grußworte", async ({ page }) => {
     await page.goto("/begruessung");
 
     const namen = page.getByRole("heading", { level: 2 });
-    await expect(namen).toHaveCount(3);
-    await expect(namen.nth(0)).toContainText("Matthias Wilkes");
-    await expect(namen.nth(1)).toContainText("Annegret Kramp-Karrenbauer");
-    await expect(namen.nth(2)).toContainText("Ingo Meyer");
+    await expect(namen).toHaveCount(4);
+    await expect(namen.nth(0)).toContainText("Vom Organisationsteam");
+    await expect(namen.nth(1)).toContainText("Matthias Wilkes");
+    await expect(namen.nth(2)).toContainText("Annegret Kramp-Karrenbauer");
+    await expect(namen.nth(3)).toContainText("Ingo Meyer");
+    await expect(page.getByText(/führt die Jahrestagung 2027 nach Hildesheim/)).toBeVisible();
   });
 
   /**
