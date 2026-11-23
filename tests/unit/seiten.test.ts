@@ -57,3 +57,39 @@ describe("Platzhalter", () => {
     },
   );
 });
+
+/**
+ * Ein Icon, das es nicht gibt, faellt beim Bauen NICHT auf: Das <use> verweist
+ * ins Leere und rendert stillschweigend nichts. Genau das ist beim Abschnitt
+ * zur Lauschtour passiert - "mic" war im Sprite nicht vorhanden.
+ *
+ * Geprueft wird deshalb jeder Icon-Name, der in Inhaltsdaten steht, gegen die
+ * Sammlung. Die Kacheln der Startseite haben diese Pruefung schon; sie fehlte
+ * fuer alles Uebrige.
+ */
+describe("Icons in Inhaltsdaten", () => {
+  const sammlung = readFileSync(
+    fileURLToPath(new URL("../../src/components/IkonenSammlung.astro", import.meta.url)),
+    "utf8",
+  );
+  const inhalte = fileURLToPath(new URL("../../src/content", import.meta.url));
+
+  /** Jeder `ikone:`-Eintrag aus dem Frontmatter der Stadtabschnitte. */
+  const ausStadtabschnitten = readdirSync(`${inhalte}/stadt`)
+    .filter((datei) => datei.endsWith(".md"))
+    .flatMap((datei) => {
+      const text = readFileSync(`${inhalte}/stadt/${datei}`, "utf8");
+      const treffer = text.match(/^ikone:\s*(\S+)/m);
+      return treffer ? [[datei, treffer[1]!] as const] : [];
+    });
+
+  it("es gibt Abschnitte mit Icons zu pruefen", () => {
+    expect(ausStadtabschnitten.length).toBeGreaterThan(0);
+  });
+
+  it.each(ausStadtabschnitten)("%s verweist auf ein vorhandenes Icon: %s", (_datei, ikone) => {
+    expect(sammlung, `<symbol id="i-${ikone}"> fehlt in der Icon-Sammlung`).toContain(
+      `id="i-${ikone}"`,
+    );
+  });
+});

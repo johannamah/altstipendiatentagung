@@ -4,7 +4,11 @@ import { getCollection } from "astro:content";
 import Basis from "../layouts/Basis.astro";
 import Seitenkopf from "../components/Seitenkopf.astro";
 import Ikone from "../components/Ikone.astro";
+import Ortsangabe from "../components/Ortsangabe.astro";
 
+const orte = new Map(
+  (await getCollection("orte")).map((eintrag) => [eintrag.id, { id: eintrag.id, ...eintrag.data }]),
+);
 const alle = await getCollection("unterkuenfte");
 const mitKontingent = alle.filter((eintrag) => eintrag.data.kontingent);
 const empfehlungen = alle.filter((eintrag) => !eintrag.data.kontingent);
@@ -63,10 +67,7 @@ const empfehlungen = alle.filter((eintrag) => !eintrag.data.kontingent);
           </table>
         </div>
       )}
-
-      <p class="zeile">
-        <Ikone name="pin" /> <span>{haus.adresse}</span>
-      </p>
+      {haus.ortId && orte.get(haus.ortId) && <Ortsangabe ort={orte.get(haus.ortId)!} />}
       {haus.telefon && (
         <p class="zeile">
           <Ikone name="phone" />
@@ -92,9 +93,7 @@ const empfehlungen = alle.filter((eintrag) => !eintrag.data.kontingent);
     {empfehlungen.map(({ data: haus }) => (
       <li class="karte">
         <h3>{haus.name}</h3>
-        <p class="zeile">
-          <Ikone name="pin" /> <span>{haus.adresse}</span>
-        </p>
+        {haus.ortId && orte.get(haus.ortId) && <Ortsangabe ort={orte.get(haus.ortId)!} />}
         {haus.telefon && (
           <p class="zeile">
             <Ikone name="phone" />

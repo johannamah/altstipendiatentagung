@@ -9,7 +9,7 @@ Die Stiftung beschreibt die Alumni-Arbeit als Vernetzung über Regionalgruppen, 
 ## Zusammenarbeit und Rollen
 
 - Zwei Menschen entwickeln gemeinsam. Arbeitet über kleine, klar abgegrenzte Issues und kurzlebige Feature-Branches; stimmt größere Änderungen und API-/Datenmodelländerungen früh miteinander ab.
-- Für jedes Issue ist durch eine zweite KI (z.B. Codex) oder durch einen Menschen zu reviewen. 
+- Für jedes Issue ist durch eine zweite KI (z.B. Codex) oder durch einen Menschen zu reviewen.
 - Claude Code, Codex und weitere Coding-Agenten sind Werkzeuge, keine menschlichen Reviewer. Ein zweites Modell, bevorzugt Codex, prüft Änderungen unabhängig auf Korrektheit, Sicherheits- und Datenschutzrisiken, Regressionen, Testlücken und Wartbarkeit.
 - Ein Pull Request ist zu reviewen durch einen Menschen oder durch ein zweites Modell. Ein Merge darf nicht vom gleichen Modell vorgenommen werden, welches das Feature entwickelt hat
 - Schützt den Hauptbranch: direkte Pushes und Force-Pushes deaktivieren, Pull Request verlangen, Reviewpflicht aktivieren und erforderliche Status Checks erzwingen. Wo verfügbar, veraltete Freigaben nach neuen Commits verwerfen und ungelöste Review-Konversationen vor Merge verlangen.
@@ -20,7 +20,7 @@ Die Stiftung beschreibt die Alumni-Arbeit als Vernetzung über Regionalgruppen, 
 1. **Konzeption vor Umsetzung:** Erfasse Zielgruppen, Kernprobleme, zentrale Journeys, Systemgrenzen, Risiken und offene Fragen. Lege daraus Epics und Stories an.
 2. **Epics:** Beschreiben ein fachliches Ziel und den messbaren Nutzen. Zerlege sie in lieferbare Stories.
 3. **Stories:** Beschreiben Nutzer/Nutzerin, Bedürfnis und Nutzen. Jede Story hat überprüfbare Akzeptanzkriterien, Scope/Out-of-Scope, relevante Fehler- und Berechtigungsfälle sowie Testhinweise. Nutze Given/When/Then, wo es Klarheit schafft.
-4. Schätze und priorisiere gemeinsam. Beginne keine Story, deren zentrale fachliche Annahmen ungeklärt sind. 
+4. Schätze und priorisiere gemeinsam. Beginne keine Story, deren zentrale fachliche Annahmen ungeklärt sind.
 5. **Pull Requests:** Ein PR adressiert möglichst ein Issue, enthält Kontext, Umsetzung, Testnachweise, UI-Screenshots bei sichtbaren Änderungen. Verknüpfe Issue und PR.
 6. PRs sind klein und reviewbar. GitHub Actions führen bei jedem PR Linting, Typprüfung, Unit-/Integrationstests und Build aus. Richtet diese konkreten Workflow-Checks in den Branch-Regeln als erforderliche Status Checks ein; ein roter oder fehlender Check blockiert den Merge.
 7. Erst nach unabhängiger Modellprüfung, erfolgreicher CI und Freigabe durch die zweite menschliche Person darf diese mergen. Nutzt Squash-Merge, wenn das Repository keine andere Teamkonvention festlegt.

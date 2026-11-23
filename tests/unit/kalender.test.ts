@@ -2,6 +2,17 @@ import { describe, expect, it } from "vitest";
 
 import { alsKalender, istExportierbar } from "../../src/lib/kalender.ts";
 import type { Programmpunkt } from "../../src/lib/programm.ts";
+import type { Ort } from "../../src/lib/orte.ts";
+
+const FAGUS: Ort = {
+  id: "fagus-werk",
+  name: "Fagus-Werk",
+  adresse: "Hannoversche Str. 58",
+  plz: "31061",
+  stadt: "Alfeld (Leine)",
+  art: "exkursion",
+};
+const ORTE = new Map([[FAGUS.id, FAGUS]]);
 
 const punkt = (teil: Partial<Programmpunkt> & Pick<Programmpunkt, "id">): Programmpunkt => ({
   titel: "Beispiel",
@@ -37,8 +48,7 @@ describe("alsKalender", () => {
     titel: "Industriekultur trifft Zukunft",
     beginn: "2027-05-07T12:30",
     ende: "2027-05-07T17:00",
-    ort: "Fagus-Werk",
-    adresse: "Hannoversche Str. 58, 31061 Alfeld (Leine)",
+    ortId: "fagus-werk",
   });
 
   it("erzeugt einen vollstaendigen Kalender", () => {
@@ -86,9 +96,19 @@ describe("alsKalender", () => {
     );
   });
 
-  it("nennt Ort und Adresse zusammen", () => {
-    expect(alsKalender([beispiel])).toContain("Fagus-Werk");
-    expect(alsKalender([beispiel])).toContain("Hannoversche Str. 58");
+  it("nennt Ort und Adresse zusammen, aufgeloest ueber die Ortssammlung", () => {
+    const ics = alsKalender([beispiel], ORTE);
+
+    expect(ics).toContain("Fagus-Werk");
+    expect(ics).toContain("Hannoversche Str. 58");
+  });
+
+  /**
+   * Ohne Ortssammlung entsteht ein Eintrag ohne Ortsangabe. Das ist unschoen,
+   * aber besser als ein Eintrag mit falschem Ort (Produktprinzip 1).
+   */
+  it("laesst den Ort weg, wenn er sich nicht aufloesen laesst", () => {
+    expect(alsKalender([beispiel])).not.toContain("LOCATION:");
   });
 
   /**

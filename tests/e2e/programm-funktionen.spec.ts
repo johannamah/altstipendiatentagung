@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { erwarteKeinSeitenScroll } from "./hilfen.ts";
+import { erwarteKeinSeitenScroll, oeffneProgrammpunkt } from "./hilfen.ts";
 
 /**
  * Tests fuer "Jetzt laeuft" (#3) und "Mein Programm" (#4).
@@ -63,6 +63,7 @@ test.describe("Mein Programm", () => {
   });
 
   test("merkt einen Punkt und behaelt ihn nach dem Neuladen", async ({ page }) => {
+    await oeffneProgrammpunkt(page, "exkursion-fagus");
     const punkt = page.locator('.punkt[data-id="exkursion-fagus"]');
     const merken = punkt.getByRole("button", { name: /Merken/ });
 
@@ -77,12 +78,14 @@ test.describe("Mein Programm", () => {
 
     // Regel 32: Die Auswahl muss einen Neuaufbau ueberstehen.
     await page.reload();
+    await oeffneProgrammpunkt(page, "exkursion-fagus");
     await expect(
       page.locator('.punkt[data-id="exkursion-fagus"]').getByRole("button", { name: /Gemerkt/ }),
     ).toHaveAttribute("aria-pressed", "true");
   });
 
   test("filtert auf die eigene Auswahl und wieder zurueck", async ({ page }) => {
+    await oeffneProgrammpunkt(page, "konzert");
     await page
       .locator('.punkt[data-id="konzert"]')
       .getByRole("button", { name: /Merken/ })
@@ -112,6 +115,7 @@ test.describe("Mein Programm", () => {
     const knopf = page.getByRole("button", { name: /Mein Programm in den Kalender/ });
 
     await expect(knopf).toBeDisabled();
+    await oeffneProgrammpunkt(page, "konzert");
     await page
       .locator('.punkt[data-id="konzert"]')
       .getByRole("button", { name: /Merken/ })
@@ -129,6 +133,7 @@ test.describe("Kalender-Export", () => {
   test("laedt einen einzelnen Punkt als .ics herunter", async ({ page }) => {
     const download = page.waitForEvent("download");
 
+    await oeffneProgrammpunkt(page, "exkursion-fagus");
     await page
       .locator('.punkt[data-id="exkursion-fagus"]')
       .getByRole("button", { name: /Zum Kalender/ })
@@ -150,10 +155,12 @@ test.describe("Kalender-Export", () => {
   });
 
   test("laedt die gesamte Auswahl als eine Datei herunter", async ({ page }) => {
+    await oeffneProgrammpunkt(page, "konzert");
     await page
       .locator('.punkt[data-id="konzert"]')
       .getByRole("button", { name: /Merken/ })
       .click();
+    await oeffneProgrammpunkt(page, "panel-nie-wieder");
     await page
       .locator('.punkt[data-id="panel-nie-wieder"]')
       .getByRole("button", { name: /Merken/ })

@@ -25,3 +25,6 @@ lighthouse-bericht/
 .env
 .env.*
 !.env.example
+
+# Word-Sperrdateien (entstehen, solange ein Dokument geoeffnet ist)
+~$*

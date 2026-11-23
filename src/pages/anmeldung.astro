@@ -4,6 +4,7 @@ import { getCollection } from "astro:content";
 import Basis from "../layouts/Basis.astro";
 import Seitenkopf from "../components/Seitenkopf.astro";
 import Ikone from "../components/Ikone.astro";
+import Ortsangabe from "../components/Ortsangabe.astro";
 
 /**
  * Warum hier KEIN Anmeldeformular steht.
@@ -24,6 +25,9 @@ import Ikone from "../components/Ikone.astro";
  * nuetzt. Das Formular folgt, sobald F4 geklaert und der Dienst da ist.
  */
 
+const orte = new Map(
+  (await getCollection("orte")).map((eintrag) => [eintrag.id, { id: eintrag.id, ...eintrag.data }]),
+);
 const exkursionen = await getCollection("exkursionen");
 
 /** Angaben mit eckigen Klammern sind Platzhalter des Orga-Teams. */
@@ -90,6 +94,10 @@ const abgefragteAngaben = [
         </p>
 
         {exkursion.info && <p>{exkursion.info}</p>}
+
+        {exkursion.ortId && orte.get(exkursion.ortId) && (
+          <Ortsangabe ort={orte.get(exkursion.ortId)!} />
+        )}
 
         <dl>
           <dt>Zeitrahmen</dt>

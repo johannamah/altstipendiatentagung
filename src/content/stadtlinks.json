@@ -1,0 +1,22 @@
+[
+  {
+    "id": "statistik",
+    "titel": "Stadt Hildesheim – Zahlen, Daten und Statistik",
+    "web": "https://www.stadt-hildesheim.de/wirtschaft-bauen/statistik/"
+  },
+  {
+    "id": "stadtarchiv",
+    "titel": "Stadtarchiv Hildesheim – Geschichte der Stadt",
+    "web": "https://stadtarchiv.stadt-hildesheim.de/"
+  },
+  {
+    "id": "unesco",
+    "titel": "Deutsche UNESCO-Kommission – Welterbe Hildesheim",
+    "web": "https://www.unesco.de/staette/mariendom-und-michaeliskirche-in-hildesheim/"
+  },
+  {
+    "id": "marketing",
+    "titel": "Hildesheim Marketing – Sehen und Erleben",
+    "web": "https://www.hildesheim-tourismus.de/sehen-und-erleben"
+  }
+]

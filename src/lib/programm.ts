@@ -19,8 +19,9 @@ export interface Programmpunkt {
   beginn?: string;
   ende?: string;
   zeitHinweis?: string;
-  ort?: string;
-  adresse?: string;
+  /** Verweist auf einen Eintrag in der Ortssammlung. */
+  ortId?: string;
+  raum?: string;
   beschreibung?: string;
   spur: Spur;
   status: Bestaetigung;
@@ -121,9 +122,15 @@ export function formatiereZeitraum(punkt: Programmpunkt): string {
   if (!punkt.ende) return `ab ${uhrzeit(punkt.beginn)} Uhr`;
 
   const ueberMitternacht = punkt.ende.slice(0, 10) !== punkt.beginn.slice(0, 10);
-  const zeitraum = `${uhrzeit(punkt.beginn)}–${uhrzeit(punkt.ende)} Uhr`;
 
-  return ueberMitternacht ? `${zeitraum} (am Folgetag)` : zeitraum;
+  /* Endet etwas um Mitternacht, schreibt man im Deutschen 24:00 und nicht
+     00:00 - und der Zusatz "am Folgetag" eruebrigt sich damit. Genau so steht
+     es auch in der Programmvorlage des Orga-Teams. */
+  const endetUmMitternacht = ueberMitternacht && uhrzeit(punkt.ende) === "00:00";
+  const ende = endetUmMitternacht ? "24:00" : uhrzeit(punkt.ende);
+  const zeitraum = `${uhrzeit(punkt.beginn)}–${ende} Uhr`;
+
+  return ueberMitternacht && !endetUmMitternacht ? `${zeitraum} (am Folgetag)` : zeitraum;
 }
 
 /** Kurzform fuer die Tagesauswahl: "Do, 6.5." */

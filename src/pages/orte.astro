@@ -1,0 +1,163 @@
+---
+import { getCollection } from "astro:content";
+
+import Basis from "../layouts/Basis.astro";
+import Seitenkopf from "../components/Seitenkopf.astro";
+import Platzhalterhinweis from "../components/Platzhalterhinweis.astro";
+import Ortsangabe from "../components/Ortsangabe.astro";
+import { alsKartenpunkte, ARTBEZEICHNUNG, ARTREIHENFOLGE, type Ort } from "../lib/orte.ts";
+
+const orte: Ort[] = (await getCollection("orte")).map((eintrag) => ({
+  id: eintrag.id,
+  ...eintrag.data,
+}));
+
+const punkte = alsKartenpunkte(orte);
+const ohneKoordinaten = orte.length - punkte.length;
+
+const gruppen = ARTREIHENFOLGE.map((art) => ({
+  art,
+  bezeichnung: ARTBEZEICHNUNG[art],
+  orte: orte.filter((ort) => ort.art === art),
+})).filter((gruppe) => gruppe.orte.length > 0);
+---
+
+<Basis
+  titel="Orte & Anfahrt – Jahrestagung 2027"
+  beschreibung="Übersicht aller Orte der Altstipendiatentagung 2027 mit Adressen und Wegbeschreibungen."
+>
+  <Seitenkopf
+    ikone="pin"
+    titel="Orte & Anfahrt"
+    einleitung="Alle Orte der Tagung auf einen Blick. Tippt bei einem Ort auf Google Maps oder Apple Karten, um euch dorthin führen zu lassen."
+  />
+
+  {punkte.length > 0 ? (
+    /* Selbst gezeichnet statt ein Kartendienst eingebettet: So wird nichts
+         an Dritte übertragen, es braucht keine Einwilligung, und die Karte
+         funktioniert auch ohne Netz. Sie zeigt die Lage zueinander, keine
+         Straßen – wer hin will, nutzt die Weiterleitung. */
+    <figure class="karte-flaeche">
+      <svg viewBox="0 0 100 100" role="img" aria-labelledby="kartentitel">
+        <title id="kartentitel">
+            Übersichtskarte mit {punkte.length} Orten der Tagung. Die genauen Adressen stehen in
+            der Liste darunter.
+          </title>
+
+        {punkte.map((punkt) => (
+          <g class="markierung" data-art={punkt.ort.art}>
+            <circle cx={punkt.x} cy={punkt.y} r="1.8" />
+            <text x={punkt.x} y={punkt.y - 3}>
+              {punkt.ort.name}
+            </text>
+          </g>
+        ))}
+      </svg>
+
+      <figcaption>
+        Schematische Übersicht – sie zeigt die Lage zueinander, nicht den Straßenverlauf.
+        {ohneKoordinaten > 0 && (
+          <>
+            {" "}
+            {ohneKoordinaten} von {orte.length} Orten fehlen noch die Koordinaten und sind deshalb
+            nicht eingezeichnet.
+          </>
+        )}
+      </figcaption>
+    </figure>
+  ) : (
+    <Platzhalterhinweis>
+      Für die Übersichtskarte fehlen noch die Koordinaten der Orte. Sobald sie in
+      <code>src/content/orte.json</code> eingetragen sind, erscheint die Karte hier automatisch. Die
+      Adressen und Wegbeschreibungen unten funktionieren bereits.
+    </Platzhalterhinweis>
+  )}
+
+  {gruppen.map((gruppe) => (
+    <section class="gruppe">
+      <h2>{gruppe.bezeichnung}</h2>
+      <ul>
+        {gruppe.orte.map((ort) => (
+          <li class="karte">
+            {ort.hinweis && <p class="hinweis">{ort.hinweis}</p>}
+            <Ortsangabe ort={ort} />
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
+</Basis>
+
+<style>
+  .karte-flaeche {
+    padding: var(--raum-4);
+    margin: 0 0 var(--raum-8);
+    background: var(--karte);
+    border: 1px solid var(--rand);
+    border-radius: var(--radius);
+    box-shadow: var(--schatten);
+  }
+
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    /* Etwas höher als breit wirkt auf dem Smartphone ruhiger. */
+    aspect-ratio: 4 / 3;
+  }
+
+  .markierung circle {
+    fill: var(--akzent);
+  }
+
+  .markierung text {
+    font-size: 3px;
+    text-anchor: middle;
+    fill: var(--text);
+  }
+
+  /* Die Art wird zusätzlich über die Gruppen in der Liste vermittelt –
+     Farbe ist hier Zugabe, nicht Informationsträger (Regel 19). */
+  .markierung[data-art="tagungsort"] circle {
+    r: 2.6;
+    fill: var(--kachel-pink-von);
+  }
+
+  .markierung[data-art="uebernachtung"] circle {
+    fill: var(--kachel-lila-von);
+  }
+
+  figcaption {
+    margin-top: var(--raum-3);
+    font-size: var(--schrift-klein);
+    color: var(--text-leise);
+  }
+
+  .gruppe {
+    margin-bottom: var(--raum-8);
+  }
+
+  h2 {
+    font-size: var(--schrift-h3);
+  }
+
+  .gruppe ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: var(--raum-4);
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .gruppe .karte {
+    margin-bottom: 0;
+  }
+
+  .hinweis {
+    margin: 0 0 var(--raum-2);
+    font-size: var(--schrift-klein);
+    font-weight: 600;
+    color: var(--akzent);
+  }
+</style>
