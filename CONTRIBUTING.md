@@ -56,6 +56,24 @@ Vor dem ersten `npm run test:e2e` einmalig:
 npx playwright install --with-deps chromium
 ```
 
+## Deployment
+
+Produktiv deployt nur der Workflow `Deployment` von `main`
+([ADR-0013](docs/decisions/0013-hosting-auf-vercel.md)). Vorschauen zu Pull Requests
+baut die Git-Anbindung von Vercel.
+
+Kopfzeilen für Caching und Sicherheit sowie die Weiterleitung auf Adressen mit `/` am
+Ende stehen in `vercel.json`. `astro preview` wertet die Datei nicht aus —
+Abweichungen zwischen lokaler Vorschau und Vercel haben oft dort ihre Ursache.
+
+Umgebungsvariablen der App (`PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_KEY`,
+`ZUGANGSWORT`) werden in Vercel gepflegt, nicht in GitHub. Lokal stehen sie in einer
+`.env`, die nie ins Repository gehört.
+
+Zurück auf einen früheren Stand: im Vercel-Dashboard unter Deployments bei der
+gewünschten Version **Instant Rollback**. Das nächste Deployment von `main`
+überschreibt den Rollback.
+
 ## Aufbau
 
 ```

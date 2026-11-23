@@ -33,3 +33,6 @@ lighthouse-bericht/
 # enthalten und gehoeren nicht in das oeffentliche Repository; uebernommen
 # werden nur die freigegebenen Texte nach src/content/.
 src/daten/*.docx
+
+# Lokale Vercel-Verknuepfung (npx vercel link) und gezogene Umgebungsvariablen
+.vercel/

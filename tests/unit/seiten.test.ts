@@ -52,6 +52,8 @@ describe("Bereiche und Seiten", () => {
       // Pflichtangaben haengen an der Fusszeile, nicht an einer Kachel.
       ...RECHTLICHES.map((seite) => seite.slug),
       "index",
+      // Fehlerseite fuer unbekannte Adressen, nie direkt verlinkt.
+      "404",
     ]);
     const verwaist = seiten
       .filter((datei) => datei.endsWith(".astro"))
