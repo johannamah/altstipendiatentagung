@@ -146,6 +146,16 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
     await expect(page.getByText("Text noch nicht abgestimmt").first()).toBeVisible();
   });
 
+  /** Porträts liegen erst für einen Teil des Orga-Teams vor; die übrigen zeigen Initialen. */
+  test("Kontakt zeigt die hinterlegten Porträts", async ({ page }) => {
+    await page.goto("/kontakt");
+
+    for (const name of ["Konstantin Gerbrich", "Torben Burdorf", "Pia Gerbrich"]) {
+      await expect(page.getByRole("img", { name: `Porträt von ${name}` })).toBeVisible();
+    }
+    await expect(page.getByRole("img", { name: "Porträt von Johanna Mahler" })).toHaveCount(0);
+  });
+
   test("Kontakt zeigt den Tagungsort", async ({ page }) => {
     await page.goto("/kontakt");
 
