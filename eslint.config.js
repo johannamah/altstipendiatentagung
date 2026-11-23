@@ -3,8 +3,7 @@ import eslintAstro from "eslint-plugin-astro";
 import tseslint from "typescript-eslint";
 
 export default defineConfig([
-  // Erzeugte und fremde Verzeichnisse. Der Einzeldatei-Entwurf index.html wird
-  // laut ADR-0003 abgeloest und nicht mehr nachgebessert.
+  // Erzeugte und fremde Verzeichnisse.
   globalIgnores([
     "dist/**",
     ".astro/**",
@@ -12,7 +11,6 @@ export default defineConfig([
     "playwright-report/**",
     "test-results/**",
     "lighthouse-bericht/**",
-    "archiv/**",
   ]),
   tseslint.configs.recommended,
   eslintAstro.configs["flat/recommended"],

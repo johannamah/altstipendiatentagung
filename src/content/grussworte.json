@@ -1,5 +1,17 @@
 [
   {
+    "id": "organisationsteam",
+    "reihenfolge": 0,
+    "name": "Vom Organisationsteam",
+    "rolle": "Jahrestagung 2027 in Hildesheim",
+    "status": "bestaetigt",
+    "absaetze": [
+      "Unter dem Motto „Demokratie leben – Europa gestalten“ führt die Jahrestagung 2027 nach Hildesheim. Vier Tage bieten Raum für politische Diskussionen, persönliche Begegnungen und gemeinsame Entdeckungen.",
+      "Im Mittelpunkt stehen Europas Zukunft zwischen künstlicher Intelligenz, Wettbewerb und Souveränität sowie Deutschlands Verantwortung für Frieden und Freiheit. Die Exkursionen verbinden diese Fragen mit konkreten Einblicken in Kultur, Wirtschaft, Medien und den Umgang mit Ressourcen. Das Studium Generale ergänzt unseren Austausch innerhalb des Altstipendiaten Vereins. Konzert, Festabend und ökumenischer Gottesdienst schaffen einen festlichen Rahmen für unsere Gemeinschaft.",
+      "Wir freuen uns auf anregende Gespräche und gemeinsame Tage in Hildesheim."
+    ]
+  },
+  {
     "id": "matthias-wilkes",
     "reihenfolge": 1,
     "name": "Dr. Matthias Wilkes",

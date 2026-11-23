@@ -25,7 +25,7 @@
   },
   {
     "id": "exkursion-stadt",
-    "titel": "Stadtführung I – Bräuche, Rituale und Traditionen",
+    "titel": "Stadtführung I: Hildesheim entdecken – Bräuche, Rituale und Traditionen",
     "plaetze": 50,
     "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
     "ortId": "tourist-information",
@@ -37,7 +37,7 @@
   },
   {
     "id": "exkursion-stadt-2",
-    "titel": "Stadtführung II – Sagenhaftes Fachwerkviertel: Vom Kesselflicker zum Domprobst",
+    "titel": "Stadtführung II: Hildesheim entdecken – Sagenhaftes Fachwerkviertel: Vom Kesselflicker zum Domprobst",
     "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
     "ortId": "tourist-information",
     "treffpunkt": "Tourist-Information am Marktplatz, Rathausstraße 20",

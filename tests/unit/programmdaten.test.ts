@@ -28,11 +28,14 @@ interface Eintrag {
   personen?: { name: string; rolle?: string }[];
 }
 
-const punkte = inhalt("programm.json") as Eintrag[];
+const punkte = inhalt("programm.json") as (Eintrag & { status?: string })[];
 const orte = inhalt("orte.json") as { id: string; name: string; adresse?: string; plz?: string }[];
 const ortIds = new Set(orte.map((o) => o.id));
 const exkursionen = new Map(
-  (inhalt("exkursionen.json") as { id: string; info?: string }[]).map((e) => [e.id, e]),
+  (inhalt("exkursionen.json") as { id: string; titel: string; info?: string }[]).map((e) => [
+    e.id,
+    e,
+  ]),
 );
 
 /** Die Tagung laeuft vom 5. bis 9. Mai 2027. Der Festabend endet am 9. um 03:00 Uhr. */
@@ -110,6 +113,40 @@ describe("Programmdaten", () => {
       expect(exkursionen.get(id)?.info, `${id} fehlt in exkursionen.json`).toBeTruthy();
     },
   );
+
+  /**
+   * Programm und Exkursionsseite nennen eine Exkursion gleich - sonst sucht man
+   * im Programm einen Titel, der auf der Detailansicht anders lautet.
+   */
+  it.each(punkte.filter((p) => p.spur === "exkursion").map((p) => [p.id, p.titel] as const))(
+    "Exkursion %s heißt in Programm und Beschreibung gleich",
+    (id, titel) => {
+      expect(exkursionen.get(id)?.titel).toBe(titel);
+    },
+  );
+
+  /** Titel laut Programmheft 2027: Beide Stadtführungen heißen "Hildesheim entdecken". */
+  it.each([
+    ["exkursion-stadt", "Stadtführung I: Hildesheim entdecken – Bräuche, Rituale und Traditionen"],
+    [
+      "exkursion-stadt-2",
+      "Stadtführung II: Hildesheim entdecken – Sagenhaftes Fachwerkviertel: Vom Kesselflicker zum Domprobst",
+    ],
+  ])("Exkursion %s trägt den Titel aus dem Programmheft", (id, titel) => {
+    expect(punkte.find((p) => p.id === id)?.titel).toBe(titel);
+  });
+
+  /**
+   * "noch nicht bestätigt" steht nur dort, wo das Programmheft 2027 selbst
+   * einen Vorbehalt macht: Beim Museumsbesuch im Partnerprogramm sind Führung
+   * und Ausstellung noch zu bestätigen. Alle anderen Punkte nennt das Heft
+   * ohne Vorbehalt - ein Etikett "vorläufig" verunsichert dort grundlos.
+   */
+  it("führt nur die im Programmheft offenen Punkte als vorläufig", () => {
+    const vorlaeufig = punkte.filter((p) => p.status === "vorlaeufig").map((p) => p.id);
+
+    expect(vorlaeufig).toEqual(["partnerprogramm"]);
+  });
 
   /**
    * Das Repository ist oeffentlich, und was hier steht, ist mit dem Commit
