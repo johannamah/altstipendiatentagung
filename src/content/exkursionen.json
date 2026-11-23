@@ -1,15 +1,15 @@
 [
   {
     "id": "exkursion-dom",
-    "titel": "Glaube, Werte, Europa – Europäische Identität im Mariendom und in der St. Michaeliskirche",
+    "titel": "Glaube, Werte, Europa – Europa im Mariendom und in der St. Michaeliskirche",
     "plaetze": 50,
     "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
     "ortId": "dom",
-    "treffpunkt": "[Treffpunkt einfügen]",
+    "treffpunkt": "Domhof",
+    "verantwortlich": "Prof. Dr. Jörg Bölling",
+    "info": "Der Mariendom und die Michaeliskirche bilden lebendige Zeugnisse der mehr als 1000-jährigen Geschichte Hildesheims. Als Bibliotheks- und Bildungsstandorte prägten sie im gesamten Mittelalter und zeitweise auch in der Neuzeit die europäische Geistes- und Kulturgeschichte. Mehrfach standen sie jeweils im Mittelpunkt besonderer politischer Ereignisse von deutscher und auch gesamteuropäischer Bedeutung. Maßgebliche, noch heute sichtbare Bauelemente gehen auf die heiligen Bischöfe Bernward (ca. 960-1022, ab 993 im Amt) und Godehard (ca. 960-1038, ab 1022 im Amt) zurück. Gehörte Bernward dem sächsischen Hochadel an, so stach der aus dem Süden kommende, dort auch als “Gotthard” bekannte Godehard durch seine Erfahrungen als jeweils gewählter Abt in verschiedenen Klöstern hervor, postum zudem durch seine Verehrung als Heiliger in verschiedenen Ländern ganz Europas. Ein halbes Jahrtausend später wurde St. Michaelis infolge der Reformation evangelische Pfarrkirche. Die dortige, ursprünglich als Bernwards Grablege gestaltete Krypta dient bis heute als Kapelle für katholische Gottesdienste. 1985 wurden Michaeliskirche und Dom samt Kirchenschatz in das UNESCO-Weltkulturerbe aufgenommen.\n\nAnschließend ist ein Besuch im Dommuseum möglich.\n\nTreffpunkt: am Domhof. Ansprechperson: Prof. Dr. Jörg Bölling.",
     "anreise": "[Anreiseinfo einfügen]",
-    "verantwortlich": "[Name Verantwortliche:r Orga-Team]",
-    "telefon": "[Telefonnummer einfügen]",
-    "info": "Über 1.200 Jahre Geschichte, beeindruckende Architektur und einzigartige Kunstschätze: Der Hildesheimer Mariendom und die St. Michaeliskirche gehören zu den bedeutendsten Zeugnissen europäischer Kulturgeschichte und zählen zum UNESCO-Weltkulturerbe. Hier wird erlebbar, wie eng die Geschichte Hildesheims mit der Entwicklung Europas verbunden ist.\n\nDie Exkursion führt uns auf eine spannende Zeitreise durch das religiöse und kulturelle Erbe Europas. Dabei gehen wir der Frage nach, wie christliche Werte, Traditionen und historische Entwicklungen unsere europäische Identität geprägt haben – und welche Bedeutung sie heute noch für Demokratie, gesellschaftlichen Zusammenhalt und ein gemeinsames Europa besitzen.\n\nWas erwartet Dich? Bei fachkundigen Führungen durch den Mariendom, die St. Michaeliskirche und das Dommuseum entdecken wir faszinierende Architektur, bedeutende Kunstschätze und Geschichte, die Europa bis heute prägen."
+    "telefon": "[Telefonnummer einfügen]"
   },
   {
     "id": "exkursion-landwirtschaft",
@@ -17,23 +17,32 @@
     "plaetze": 50,
     "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
     "ortId": "hof-riepl-bauer",
+    "info": "Wie entsteht unser Essen und wie sieht die Landwirtschaft von morgen aus? Auf dem Hof Riepl-Bauer verbindet sich familiäres Unternehmertum mit moderner Landwirtschaft. Eine Betriebsführung und das Gespräch mit den Inhabern sollen zeigen, wie EU-Vorgaben, Nachhaltigkeitsziele und internationaler Wettbewerb den Alltag prägen. Der Besuch macht europäische Agrarpolitik anhand konkreter betrieblicher Fragen greifbar.",
     "treffpunkt": "[Treffpunkt einfügen]",
     "anreise": "[Anreiseinfo einfügen]",
     "verantwortlich": "[Name Verantwortliche:r Orga-Team]",
-    "telefon": "[Telefonnummer einfügen]",
-    "info": "„Du bist, was du isst“ – doch woher kommen unsere Lebensmittel und wie sieht die Landwirtschaft von morgen aus? Auf dem Hof Riepl-Bauer erleben wir hautnah, wie moderne Landwirtschaft Tradition, familiäres Unternehmertum und innovative Technologien miteinander verbindet.\n\nWir werfen einen Blick hinter die Kulissen eines modernen landwirtschaftlichen Betriebs und machen die oft kontrovers diskutierte europäische Agrarpolitik greifbar. Wie beeinflussen EU-Vorgaben, Nachhaltigkeitsziele und internationaler Wettbewerb den landwirtschaftlichen Alltag? Und wie können wir die Zukunft der Landwirtschaft in Europa gemeinsam gestalten?\n\nWas erwartet Dich? Wir lernen die Betriebsgemeinschaft und ihre Entwicklung kennen, erhalten bei einer Betriebsführung Einblicke in die moderne Landwirtschaft und diskutieren mit den Inhabern über die Chancen und Herausforderungen der europäischen Agrarpolitik."
+    "telefon": "[Telefonnummer einfügen]"
   },
   {
     "id": "exkursion-stadt",
-    "titel": "Hildesheim entdecken – Geschichte, Traditionen und lebendige Stadtkultur",
+    "titel": "Stadtführung I – Bräuche, Rituale und Traditionen",
     "plaetze": 50,
     "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
-    "ortId": "marktplatz",
-    "treffpunkt": "[Treffpunkt einfügen]",
+    "ortId": "tourist-information",
+    "treffpunkt": "Tourist-Information am Marktplatz, Rathausstraße 20",
+    "verantwortlich": "Susanne Kiesel (Gästebegleiterin)",
+    "info": "Ein Brauch unterscheidet einen Tag vom anderen - ein Handlungsablauf nach alter Väter Sitte. Gemeinsam spucken wir in die Hände, klopfen auf Holz und ziehen je nach Jahreszeit zu unterschiedlichen Themen los.\n\nWarum heißt es am Schlenkeltag: Neue Schuhe – neues Glück? Wann schließt die Lichtkärz und was hat es mit dem Agathabrot auf sich. Vom Obstbaumschütteln über die Donatusschellen werden längst vergessene Rituale in Erinnerung gerufen.\n\nBegleiten Sie gewandete Zeitreisende auf ihrem Weg – ob Bäckerin Walburga oder die Magd Hanna, ob Brauerin Immel Harms oder die Bürgermeister Tochter Ursula Brandis -Spaß ist garantiert und es wird vor mancher Gefahr gewarnt. Oder möchten Sie des Nachts dem Bilmesschneider begegnen?\n\nTreffpunkt: Tourist-Information am Marktplatz. Dauer: 90 Minuten. Gästebegleiterin: Susanne Kiesel.",
     "anreise": "[Anreiseinfo einfügen]",
-    "verantwortlich": "[Name Verantwortliche:r Orga-Team]",
-    "telefon": "[Telefonnummer einfügen]",
-    "info": "Über 1.200 Jahre Geschichte, beeindruckende Bauwerke und verborgene Geschichten: Hildesheim hat weit mehr zu bieten als seine berühmten Kirchen und den historischen Marktplatz. Die liebevoll als „Rosenstadt“ bezeichnete Bischofs- und Hochschulstadt verbindet ein reiches kulturelles Erbe mit lebendigem Stadtleben.\n\nAuf den Spuren vergangener Jahrhunderte entdecken wir, wie Bräuche, Traditionen und gesellschaftliche Veränderungen das Zusammenleben geprägt haben. Dabei wird deutlich, wie eng die Geschichte Hildesheims mit der kulturellen Vielfalt und Entwicklung Europas verbunden ist.\n\nWas erwartet Dich? Bei abwechslungsreichen Stadtführungen erkunden wir Hildesheim aus unterschiedlichen Perspektiven: von Bräuchen, Ritualen und Traditionen über geheimnisvolle Geschichten rund um Hexen und Hexenverfolgung bis hin zur historischen Altstadt und Hildesheims „Guter Stube“, dem Marktplatz."
+    "telefon": "[Telefonnummer einfügen]"
+  },
+  {
+    "id": "exkursion-stadt-2",
+    "titel": "Stadtführung II – Sagenhaftes Fachwerkviertel: Vom Kesselflicker zum Domprobst",
+    "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
+    "ortId": "tourist-information",
+    "treffpunkt": "Tourist-Information am Marktplatz, Rathausstraße 20",
+    "verantwortlich": "Ira Urban (Gästebegleiterin)",
+    "info": "Von alter Handwerkskunst und erhofften Seelenheil erzählt das Hildesheimer Fachwerkviertel. Atemberaubende Ausblicke von den alten Wallanlagen sind genauso zu erleben wie geheimnisvolle Sagen und Legenden, die sich in alten Zeiten in diesem Stadtviertel zugetragen haben (sollen) …\n\nDie Führung bietet einen Einblick in die wichtigsten Sehenswürdigkeiten. Vom historischen Marktplatz geht es zu den UNESCO Welterbekirchen St. Michaelis und Dom mit 1000-jährigen Rosenstock.\n\nTreffpunkt: Tourist-Information am Marktplatz. Dauer: 120 Minuten. Gästebegleiterin: Ira Urban."
   },
   {
     "id": "exkursion-ndr",
@@ -41,23 +50,23 @@
     "plaetze": 50,
     "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
     "ortId": "ndr-hannover",
+    "info": "Wie entstehen Nachrichten und wie prüfen Redaktionen, was wahr ist? Der Besuch im NDR-Landesfunkhaus Hannover soll Einblicke in die Radio- und Fernsehproduktion geben. Vorgesehen sind eine Studioführung und ein Gespräch mit journalistisch Verantwortlichen. Im Fokus stehen Pressefreiheit, künstliche Intelligenz, Desinformation und die Bedeutung unabhängiger Medien für Demokratie und eine europäische Öffentlichkeit.",
     "treffpunkt": "[Treffpunkt einfügen]",
     "anreise": "[Anreiseinfo einfügen]",
     "verantwortlich": "[Name Verantwortliche:r Orga-Team]",
-    "telefon": "[Telefonnummer einfügen]",
-    "info": "Wie entstehen Nachrichten, wer entscheidet, was gesendet wird, und wie erkennen Journalisten, was wahr ist? Im NDR-Landesfunkhaus Hannover werfen wir einen exklusiven Blick hinter die Kulissen der Radio- und Fernsehproduktion und erleben, wie moderner Journalismus funktioniert.\n\nIn Zeiten von KI, Fake News und Desinformation stehen unabhängige Medien vor großen Herausforderungen. Welche Rolle spielen sie für unsere Demokratie? Wie beeinflusst die europäische Medienpolitik die journalistische Arbeit? Und wie können Medien dazu beitragen, eine gemeinsame europäische Öffentlichkeit zu schaffen?\n\nWas erwartet Dich? Bei einer Führung durch die Radio- und Fernsehstudios entdecken wir, wie Nachrichten entstehen und Redaktionen arbeiten. Im anschließenden Gespräch mit journalistisch Verantwortlichen diskutieren wir über Pressefreiheit, künstliche Intelligenz, Desinformation und die Bedeutung unabhängiger Medien für unsere Demokratie und Europa."
+    "telefon": "[Telefonnummer einfügen]"
   },
   {
     "id": "exkursion-mittelstand",
-    "titel": "Von Hildesheim in Europas Stadien – Zu Besuch bei Helo Sports",
+    "titel": "Von Hildesheim in Europas Stadien – Zu Besuch bei helo sports",
     "plaetze": 50,
     "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
     "ortId": "helo-sports",
+    "verantwortlich": "Frank Richter (vor Ort)",
+    "info": "Die Sportgeräte 2000 GmbH / helo sports zählt zu den führenden Herstellern von Sportgeräten aus Aluminium für den Außenbereich. Am Standort Hildesheim entstehen auf rund 13.000 m² Produktionsfläche unter anderem Fußballtore, Spielerkabinen, Bolztore und Soccercourts, die weltweit in unterschiedlichsten Klimazonen, von Grönland bis Äthiopien, zum Einsatz kommen. Das Unternehmen stattete unter anderem sämtliche Fußballstadien der Weltmeisterschaft 2006 sowie die Europameisterschaften 2000, 2004, 2008 und 2012 mit Toren und Spielerkabinen aus. Im Rahmen der Exkursion werden spannende Einblicke in die Fertigung eines Fußballtores möglich – von der Materialanlieferung über die einzelnen Bearbeitungsschritte bis hin zum fertigen Produkt.\n\nAnsprechpartner vor Ort: Frank Richter. Ein Transfer ist notwendig.",
     "treffpunkt": "[Treffpunkt einfügen]",
     "anreise": "[Anreiseinfo einfügen]",
-    "verantwortlich": "[Name Verantwortliche:r Orga-Team]",
-    "telefon": "[Telefonnummer einfügen]",
-    "info": "Ob Fußball, Handball, Volleyball oder Leichtathletik – wer sportbegeistert ist, hat möglicherweise schon Produkte von Helo Sports gesehen, ohne es zu wissen! Der Hidden Champion aus Hildesheim produziert Sportgeräte für Vereine, Schulen und internationale Großveranstaltungen bis hin zu Fußball-Weltmeisterschaften. Ein echter Global Player aus der Region!\n\nDoch wie behauptet sich ein mittelständisches Unternehmen aus Deutschland im internationalen Wettbewerb? Welche Rolle spielen der europäische Binnenmarkt, globale Lieferketten und gemeinsame Standards? Und wie bleibt die Produktion am Standort Deutschland trotz steigender Kosten und wachsender Konkurrenz wettbewerbsfähig?\n\nWas erwartet Dich? Wir lernen die Erfolgsgeschichte von Helo Sports kennen, werfen bei einer Betriebsführung einen Blick hinter die Kulissen der Sportgeräteproduktion und diskutieren mit den Verantwortlichen über die Chancen und Herausforderungen eines international tätigen Mittelständlers im europäischen Wirtschaftsraum."
+    "telefon": "[Telefonnummer einfügen]"
   },
   {
     "id": "exkursion-bosch",
@@ -65,21 +74,31 @@
     "plaetze": 50,
     "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
     "ortId": "bosch",
-    "treffpunkt": "[Treffpunkt einfügen]",
-    "anreise": "[Anreiseinfo einfügen]",
-    "verantwortlich": "[Name Verantwortliche:r Orga-Team]",
-    "telefon": "[Telefonnummer einfügen]",
-    "info": "Wie sieht die Mobilität von morgen aus – und welche Rolle spielt Europa dabei? Am Bosch-Standort Hildesheim treffen innovative Technologien, Elektromobilität und künstliche Intelligenz auf die Herausforderungen eines tiefgreifenden industriellen Wandels.\n\nAls einer der weltweit führenden Automobilzulieferer steht Bosch beispielhaft für die Chancen und Herausforderungen der europäischen Automobilindustrie. Wie können deutsche Unternehmen im Wettbewerb mit China und den USA bestehen? Welche Bedeutung haben technologische Innovationen, europäische Industriepolitik und die Sicherung von Arbeitsplätzen für die Zukunft des Industriestandorts Europa?\n\nWas erwartet Dich? Bei einem Besuch des Bosch-Standorts Hildesheim erhalten wir Einblicke in das Unternehmen, seine Technologien und Produktionsbereiche. Im anschließenden Austausch mit Verantwortlichen diskutieren wir über die Transformation der Automobilindustrie, internationale Wettbewerbsfähigkeit und die Zukunft der Mobilität in Europa."
-  },
-  {
-    "id": "exkursion-zah",
-    "titel": "ZAH Wertstoffhof Hildesheim – Kreislaufwirtschaft und Europas Umgang mit Ressourcen",
-    "plaetze": 50,
-    "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
-    "ortId": "zah-wertstoffhof",
+    "info": "Der Besuch bei Bosch in Hildesheim richtet den Blick auf den Wandel der Automobilindustrie. Geplant sind Einblicke in das Unternehmen, seine Technologien und Produktionsbereiche sowie ein Austausch mit Verantwortlichen. Im Mittelpunkt stehen Elektromobilität, technologische Innovationen, internationale Wettbewerbsfähigkeit und die Zukunft der Arbeit. Welche Bereiche besichtigt werden können, wird noch abgestimmt.",
     "treffpunkt": "[Treffpunkt einfügen]",
     "anreise": "[Anreiseinfo einfügen]",
     "verantwortlich": "[Name Verantwortliche:r Orga-Team]",
     "telefon": "[Telefonnummer einfügen]"
+  },
+  {
+    "id": "exkursion-hennies",
+    "titel": "Kreislaufwirtschaft bei Willi Hennies Recycling – Vom Schrott zum Rohstoff",
+    "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
+    "ortId": "willi-hennies",
+    "info": "Was für die einen Abfall ist, wird für andere zum wertvollen Rohstoff! Seit über 100 Jahren steht Willi Hennies Recycling in Hildesheim für die Wiederverwertung von Metallen. Mit moderner Recyclingtechnik werden Stahl, Aluminium und andere Metalle aufbereitet und für eine erneute Nutzung in der Industrie vorbereitet.\n\nBei unserem Unternehmensbesuch erhalten wir Einblicke in die Recyclingprozesse und erfahren, wie aus vermeintlichem Abfall wertvolle Ressourcen entstehen. Dabei diskutieren wir, welche Rolle die europäische Kreislaufwirtschaft für Klimaschutz, Rohstoffsicherheit und die Wettbewerbsfähigkeit der europäischen Industrie spielt. Kann Recycling Europas Abhängigkeit von Rohstoffimporten verringern?"
+  },
+  {
+    "id": "exkursion-sprengel",
+    "titel": "Kunst kennt keine Grenzen – Europäische Kunst und gesellschaftlicher Wandel im Sprengel Museum",
+    "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
+    "ortId": "sprengel-museum",
+    "info": "Wie spiegeln Kunst und Kultur die gesellschaftlichen Umbrüche Europas wider? Das Sprengel Museum Hannover zählt zu den bedeutendsten Museen für moderne und zeitgenössische Kunst in Deutschland. Werke international renommierter Künstler wie Pablo Picasso, Max Beckmann und Kurt Schwitters eröffnen faszinierende Perspektiven auf die europäische Geschichte. Bei einer Führung durch ausgewählte Sammlungsbereiche entdecken wir, wie Kunst gesellschaftliche Veränderungen aufgreift, politische Entwicklungen hinterfragt und neue Denkweisen anstößt. Im Mittelpunkt steht die Frage, welche Bedeutung künstlerische Freiheit und kultureller Austausch für Demokratie und eine gemeinsame europäische Identität besitzen."
+  },
+  {
+    "id": "exkursion-continental",
+    "titel": "Europas Zukunft der Mobilität bei Continental – Innovation trifft Industrie",
+    "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
+    "ortId": "continental",
+    "info": "Wie bleibt Europas Industrie im globalen Wettbewerb erfolgreich? Continental zählt zu den international führenden Reifenherstellern und blickt auf über 150 Jahre Unternehmensgeschichte in Hannover zurück. Bei unserem Unternehmensbesuch erhalten wir Einblicke in innovative Technologien, moderne Produktionsprozesse und die Herausforderungen eines weltweit tätigen Industriekonzerns. Im Mittelpunkt stehen die Zukunft der Mobilität, nachhaltige Produktion und die Wettbewerbsfähigkeit des Industriestandorts Europa. Gemeinsam diskutieren wir, welche Rolle Innovation, europäische Industriepolitik und internationale Märkte für die Zukunft deutscher Industrieunternehmen spielen."
   }
 ]
