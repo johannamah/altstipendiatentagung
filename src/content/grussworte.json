@@ -3,15 +3,17 @@
     "id": "matthias-wilkes",
     "reihenfolge": 1,
     "name": "Dr. Matthias Wilkes",
-    "rolle": "Vorsitzender der Altstipendiaten der Konrad-Adenauer-Stiftung e. V.",
+    "rolle": "Vorsitzender der Altstipendiaten der Konrad-Adenauer-Stiftung e. V., Landrat a. D.",
     "bild": "../assets/grussworte/matthias-wilkes.webp",
     "bildnachweis": "[Quelle und Rechteinhaber eintragen]",
-    "status": "platzhalter",
+    "status": "bestaetigt",
     "absaetze": [
-      "Liebe Altstipendiatinnen und Altstipendiaten, liebe Gäste,",
-      "herzlich willkommen zur Jahrestagung 2027 unter dem Motto „Demokratie leben – Europa gestalten“ in der UNESCO-Welterbestadt Hildesheim.",
-      "Unser Verein lebt davon, dass aus einer gemeinsamen Förderung eine dauerhafte Verbindung wird. Genau dafür kommen wir zusammen: um uns auszutauschen, zu streiten, zu lernen und Freundschaften zu pflegen.",
-      "Ich freue mich auf fünf Tage mit euch in Hildesheim."
+      "Liebe Mitglieder des ASeV, liebe Altstipendiatinnen und Altstipendiaten,",
+      "herzlich Willkommen zu unserer Jahrestagung vom 6. bis 9. Mai 2027 in Hildesheim! Unter dem Leitgedanken „Demokratie leben – Europa gestalten“ wollen wir uns in diesem Jahr mit den Herausforderungen für unsere Demokratie und der Zukunft Europas auseinandersetzen. Gerade in Zeiten tiefgreifender politischer und gesellschaftlicher Veränderungen sind der offene Austausch, unterschiedliche Perspektiven und das gemeinsame Ringen um Antworten wichtiger denn je.",
+      "Es freut mich besonders, dass wir für unsere Jahrestagung mit Annegret Kramp-Karrenbauer, Prof. Dr. Norbert Lammert, David McAllister und Christian Wulff namhafte Persönlichkeiten aus der Politik gewinnen konnten.",
+      "Als Altstipendiatinnen und Altstipendiaten der Konrad-Adenauer-Stiftung verbindet uns mehr als ein gemeinsamer Abschnitt unseres Lebensweges. Uns eint das Bekenntnis zu Freiheit, Verantwortung und Solidarität sowie der Anspruch, unsere Gesellschaft und unser demokratisches Gemeinwesen aktiv mitzugestalten. Unsere Jahrestagung bietet die Gelegenheit, diesen Anspruch mit Leben zu füllen, alte Kontakte zu pflegen und neue Impulse für unser Engagement zu gewinnen.",
+      "Mein besonderer Dank gilt den Mitgliedern unseres Organisationsteams Torben Burdorf, Brit Fillies, Konstantin Gerbrich, Pia Gerbrich, Sven Lüdiger, Johanna Mahler, Ferdinand Meissner und Marvin Pawelczyk, die mit großem ehrenamtlichem Einsatz, viel Zeit und zahlreichen Ideen diese Jahrestagung vorbereitet und gestaltet haben. Ebenso danke ich allen Referentinnen und Referenten sowie unseren Unterstützern, die unser Programm bereichern.",
+      "Ich wünsche uns allen anregende Diskussionen, spannende Begegnungen und eine schöne gemeinsame Zeit in Hildesheim."
     ]
   },
   {
@@ -30,18 +32,17 @@
     ]
   },
   {
-    "id": "sebastian-lechner",
+    "id": "ingo-meyer",
     "reihenfolge": 3,
-    "name": "Sebastian Lechner",
-    "rolle": "Landesvorsitzender der CDU in Niedersachsen",
-    "bild": "../assets/grussworte/sebastian-lechner.jpg",
-    "bildnachweis": "[Quelle und Rechteinhaber eintragen]",
-    "status": "platzhalter",
+    "name": "Dr. Ingo Meyer",
+    "rolle": "Oberbürgermeister der Stadt Hildesheim",
+    "status": "bestaetigt",
     "absaetze": [
-      "Sehr geehrte Damen und Herren, liebe Gäste,",
-      "als Gastgeberland freut sich Niedersachsen, die Jahrestagung 2027 in Hildesheim willkommen zu heißen – in einer Stadt, die wie wenige andere zeigt, was Zerstörung bedeutet und was Wiederaufbau leisten kann.",
-      "Demokratie lebt von denen, die sich einmischen. Die Gespräche dieser Tage sind dafür ein guter Ort.",
-      "Ich wünsche Ihnen einen anregenden Aufenthalt in Niedersachsen."
+      "Sehr geehrte Damen und Herren,",
+      "liebe Altstipendiatinnen und Altstipendiaten der Konrad-Adenauer-Stiftung, ich heiße Sie herzlich willkommen in Hildesheim und freue mich sehr, dass Ihre diesjährige Jahrestagung unter dem Leitmotiv „Demokratie leben – Europa gestalten“ hier in unserer Stadt stattfindet.",
+      "Demokratie lebt vom Austausch unterschiedlicher Perspektiven, vom offenen Dialog und von Menschen, die bereit sind, Verantwortung für unsere Gesellschaft zu übernehmen. Gerade in Zeiten großer politischer und gesellschaftlicher Herausforderungen ist es wichtig, demokratische Werte mit Leben zu füllen und die Zukunft Europas aktiv mitzugestalten.",
+      "Dass Sie mit Ihrer Tagung in Hildesheim zu Gast sind, passt in besonderer Weise zu diesem Anliegen. Hildesheim ist eine Stadt der Bildung und Kultur und überregional bekannt für internationale Museen, für das Theater für Niedersachsen und für ein kulturelles Erbe, das auf eine über 1200-jährige Geschichte zurückgeht, die an vielen Orten und besonders prominent an gleich zwei UNESCO-Welterbestätten sichtbar wird. Hildesheim ist aber ebenso auch ein bedeutender Ort für junge Kultur: Für Gegenwartsliteratur, für zeitgenössische Kunst und für eine Freie Theaterszene, die bundesweit ihres gleichen sucht. Keimzelle hierfür sind v.a. die Hildesheimer Hochschulen, von wo aus der kreative Nachwuchs in das ganze Land und weit darüber hinaus entsandt wird.",
+      "Abschließend wünsche ich Ihnen anregende Diskussionen, neue Impulse und Begegnungen, die über das Tagungswochenende hinauswirken, sowie einen angenehmen Aufenthalt in unserer schönen Stadt."
     ]
   }
 ]

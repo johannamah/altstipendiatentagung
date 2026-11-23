@@ -16,11 +16,5 @@ export interface RechtlicheSeite {
 
 export const RECHTLICHES: readonly RechtlicheSeite[] = [
   { slug: "impressum", titel: "Impressum" },
-  /*
-   * Die Datenschutzerklaerung fehlt hier bewusst. Sie ist erst zu erstellen,
-   * wenn feststeht, wer betreibt und was verarbeitet wird (F2, F4) - ein
-   * erfundener Text waere schlimmer als keiner. Solange die Anwendung keine
-   * personenbezogenen Daten verarbeitet und hinter der Zugangsabfrage steht
-   * (ADR-0010), ist das vertretbar; vor der Veroeffentlichung nicht mehr.
-   */
+  { slug: "datenschutz", titel: "Datenschutzerklärung" },
 ];
