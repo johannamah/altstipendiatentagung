@@ -1,0 +1,125 @@
+# Produktivdeployment nach Vercel (ADR-0013).
+#
+# Nur von main, nur nach Freigabe im Environment "production". Die Git-Anbindung
+# von Vercel baut weiterhin Vorschauen fuer Pull Requests, deployt main aber
+# nicht selbst (vercel.json, git.deploymentEnabled).
+#
+# Umgebungsvariablen der App (Supabase, ZUGANGSWORT) liegen in Vercel und werden
+# per `vercel pull` geholt - eine Stelle statt zwei.
+#
+# Einrichtung: docs/betrieb/einrichtung-vercel.html
+name: Deployment
+
+on:
+  push:
+    branches: [main]
+  # Erneutes Deployment ohne neuen Commit, etwa nach dem Go-Live (VORABZUGANG=aus).
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  ASTRO_TELEMETRY_DISABLED: "1"
+  # Produktprinzip 4: keine Nutzungsdaten an Dritte.
+  VERCEL_TELEMETRY_DISABLED: "1"
+  # Bewusst per npx mit fester Version statt als devDependency (wie Lighthouse).
+  VERCEL_VERSION: "65.12.1"
+  ADRESSE: https://altstipendiaten-jahrestagung.de
+
+jobs:
+  produktion:
+    name: Produktion
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    # Die Freigabe im Environment haelt den Job an, bevor er ueberhaupt startet.
+    environment:
+      name: production
+      url: https://altstipendiaten-jahrestagung.de
+    # Ein laufendes Deployment wird nie abgebrochen; das naechste wartet.
+    concurrency:
+      group: deployment-production
+      cancel-in-progress: false
+    env:
+      VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      # main ist nur ueber einen geprueften PR erreichbar. Die schnelle Stufe laeuft
+      # trotzdem noch einmal auf genau dem Commit, der live geht - ohne die
+      # Umgebungsvariablen aus Vercel, damit die Tests ohne Sperre laufen.
+      - name: Prüfen
+        run: npm run pruefen
+
+      - name: Vercel-Einstellungen holen
+        run: npx --yes "vercel@${VERCEL_VERSION}" pull --yes --environment=production --token="$VERCEL_TOKEN"
+
+      - name: Bauen
+        run: npx --yes "vercel@${VERCEL_VERSION}" build --prod --token="$VERCEL_TOKEN"
+
+      - name: Nach Vercel deployen
+        run: npx --yes "vercel@${VERCEL_VERSION}" deploy --prebuilt --prod --token="$VERCEL_TOKEN"
+
+      # Prueft die echte Adresse von aussen. Solange VORABZUGANG nicht ausdruecklich
+      # "aus" ist, MUSS die Zugangsabfrage (ADR-0010) aktiv sein - eine Seite ohne
+      # Sperre und ohne noindex ist dann ein Fehler, kein Erfolg.
+      - name: Auslieferung prüfen
+        env:
+          VORABZUGANG: ${{ vars.VORABZUGANG || 'aktiv' }}
+        run: |
+          set -euo pipefail
+
+          # Die neue Version ist nach wenigen Sekunden aktiv.
+          abrufen() {
+            for versuch in 1 2 3 4 5 6; do
+              if curl -sS -o seite.html -D kopf.txt -w '%{http_code}' "$1" > status.txt; then
+                cat status.txt
+                return
+              fi
+              sleep 10
+            done
+            echo "::error::$1 ist nicht erreichbar." >&2
+            exit 1
+          }
+
+          kopfzeile() { grep -i "^$1:" kopf.txt | head -1 | cut -d' ' -f2- | tr -d '\r' || true; }
+
+          status=$(abrufen "$ADRESSE/")
+          if [ "$status" != "200" ]; then
+            echo "::error::$ADRESSE/ antwortet mit $status statt 200."
+            exit 1
+          fi
+
+          if [ "$VORABZUGANG" != "aus" ]; then
+            if ! grep -q 'data-gesperrt="true"' seite.html || ! grep -q 'noindex' seite.html; then
+              echo "::error::Vorabzugang ist aktiv, aber die Seite hat keine Zugangsabfrage. ZUGANGSWORT in Vercel (Production) pruefen!"
+              exit 1
+            fi
+            echo "Zugangsabfrage und noindex sind aktiv."
+          elif grep -q 'data-gesperrt="true"' seite.html; then
+            echo "::error::VORABZUGANG ist aus, die Seite ist aber noch gesperrt. ZUGANGSWORT in Vercel entfernen."
+            exit 1
+          fi
+
+          abrufen "$ADRESSE/sw.js" > /dev/null
+          if [[ "$(kopfzeile cache-control)" != *no-cache* ]]; then
+            echo "::error::/sw.js wird zwischengespeichert - die Kopfzeilen aus vercel.json wirken nicht."
+            exit 1
+          fi
+
+          status=$(abrufen "https://www.altstipendiaten-jahrestagung.de/")
+          if [[ "$status" != 30[18] ]] || [[ "$(kopfzeile location)" != "$ADRESSE/"* ]]; then
+            echo "::error::www leitet nicht dauerhaft auf $ADRESSE weiter (Status $status)."
+            exit 1
+          fi
+
+          echo "Erreichbar, Kopfzeilen und www-Weiterleitung stimmen."
