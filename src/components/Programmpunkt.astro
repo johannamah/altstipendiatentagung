@@ -75,6 +75,17 @@ const exportierbar = istExportierbar(punkt);
       <p class="ohne-beschreibung">Zu diesem Punkt liegt noch keine Beschreibung vor.</p>
     )}
 
+    {punkt.personen.length > 0 && (
+      <ul class="mitwirkende" aria-label="Mitwirkende">
+        {punkt.personen.map((person) => (
+          <li>
+            {person.name}
+            {person.rolle && <span class="rolle">, {person.rolle}</span>}
+          </li>
+        ))}
+      </ul>
+    )}
+
     {ort && <Ortsangabe ort={ort} raum={punkt.raum} />}
 
     {punkt.hinweis && (
@@ -190,6 +201,21 @@ const exportierbar = istExportierbar(punkt);
   .inhalt {
     padding: var(--raum-3) var(--raum-4) var(--raum-4);
     border-top: 1px solid var(--rand);
+  }
+
+  .mitwirkende {
+    padding: 0;
+    margin: 0 0 var(--raum-3);
+    list-style: none;
+  }
+
+  .mitwirkende li {
+    font-weight: 600;
+  }
+
+  .rolle {
+    font-weight: 400;
+    color: var(--text-leise);
   }
 
   .beschreibung,

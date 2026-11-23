@@ -1,12 +1,12 @@
 [
   {
-    "id": "novotel",
-    "name": "Novotel Hildesheim",
-    "adresse": "Bahnhofsallee 38",
+    "id": "mariano-josephinum",
+    "name": "Mariano-Josephinum",
+    "adresse": "Domhof 7",
     "plz": "31134",
     "stadt": "Hildesheim",
     "art": "tagungsort",
-    "hinweis": "Hauptveranstaltungsort der Jahrestagung"
+    "hinweis": "Hauptveranstaltungsort der Jahrestagung. Das Gymnasium liegt zwischen Domhof 7, Brühl 1–3 und Kreuzstraße 22."
   },
   {
     "id": "deseo",
@@ -18,7 +18,7 @@
   },
   {
     "id": "dom",
-    "name": "Dom St. Mariae",
+    "name": "Dom Mariä Himmelfahrt",
     "adresse": "Domhof 3",
     "plz": "31134",
     "stadt": "Hildesheim",
@@ -36,7 +36,7 @@
   {
     "id": "marktplatz",
     "name": "Historischer Marktplatz",
-    "adresse": "Marktplatz 1",
+    "adresse": "Markt 1",
     "plz": "31134",
     "stadt": "Hildesheim",
     "art": "rahmenprogramm"
@@ -59,8 +59,8 @@
   },
   {
     "id": "helo-sports",
-    "name": "Helo Sports",
-    "adresse": "Schinkelstraße 17",
+    "name": "helo sports",
+    "adresse": "Schinkelstraße 15",
     "plz": "31137",
     "stadt": "Hildesheim",
     "art": "exkursion"
@@ -69,13 +69,9 @@
     "id": "bosch",
     "name": "Bosch Hildesheim",
     "stadt": "Hildesheim",
-    "art": "exkursion"
-  },
-  {
-    "id": "zah-wertstoffhof",
-    "name": "ZAH Wertstoffhof Hildesheim",
-    "stadt": "Hildesheim",
-    "art": "exkursion"
+    "art": "exkursion",
+    "adresse": "Robert-Bosch-Straße 200",
+    "plz": "31139"
   },
   {
     "id": "bb-hotel",
@@ -87,8 +83,32 @@
   },
   {
     "id": "hey-lou",
-    "name": "Hey Lou Hotel Hildesheim",
+    "name": "HeyLou Hotel Hildesheim",
     "adresse": "Zingel 26",
+    "plz": "31134",
+    "stadt": "Hildesheim",
+    "art": "uebernachtung"
+  },
+  {
+    "id": "schlafladen",
+    "name": "Schlafladen Hildesheim",
+    "adresse": "Am alten Wasserwerk 1",
+    "plz": "31135",
+    "stadt": "Hildesheim",
+    "art": "uebernachtung"
+  },
+  {
+    "id": "buergermeisterkapelle",
+    "name": "Hotel Bürgermeisterkapelle Hildesheim",
+    "adresse": "Rathausstraße 8",
+    "plz": "31134",
+    "stadt": "Hildesheim",
+    "art": "uebernachtung"
+  },
+  {
+    "id": "van-der-valk",
+    "name": "Van der Valk Hotel Hildesheim",
+    "adresse": "Markt 4",
     "plz": "31134",
     "stadt": "Hildesheim",
     "art": "uebernachtung"
@@ -134,5 +154,58 @@
     "stadt": "Hildesheim",
     "art": "gastronomie",
     "hinweis": "Café und Bar"
+  },
+  {
+    "id": "knochenhaueramtshaus",
+    "name": "Knochenhauer-Amtshaus",
+    "adresse": "Markt 7",
+    "plz": "31134",
+    "stadt": "Hildesheim",
+    "art": "rahmenprogramm"
+  },
+  {
+    "id": "st-godehard",
+    "name": "Basilika St. Godehard",
+    "stadt": "Hildesheim",
+    "art": "rahmenprogramm"
+  },
+  {
+    "id": "halle39",
+    "name": "Halle39",
+    "adresse": "Schinkelstraße 7",
+    "plz": "31137",
+    "stadt": "Hildesheim",
+    "art": "rahmenprogramm"
+  },
+  {
+    "id": "tourist-information",
+    "name": "Tourist-Information am Marktplatz",
+    "adresse": "Rathausstraße 20",
+    "plz": "31134",
+    "stadt": "Hildesheim",
+    "art": "exkursion",
+    "hinweis": "Treffpunkt der Stadtführungen"
+  },
+  {
+    "id": "willi-hennies",
+    "name": "Willi Hennies Recycling",
+    "stadt": "Hildesheim",
+    "art": "exkursion",
+    "hinweis": "Genauer Standort wird noch bekanntgegeben."
+  },
+  {
+    "id": "sprengel-museum",
+    "name": "Sprengel Museum Hannover",
+    "adresse": "Kurt-Schwitters-Platz",
+    "plz": "30169",
+    "stadt": "Hannover",
+    "art": "exkursion"
+  },
+  {
+    "id": "continental",
+    "name": "Continental",
+    "stadt": "Hannover",
+    "art": "exkursion",
+    "hinweis": "Genauer Standort wird noch bekanntgegeben."
   }
 ]

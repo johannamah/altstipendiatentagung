@@ -13,9 +13,11 @@ import "../styles/basis.css";
 interface Props {
   titel: string;
   beschreibung: string;
+  /** false fuer Seiten, die in keinen Suchindex gehoeren (Verwaltung). */
+  indexieren?: boolean;
 }
 
-const { titel, beschreibung } = Astro.props;
+const { titel, beschreibung, indexieren = true } = Astro.props;
 
 /* Auf jeder Unterseite fuehrt ein Weg zurueck zur Uebersicht. Bewusst ein
    echter Link und kein history.back(): Wer die Seite ueber einen geteilten
@@ -45,7 +47,7 @@ const sperrhash = zugangshashAusUmgebung();
 
     {/* Eine Anwendung hinter einer Zugangsabfrage gehoert nicht in den Index -
         das waere genau der zufaellige Fund, den die Sperre verhindern soll. */}
-    {sperrhash && <meta name="robots" content="noindex, nofollow" />}
+    {(sperrhash || !indexieren) && <meta name="robots" content="noindex, nofollow" />}
 
     {sperrhash && <script is:inline define:vars={{ erwartet: sperrhash }}>
       (() => {

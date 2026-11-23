@@ -32,4 +32,13 @@ lighthouse-bericht/
 # Quelldokumente des Orga-Teams. Sie koennen Kontaktdaten von Ansprechpersonen
 # enthalten und gehoeren nicht in das oeffentliche Repository; uebernommen
 # werden nur die freigegebenen Texte nach src/content/.
-src/daten/*.docx
+src/**/*.docx
+
+# Lokale Vercel-Verknuepfung (npx vercel link) und gezogene Umgebungsvariablen
+.vercel/
+
+# Ablage des Orga-Teams: Rohdateien (Originalfotos, Programmheft) direkt in
+# src/assets/. Sie koennen Metadaten wie GPS-Koordinaten enthalten und sind
+# viel zu gross. In die App kommen nur aufbereitete Fassungen in Unterordnern
+# (src/assets/kontakte/, src/assets/grussworte/).
+/src/assets/*.*

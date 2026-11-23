@@ -1,0 +1,920 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Einrichtung Vercel und Strato</title>
+    <style>
+      :root {
+        --flaeche: #f7f8fa;
+        --karte: #ffffff;
+        --text: #1b2430;
+        --text-leise: #505c6b;
+        --rand: #d9dee5;
+        --akzent: #004684;
+        --code-flaeche: #eef1f5;
+        --achtung-flaeche: #fff4e5;
+        --achtung-rand: #e0a040;
+        --hinweis-flaeche: #eaf2fb;
+        --hinweis-rand: #6b9bd1;
+        --erledigt: #2e7d4f;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+          --flaeche: #12161c;
+          --karte: #1a2028;
+          --text: #e6eaef;
+          --text-leise: #a6b0bc;
+          --rand: #2e3743;
+          --akzent: #8bbcf0;
+          --code-flaeche: #232b35;
+          --achtung-flaeche: #33270f;
+          --achtung-rand: #b8822c;
+          --hinweis-flaeche: #172636;
+          --hinweis-rand: #3f6c9c;
+          --erledigt: #6cc596;
+        }
+      }
+
+      :root[data-theme="dark"] {
+        --flaeche: #12161c;
+        --karte: #1a2028;
+        --text: #e6eaef;
+        --text-leise: #a6b0bc;
+        --rand: #2e3743;
+        --akzent: #8bbcf0;
+        --code-flaeche: #232b35;
+        --achtung-flaeche: #33270f;
+        --achtung-rand: #b8822c;
+        --hinweis-flaeche: #172636;
+        --hinweis-rand: #3f6c9c;
+        --erledigt: #6cc596;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font:
+          17px/1.6 system-ui,
+          -apple-system,
+          "Segoe UI",
+          sans-serif;
+        color: var(--text);
+        background: var(--flaeche);
+      }
+
+      .rahmen {
+        display: grid;
+        gap: 2rem;
+        max-width: 72rem;
+        padding: 2rem 16px 4rem;
+        margin: 0 auto;
+      }
+
+      @media (min-width: 60rem) {
+        .rahmen {
+          grid-template-columns: 15rem minmax(0, 1fr);
+        }
+
+        nav.inhalt {
+          position: sticky;
+          top: 1rem;
+          align-self: start;
+        }
+      }
+
+      header {
+        grid-column: 1 / -1;
+      }
+
+      h1 {
+        margin: 0 0 0.5rem;
+        font-size: 2rem;
+        line-height: 1.2;
+      }
+
+      h2 {
+        margin: 0 0 1rem;
+        font-size: 1.4rem;
+        line-height: 1.3;
+      }
+
+      h3 {
+        margin: 1.5rem 0 0.5rem;
+        font-size: 1.1rem;
+      }
+
+      .leise {
+        color: var(--text-leise);
+      }
+
+      a {
+        color: var(--akzent);
+      }
+
+      nav.inhalt ol {
+        padding-left: 1.2rem;
+        margin: 0;
+        font-size: 0.95rem;
+      }
+
+      nav.inhalt li {
+        margin-bottom: 0.3rem;
+      }
+
+      main section {
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        background: var(--karte);
+        border: 1px solid var(--rand);
+        border-radius: 12px;
+      }
+
+      code,
+      kbd {
+        padding: 0.1em 0.35em;
+        font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+        font-size: 0.9em;
+        overflow-wrap: anywhere;
+        background: var(--code-flaeche);
+        border-radius: 4px;
+      }
+
+      pre {
+        padding: 0.8rem 1rem;
+        overflow-x: auto;
+        background: var(--code-flaeche);
+        border-radius: 8px;
+      }
+
+      pre code {
+        padding: 0;
+        background: none;
+      }
+
+      .kasten {
+        padding: 0.8rem 1rem;
+        margin: 1rem 0;
+        border-left: 4px solid;
+        border-radius: 6px;
+      }
+
+      .kasten p:first-child {
+        margin-top: 0;
+      }
+
+      .kasten p:last-child {
+        margin-bottom: 0;
+      }
+
+      .achtung {
+        background: var(--achtung-flaeche);
+        border-color: var(--achtung-rand);
+      }
+
+      .hinweis {
+        background: var(--hinweis-flaeche);
+        border-color: var(--hinweis-rand);
+      }
+
+      .tabelle {
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        font-size: 0.95rem;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        padding: 0.5rem;
+        text-align: left;
+        vertical-align: top;
+        border-bottom: 1px solid var(--rand);
+      }
+
+      th {
+        font-weight: 600;
+      }
+
+      ol.schritte > li {
+        margin-bottom: 0.6rem;
+      }
+
+      .pruefliste {
+        padding: 0;
+        list-style: none;
+      }
+
+      .pruefliste li {
+        margin-bottom: 0.4rem;
+      }
+
+      .pruefliste label {
+        display: flex;
+        gap: 0.6rem;
+        align-items: flex-start;
+        cursor: pointer;
+      }
+
+      .pruefliste input {
+        flex: none;
+        width: 1.15rem;
+        height: 1.15rem;
+        margin-top: 0.25rem;
+        accent-color: var(--erledigt);
+      }
+
+      .pruefliste input:checked + span {
+        color: var(--text-leise);
+        text-decoration: line-through;
+      }
+
+      :focus-visible {
+        outline: 3px solid var(--akzent);
+        outline-offset: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="rahmen">
+      <header>
+        <h1>Einrichtung: Vercel, Strato und GitHub</h1>
+        <p class="leise">
+          Für die Veranstaltungsapp unter <strong>altstipendiaten-jahrestagung.de</strong>.
+          Entscheidung und Begründung: <code>docs/decisions/0013-hosting-auf-vercel.md</code>. Die
+          Häkchen merkt sich nur dieser Browser.
+        </p>
+      </header>
+
+      <nav class="inhalt" aria-label="Inhalt">
+        <ol>
+          <li><a href="#ueberblick">Überblick und Reihenfolge</a></li>
+          <li><a href="#informationen">Was noch gebraucht wird</a></li>
+          <li><a href="#projekt">Vercel-Projekt prüfen</a></li>
+          <li><a href="#variablen">Umgebungsvariablen</a></li>
+          <li><a href="#domain">Domain in Vercel</a></li>
+          <li><a href="#strato">DNS bei Strato</a></li>
+          <li><a href="#token">Token und Kennungen</a></li>
+          <li><a href="#github">GitHub einrichten</a></li>
+          <li><a href="#erstes-deployment">Erstes Deployment</a></li>
+          <li><a href="#golive">Go-Live</a></li>
+          <li><a href="#fehler">Fehlerbehebung</a></li>
+          <li><a href="#betrieb">Laufender Betrieb</a></li>
+        </ol>
+      </nav>
+
+      <main>
+        <section id="ueberblick">
+          <h2>1. Überblick und Reihenfolge</h2>
+          <p>
+            Die App ist eine statische Website. Für jeden Pull Request baut Vercel über seine
+            Git-Anbindung eine Vorschau. Live geht nur, was auf <code>main</code> gemergt und im
+            GitHub Environment <code>production</code> freigegeben ist. Das erledigt der Workflow
+            <code>Deployment</code>. Die Ankündigungen lädt der Browser direkt aus Supabase. Die
+            Einrichtung dafür steht in <code>einrichtung-supabase.html</code>.
+          </p>
+          <div class="kasten achtung">
+            <p>
+              <strong>Kein echter Vorabschutz.</strong> Vercel schützt im kostenfreien Tarif die
+              eigene Domain nicht. Bis zum Go-Live hält nur die Zugangsabfrage (ADR-0010)
+              Suchmaschinen und weitergereichte Links ab. Wer den Quelltext liest, kommt daran
+              vorbei. Unfreigegebene Namen und Bilder (F14, F16) gehören deshalb nicht in die App.
+            </p>
+          </div>
+          <div class="tabelle">
+            <table>
+              <thead>
+                <tr>
+                  <th>Schritt</th>
+                  <th>Wo</th>
+                  <th>Wer</th>
+                  <th>Dauer</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>3–5 Projekt, Variablen, Domain</td>
+                  <td>Vercel</td>
+                  <td>Inhaber des Vercel-Kontos</td>
+                  <td>15 Min.</td>
+                </tr>
+                <tr>
+                  <td>6 DNS-Einträge</td>
+                  <td>Strato</td>
+                  <td>Inhaber des Strato-Kontos</td>
+                  <td>10 Min. + bis zu 24 Std. Wartezeit</td>
+                </tr>
+                <tr>
+                  <td>7 Token und Kennungen</td>
+                  <td>Vercel</td>
+                  <td>Inhaber des Vercel-Kontos</td>
+                  <td>5 Min.</td>
+                </tr>
+                <tr>
+                  <td>8 Environment, Secrets, Branch-Schutz</td>
+                  <td>GitHub</td>
+                  <td>Repo-Admin (<code>johannamah</code>)</td>
+                  <td>15 Min.</td>
+                </tr>
+                <tr>
+                  <td>9 Erstes Deployment</td>
+                  <td>GitHub</td>
+                  <td>beide (Merge und Freigabe)</td>
+                  <td>10 Min.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="informationen">
+          <h2>2. Was noch gebraucht wird</h2>
+          <div class="kasten achtung">
+            <p>
+              <strong>Zugangsdaten nie in Chats, Issues, Commits oder diese Datei.</strong> Token
+              und Zugangswort gehören nur in den Passwortmanager, in Vercel und in die
+              GitHub-Secrets. Das Repository ist öffentlich.
+            </p>
+          </div>
+
+          <h3>Von euch beiden (Entwickler)</h3>
+          <ul class="pruefliste">
+            <li>
+              <label
+                ><input type="checkbox" data-id="i-vercel-konto" /><span
+                  ><strong>Wem gehört das Vercel-Projekt?</strong> Das Repository ist bereits mit
+                  Vercel verbunden, vermutlich über das Konto von <code>johannamah</code>. Die
+                  Schritte 3 bis 5 und 7 macht diese Person.</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="i-tarif" /><span
+                  ><strong>Tarif:</strong> Der Hobby-Tarif ist laut Vercel auf private, nicht
+                  kommerzielle Nutzung beschränkt. Mit dem Vorstand klären, ob das für eine
+                  Vereinsseite reicht oder ob Pro nötig ist (F2).</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="i-github" /><span
+                  >Die GitHub-Benutzernamen beider Entwickler. Sie geben Deployments frei.</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="i-zugangswort" /><span
+                  >Ein Zugangswort für die Vorabphase. Es sollte lang genug sein, damit es sich
+                  nicht durchprobieren lässt, etwa vier zufällige Wörter. Weitergeben an das
+                  Orga-Team auf einem anderen Weg als den Link.</span
+                ></label
+              >
+            </li>
+          </ul>
+
+          <h3>Vom Strato-Konto</h3>
+          <ul class="pruefliste">
+            <li>
+              <label
+                ><input type="checkbox" data-id="i-strato-login" /><span
+                  >Zugang zum Strato-Kundenlogin, in dem die Domain liegt.</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="i-strato-sicherung" /><span
+                  >Ein Bildschirmfoto der aktuellen DNS-Einstellungen der Domain, bevor etwas
+                  geändert wird. E-Mail-Einträge (MX) bleiben unberührt, aber man will
+                  zurückkönnen.</span
+                ></label
+              >
+            </li>
+          </ul>
+
+          <h3>Vom Vorstand (vor dem Go-Live)</h3>
+          <ul class="pruefliste">
+            <li>
+              <label
+                ><input type="checkbox" data-id="i-dsb" /><span
+                  >Ist ein Datenschutzbeauftragter benannt? Falls ja: Kontaktangaben für die
+                  Datenschutzerklärung.</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="i-freigabe" /><span
+                  >Freigabe der Datenschutzerklärung (PR #17) und Antworten zu F4 (Anmeldedaten),
+                  F14 (Personennamen) und F16 (Rechte an den Porträts).</span
+                ></label
+              >
+            </li>
+          </ul>
+        </section>
+
+        <section id="projekt">
+          <h2>3. Vercel-Projekt prüfen</h2>
+          <p>
+            Auf <a href="https://vercel.com/dashboard">vercel.com/dashboard</a> das Projekt zum
+            Repository <code>johannamah/altstipendiatentagung</code> öffnen, dann <em>Settings</em>:
+          </p>
+          <ul class="pruefliste">
+            <li>
+              <label
+                ><input type="checkbox" data-id="p-framework" /><span
+                  ><em>Build and Deployment:</em> Framework Preset <strong>Astro</strong>. Build
+                  Command und Output Directory nicht überschreiben, sie kommen aus
+                  <code>vercel.json</code>. <strong>Node.js Version 24.x</strong>, passend zu
+                  <code>.nvmrc</code>.</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="p-branch" /><span
+                  ><em>Environments → Production:</em> Branch <code>main</code>. Dass Vercel
+                  <code>main</code> trotzdem nicht selbst deployt, regelt
+                  <code>vercel.json</code>.</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="p-schutz" /><span
+                  ><em>Deployment Protection:</em> <strong>Vercel Authentication</strong> an, Stufe
+                  „Standard Protection". Dann sehen Vorschauen nur Mitglieder des Vercel-Teams. Die
+                  Produktionsdomain schützt das nicht.</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="p-analytics" /><span
+                  ><em>Analytics</em> und <em>Speed Insights</em> nicht aktivieren (Produktprinzip
+                  4: keine Nutzungsdaten an Dritte). Sonst müssten sie in die
+                  Datenschutzerklärung.</span
+                ></label
+              >
+            </li>
+          </ul>
+        </section>
+
+        <section id="variablen">
+          <h2>4. Umgebungsvariablen in Vercel</h2>
+          <p><em>Settings → Environment Variables → Add</em>:</p>
+          <div class="tabelle">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Wert</th>
+                  <th>Umgebungen</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>ZUGANGSWORT</code></td>
+                  <td>das Zugangswort aus Schritt 2, als <strong>Sensitive</strong> markieren</td>
+                  <td>Production, Preview</td>
+                </tr>
+                <tr>
+                  <td><code>PUBLIC_SUPABASE_URL</code></td>
+                  <td>siehe <code>einrichtung-supabase.html</code></td>
+                  <td>Production, Preview</td>
+                </tr>
+                <tr>
+                  <td><code>PUBLIC_SUPABASE_KEY</code></td>
+                  <td>siehe <code>einrichtung-supabase.html</code></td>
+                  <td>Production, Preview</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="kasten hinweis">
+            <p>
+              Die Werte werden beim <em>Bauen</em> gelesen. Eine Änderung wirkt erst mit dem
+              nächsten Deployment: in GitHub <em>Actions → Deployment → Run workflow</em>.
+            </p>
+          </div>
+        </section>
+
+        <section id="domain">
+          <h2>5. Domain in Vercel hinzufügen</h2>
+          <ol class="schritte">
+            <li>
+              <em>Settings → Domains → Add Domain</em>, <code>altstipendiaten-jahrestagung.de</code>
+              eingeben.
+            </li>
+            <li>
+              Vercel bietet an, auch <code>www.altstipendiaten-jahrestagung.de</code> hinzuzufügen.
+              Die Option <strong>„Redirect www to altstipendiaten-jahrestagung.de"</strong> wählen.
+              Bei der Domain <code>www</code> lässt sich der Statuscode auf
+              <strong>301</strong> stellen (Standard: 308). Beides funktioniert.
+            </li>
+            <li>
+              Vercel zeigt bei beiden Domains „Invalid Configuration" und die benötigten
+              DNS-Einträge, typischerweise:
+              <ul>
+                <li>für die Domain: Typ <code>A</code>, Wert eine IP-Adresse von Vercel</li>
+                <li>
+                  für <code>www</code>: Typ <code>CNAME</code>, Wert ein Name auf
+                  <code>vercel-dns.com</code>
+                </li>
+              </ul>
+              <strong>Die angezeigten Werte abschreiben.</strong> Vercel vergibt sie je Projekt, sie
+              können von älteren Anleitungen im Netz abweichen.
+            </li>
+          </ol>
+        </section>
+
+        <section id="strato">
+          <h2>6. DNS-Einträge bei Strato</h2>
+          <div class="kasten hinweis">
+            <p>
+              Die Nameserver bleiben bei Strato, geändert werden nur zwei Einträge. Strato ändert
+              seine Oberfläche gelegentlich, die Menünamen können abweichen.
+            </p>
+          </div>
+          <ol class="schritte">
+            <li>
+              Im
+              <a href="https://www.strato.de/apps/CustomerService">Strato-Kunden-Login</a> anmelden
+              und das Paket mit der Domain wählen → <em>Domains</em> → <em>Domainverwaltung</em>.
+            </li>
+            <li>
+              Bei <code>altstipendiaten-jahrestagung.de</code> auf das Zahnrad bzw.
+              <em>Verwalten</em> → Reiter <em>DNS</em>.
+            </li>
+            <li>
+              <strong>A-Record:</strong> <em>verwalten</em> → „Andere IP-Adresse" → die IP aus
+              Vercel eintragen → speichern.
+            </li>
+            <li>
+              <strong>AAAA-Record (IPv6):</strong> Steht dort ein Eintrag, ihn
+              <strong>entfernen bzw. deaktivieren</strong>. Vercel bietet für eigene Domains kein
+              IPv6 an. Ein alter Eintrag schickt Geräte mit IPv6 sonst weiter zu Strato.
+            </li>
+            <li>
+              <strong>www:</strong> Unter <em>Domainverwaltung</em> eine Subdomain
+              <code>www</code> anlegen, falls es sie nicht gibt. Dann bei der Subdomain →
+              <em>DNS</em> → <em>CNAME-Record</em>
+              → den Namen aus Vercel eintragen. Der A- und AAAA-Eintrag der Subdomain entfällt
+              damit.
+            </li>
+            <li>
+              Prüfen, dass bei der Domain keine Strato-<em>Umleitung</em> und kein Webspace aktiv
+              ist, der die Einträge überschreibt.
+            </li>
+            <li>
+              <strong>Nicht anfassen:</strong> MX-, TXT- und SPF-Einträge. Sie gehören zu E-Mail.
+            </li>
+          </ol>
+          <p>
+            Nach 10 Minuten bis einigen Stunden zeigt Vercel bei beiden Domains
+            <strong>„Valid Configuration"</strong> und stellt das Zertifikat selbst aus. Prüfen im
+            Terminal:
+          </p>
+          <pre><code>dig A altstipendiaten-jahrestagung.de +short
+dig AAAA altstipendiaten-jahrestagung.de +short
+dig CNAME www.altstipendiaten-jahrestagung.de +short</code></pre>
+          <p class="leise">
+            Erwartet: die IP aus Vercel, <em>keine</em> Ausgabe für AAAA, der Name aus Vercel für
+            www.
+          </p>
+        </section>
+
+        <section id="token">
+          <h2>7. Token und Kennungen für GitHub</h2>
+          <h3>Token</h3>
+          <ol class="schritte">
+            <li>
+              <a href="https://vercel.com/account/settings/tokens">Account Settings → Tokens</a> →
+              <em>Create Token</em>.
+            </li>
+            <li>
+              Name <code>github-actions-altstipendiatentagung</code>, Scope: das Team bzw. Konto, in
+              dem das Projekt liegt, Ablauf: ein Datum nach der Tagung, z. B. Ende Juni 2027.
+            </li>
+            <li>
+              Das Token wird <strong>nur einmal</strong> angezeigt. Direkt in GitHub eintragen
+              (Schritt 8) und im Passwortmanager ablegen.
+            </li>
+          </ol>
+          <h3>Kennungen</h3>
+          <ul>
+            <li>
+              <strong>Project ID:</strong> Projekt →
+              <em>Settings → General → Project ID</em> (beginnt mit <code>prj_</code>).
+            </li>
+            <li>
+              <strong>Org ID:</strong> bei einem Team
+              <em>Team Settings → General → Team ID</em> (beginnt mit <code>team_</code>), bei einem
+              persönlichen Konto <em>Account Settings → General → Vercel ID</em>.
+            </li>
+          </ul>
+          <div class="kasten hinweis">
+            <p>
+              Alternativ schreibt <code>npx vercel link</code> beide Kennungen nach
+              <code>.vercel/project.json</code>. Der Ordner steht in <code>.gitignore</code> und
+              wird nicht committet.
+            </p>
+          </div>
+        </section>
+
+        <section id="github">
+          <h2>8. GitHub einrichten</h2>
+          <div class="kasten hinweis">
+            <p>
+              Das braucht <strong>Admin-Rechte am Repository</strong>, also <code>johannamah</code>.
+            </p>
+          </div>
+
+          <h3>Environment <code>production</code></h3>
+          <ol class="schritte">
+            <li>
+              <em>Settings → Environments → New environment</em>, Name genau
+              <code>production</code>.
+            </li>
+            <li>
+              <strong>Required reviewers:</strong> beide Entwickler,
+              <em>Prevent self-review</em> anhaken.
+            </li>
+            <li>
+              <strong>Deployment branches and tags:</strong> <em>Selected branches</em> →
+              <code>main</code>.
+            </li>
+            <li>
+              <strong>Environment secret:</strong> <code>VERCEL_TOKEN</code> = Token aus Schritt 7.
+            </li>
+            <li>
+              <strong>Environment variables:</strong>
+              <ul>
+                <li><code>VERCEL_ORG_ID</code> = Org ID</li>
+                <li><code>VERCEL_PROJECT_ID</code> = Project ID</li>
+                <li>
+                  <code>VORABZUGANG</code> = <code>aktiv</code>. Der Workflow prüft dann nach jedem
+                  Deployment, dass die Zugangsabfrage greift. Fehlt die Variable, gilt ebenfalls
+                  <code>aktiv</code>.
+                </li>
+              </ul>
+            </li>
+          </ol>
+
+          <h3>Branch-Schutz für <code>main</code></h3>
+          <p>
+            <em>Settings → Rules → Rulesets → New branch ruleset</em> (oder
+            <em>Branches → Add branch protection rule</em>), Ziel <code>main</code>:
+          </p>
+          <ul class="pruefliste">
+            <li>
+              <label
+                ><input type="checkbox" data-id="g-pr" /><span
+                  >Require a pull request before merging, mit 1 Approval. „Dismiss stale approvals"
+                  und „Require conversation resolution" einschalten.</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="g-checks" /><span
+                  >Require status checks to pass: <code>pruefen</code>,
+                  <code>End-to-End und Barrierefreiheit</code>, <code>Lighthouse</code>. Optional
+                  <code>Vercel</code>, die Vorschau muss sich bauen lassen.</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="g-force" /><span
+                  >Block force pushes, Restrict deletions.</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="g-squash" /><span
+                  ><em>Settings → General → Pull Requests:</em> nur „Allow squash merging".</span
+                ></label
+              >
+            </li>
+          </ul>
+        </section>
+
+        <section id="erstes-deployment">
+          <h2>9. Erstes Deployment</h2>
+          <p>
+            Voraussetzungen: Schritte 3 bis 8 erledigt, beide Domains in Vercel mit „Valid
+            Configuration".
+          </p>
+          <ol class="schritte">
+            <li>
+              PRs reviewen und mergen: <strong>#16</strong> (Jetztkarte), danach bei den aufbauenden
+              PRs die Basis auf <code>main</code> umstellen und sie nacheinander mergen.
+            </li>
+            <li>
+              <em>Actions → Deployment</em> zeigt „Produktion" als <em>Waiting</em>. Die
+              <strong>andere</strong> Person → <em>Review deployments</em> →
+              <code>production</code> → <em>Approve and deploy</em>.
+            </li>
+            <li>
+              Der Job prüft, holt die Vercel-Einstellungen, baut, deployt und ruft die Adresse ab.
+            </li>
+          </ol>
+          <h3>Kontrolle</h3>
+          <ul class="pruefliste">
+            <li>
+              <label
+                ><input type="checkbox" data-id="d-gruen" /><span
+                  >„Auslieferung prüfen" ist grün und meldet „Zugangsabfrage und noindex sind
+                  aktiv".</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="d-privat" /><span
+                  >Im privaten Fenster <code>https://altstipendiaten-jahrestagung.de</code> öffnen:
+                  Die Zugangsabfrage erscheint, mit dem Zugangswort öffnet sich die App.</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="d-www" /><span
+                  ><code>http://www.altstipendiaten-jahrestagung.de/programm</code> landet auf
+                  <code>https://altstipendiaten-jahrestagung.de/programm/</code>.</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="d-404" /><span
+                  ><code>/gibt-es-nicht</code> zeigt „Seite nicht gefunden".</span
+                ></label
+              >
+            </li>
+            <li>
+              <label
+                ><input type="checkbox" data-id="d-handy" /><span
+                  >Auf einem Smartphone das Programm einmal laden, dann im Flugmodus erneut öffnen:
+                  Das Programm ist weiterhin da.</span
+                ></label
+              >
+            </li>
+          </ul>
+        </section>
+
+        <section id="golive">
+          <h2>10. Go-Live (geplant Anfang Dezember 2026)</h2>
+          <p>Erst wenn alles aus „Vom Vorstand" in Schritt 2 erledigt ist und das Go vorliegt:</p>
+          <ol class="schritte">
+            <li>
+              PR mit den letzten Textänderungen: Platzhalterhinweis der Datenschutzerklärung
+              entfernen, Datum eintragen, mergen und deployen.
+            </li>
+            <li>
+              Vercel → <em>Settings → Environment Variables</em> → <code>ZUGANGSWORT</code> löschen.
+            </li>
+            <li>
+              GitHub → Environment <code>production</code> → Variable <code>VORABZUGANG</code> auf
+              <code>aus</code>.
+            </li>
+            <li>
+              GitHub → <em>Actions → Deployment → Run workflow</em> (Branch <code>main</code>) und
+              freigeben. Die Prüfung erwartet jetzt eine Seite <em>ohne</em> Sperre.
+            </li>
+            <li>Im privaten Fenster öffnen und die Seiten durchklicken.</li>
+          </ol>
+        </section>
+
+        <section id="fehler">
+          <h2>11. Fehlerbehebung</h2>
+          <div class="tabelle">
+            <table>
+              <thead>
+                <tr>
+                  <th>Meldung</th>
+                  <th>Ursache und Abhilfe</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>„The specified token is not valid" / „No existing credentials found"</td>
+                  <td>
+                    Secret <code>VERCEL_TOKEN</code> fehlt, ist abgelaufen oder gehört zu einem
+                    anderen Konto. Neues Token nach Schritt 7.
+                  </td>
+                </tr>
+                <tr>
+                  <td>„Project not found"</td>
+                  <td>
+                    <code>VERCEL_ORG_ID</code> oder <code>VERCEL_PROJECT_ID</code> falsch, oder das
+                    Token hat keinen Zugriff auf dieses Team.
+                  </td>
+                </tr>
+                <tr>
+                  <td>„Vorabzugang ist aktiv, aber die Seite hat keine Zugangsabfrage"</td>
+                  <td>
+                    <code>ZUGANGSWORT</code> fehlt in Vercel für <em>Production</em>, oder es wurde
+                    nach dem Bauen angelegt. Variable prüfen, Workflow erneut starten. Bis dahin ist
+                    die Seite ohne Abfrage erreichbar.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Vercel zeigt „Invalid Configuration"</td>
+                  <td>
+                    DNS bei Strato noch nicht übernommen oder falscher Wert. Mit
+                    <code>dig</code> prüfen (Schritt 6). Häufig steht noch ein AAAA-Eintrag.
+                  </td>
+                </tr>
+                <tr>
+                  <td>„/sw.js wird zwischengespeichert"</td>
+                  <td>
+                    Die Kopfzeilen aus <code>vercel.json</code> greifen nicht. Datei und
+                    Projekt-Root prüfen.
+                  </td>
+                </tr>
+                <tr>
+                  <td>„www leitet nicht dauerhaft … weiter"</td>
+                  <td>
+                    Schritt 5: Weiterleitung bei der Domain <code>www</code> in Vercel prüfen.
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Ein Push auf <code>main</code> erscheint in Vercel als Production-Deployment
+                  </td>
+                  <td>
+                    Die Git-Anbindung ignoriert <code>vercel.json</code>. Prüfen, ob die Datei auf
+                    <code>main</code> liegt. Bis dahin baut Vercel <code>main</code> selbst, ohne
+                    Freigabe.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="betrieb">
+          <h2>12. Laufender Betrieb</h2>
+          <h3>Zurück auf einen früheren Stand</h3>
+          <p>
+            Vercel → Projekt → <em>Deployments</em> → bei einer früheren Production-Version
+            <em>Instant Rollback</em>. Danach den Fehler per PR beheben. Das nächste Deployment von
+            <code>main</code> überschreibt den Rollback.
+          </p>
+          <h3>Zugangswort wechseln</h3>
+          <p>
+            Variable in Vercel ändern, Workflow erneut starten. Alle Geräte müssen das neue Wort
+            einmal eingeben.
+          </p>
+          <h3>Token erneuern</h3>
+          <p>
+            Vor Ablauf ein neues Token erzeugen, das Secret in GitHub ersetzen und das alte Token in
+            Vercel löschen. Das gilt auch sofort, wenn jemand ausscheidet oder das Token sichtbar
+            geworden ist.
+          </p>
+          <h3>Nach der Tagung</h3>
+          <p>
+            Klären, wer Vercel-Projekt, Supabase-Projekt und Domain übernimmt (F2). Die Domain bei
+            Strato verlängert sich weiter, auch wenn niemand mehr die App pflegt.
+          </p>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      /* Haekchen nur fuer diesen Browser. Ohne Speicher (privates Fenster) funktioniert
+         die Seite trotzdem, die Haekchen bleiben dann eben nicht stehen. */
+      const SCHLUESSEL = "einrichtung-vercel";
+      let stand = {};
+      try {
+        stand = JSON.parse(localStorage.getItem(SCHLUESSEL) || "{}");
+      } catch {
+        stand = {};
+      }
+      for (const kasten of document.querySelectorAll("input[data-id]")) {
+        kasten.checked = stand[kasten.dataset.id] === true;
+        kasten.addEventListener("change", () => {
+          stand[kasten.dataset.id] = kasten.checked;
+          try {
+            localStorage.setItem(SCHLUESSEL, JSON.stringify(stand));
+          } catch {
+            /* Ohne Speicher bleibt es beim Haken fuer diese Sitzung. */
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

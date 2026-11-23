@@ -33,9 +33,9 @@ const ortszeit = z
  * Die Orte der Tagung, an EINER Stelle gepflegt.
  *
  * Vorher standen Ort und Adresse als Freitext in drei Sammlungen - mit
- * 17 Schreibweisen fuer 12 Orte. "Novotel", "Novotel Hildesheim" und
- * "Novotel, Raum 2" waren dasselbe Haus, und die Adresse stand genau einmal
- * da, obwohl das Haus 36-mal im Programm vorkommt. Das verstiess gegen
+ * 17 Schreibweisen fuer 12 Orte. Der damalige Tagungsort stand in drei
+ * Schreibweisen da, und seine Adresse genau einmal, obwohl das Haus 36-mal
+ * im Programm vorkam. Das verstiess gegen
  * Produktprinzip 2 und machte jede Kartenverknuepfung zum Gluecksspiel.
  *
  * Koordinaten sind freiwillig: Fuer die Weiterleitung an Karten-Apps genuegt
@@ -89,10 +89,10 @@ const programm = defineCollection({
        */
       hinweis: z.string().optional(),
       /**
-       * Personen bleiben vorerst leer: Das Repository ist oeffentlich, und die
-       * Vorlage fuehrt Referierende teils mit Vermerken wie "angefragt".
-       * Erst wenn das Orga-Team benennt, welche Namen freigegeben sind, wird
-       * hier gepflegt. Siehe docs/offene-fragen.md.
+       * Mitwirkende aus dem Programmheft 2027. Das Repository ist oeffentlich:
+       * Namen mit Vorbehalt ("unverbindlich zugesagt", "angefragt") und
+       * Platzhalter fuer offene Gaeste gehoeren NICHT hierher - das prueft
+       * tests/unit/programmdaten.test.ts.
        */
       personen: z
         .array(z.object({ name: z.string().min(1), rolle: z.string().optional() }))
@@ -119,8 +119,11 @@ const exkursionen = defineCollection({
   loader: file("src/content/exkursionen.json"),
   schema: z.object({
     titel: z.string().min(1),
-    /** Plaetze insgesamt. Die Vergabe braucht einen Server (ADR-0004). */
-    plaetze: z.number().int().positive(),
+    /**
+     * Plaetze insgesamt, sofern bekannt. Das Programmheft 2027 nennt keine;
+     * die Vergabe laeuft ueber die Anmeldung (ADR-0011).
+     */
+    plaetze: z.number().int().positive().optional(),
     zeitrahmen: z.string().min(1),
     /** Verweist auf einen Eintrag in orte.json. */
     ortId: z.string().optional(),
@@ -137,6 +140,8 @@ const unterkuenfte = defineCollection({
   loader: file("src/content/unterkuenfte.json"),
   schema: z.object({
     name: z.string().min(1),
+    /** Kleinere Zahl steht weiter oben - die Reihenfolge der Kontingentuebersicht. */
+    reihenfolge: z.number().int(),
     /** Verweist auf einen Eintrag in orte.json. */
     ortId: z.string().optional(),
     /** true = eigenes Kontingent fuer die Tagung, false = blosse Empfehlung. */
@@ -144,24 +149,26 @@ const unterkuenfte = defineCollection({
     zeitraum: z.string().optional(),
     stichwort: z.string().optional(),
     zimmer: z
-      .array(z.object({ typ: z.string(), anzahl: z.number().int(), preis: z.string() }))
+      .array(
+        z.object({
+          typ: z.string(),
+          /** Reservierte Zimmer; fehlt, wenn das Hotel keine Zahl nennt. */
+          anzahl: z.number().int().positive().optional(),
+          preis: z.string(),
+          /** Weitere Belegung, Ausstattung, z. B. "bei Einzelnutzung 74,00 € / Nacht". */
+          hinweis: z.string().optional(),
+        }),
+      )
       .default([]),
+    /** z. B. "inbegriffen" oder "nicht inbegriffen, 9,90 € pro Person". */
+    fruehstueck: z.string().optional(),
+    /** Bedingungen des Kontingents, etwa eine Verfallsfrist. Oeffentlich sichtbar. */
+    hinweis: z.string().optional(),
     adresse: z.string().optional(),
     telefon: z.string().optional(),
     email: z.string().optional(),
     // z.url() statt z.string().url(): Letzteres ist in zod 4 abgekuendigt.
     web: z.url().optional(),
-  }),
-});
-
-const ankuendigungen = defineCollection({
-  loader: file("src/content/ankuendigungen.json"),
-  schema: z.object({
-    datum: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Erwartet wird JJJJ-MM-TT"),
-    titel: z.string().min(1),
-    text: z.string().min(1),
-    /** "wichtig" hebt hervor; sparsam einsetzen, sonst nutzt es sich ab. */
-    gewicht: z.enum(["wichtig", "info"]).default("info"),
   }),
 });
 
@@ -312,7 +319,6 @@ export const collections = {
   programm,
   exkursionen,
   unterkuenfte,
-  ankuendigungen,
   kontakte,
   faq,
   grussworte,

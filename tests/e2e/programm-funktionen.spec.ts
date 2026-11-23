@@ -27,8 +27,8 @@ test.describe("Jetzt läuft", () => {
 
     const laufende = page.locator('.punkt[data-lage="jetzt"]');
 
-    // Sieben parallele Exkursionen laufen zu dieser Zeit.
-    await expect(laufende).toHaveCount(7);
+    // Zehn parallele Exkursionen laufen zu dieser Zeit.
+    await expect(laufende).toHaveCount(10);
     await expect(laufende.first()).toBeInViewport();
     await expect(laufende.first().getByText("Jetzt")).toBeVisible();
   });

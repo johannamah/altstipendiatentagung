@@ -31,6 +31,10 @@ describe("Bereiche und Seiten", () => {
     },
   );
 
+  it("führt Impressum und Datenschutzerklärung als Pflichtangaben", () => {
+    expect(RECHTLICHES.map((seite) => seite.titel)).toEqual(["Impressum", "Datenschutzerklärung"]);
+  });
+
   it("verlinkt jede Pflichtangabe aus der Fußzeile", () => {
     // Eine Pflichtangabe, die nur ueber die direkte Adresse erreichbar ist,
     // erfuellt ihren Zweck nicht.
@@ -48,6 +52,10 @@ describe("Bereiche und Seiten", () => {
       // Pflichtangaben haengen an der Fusszeile, nicht an einer Kachel.
       ...RECHTLICHES.map((seite) => seite.slug),
       "index",
+      // Fehlerseite fuer unbekannte Adressen, nie direkt verlinkt.
+      "404",
+      // Nur fuer die Admins der Ankuendigungen; sie kennen die Adresse.
+      "verwaltung",
     ]);
     const verwaist = seiten
       .filter((datei) => datei.endsWith(".astro"))

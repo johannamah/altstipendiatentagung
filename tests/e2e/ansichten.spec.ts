@@ -65,13 +65,25 @@ test.describe("Zurück zur Übersicht", () => {
 });
 
 test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
-  test("Unterbringung zeigt Kontingent, Stichwort und Preise", async ({ page }) => {
+  test("Unterbringung zeigt Kontingente, Stichwort, Preise und Buchungslinks", async ({ page }) => {
     await page.goto("/unterbringung");
 
-    await expect(page.getByRole("heading", { name: "Novotel Hildesheim" })).toBeVisible();
-    await expect(page.getByText("KAS - Holstein")).toBeVisible();
-    await expect(page.getByText("89,00 € / Nacht")).toBeVisible();
-    await expect(page.getByRole("heading", { name: "B&B Hotel Hildesheim" })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 3 })).toHaveText([
+      "B&B Hotel Hildesheim",
+      "HeyLou Hotel Hildesheim",
+      "Schlafladen Hildesheim",
+      "Hotel Bürgermeisterkapelle Hildesheim",
+      "Van der Valk Hotel Hildesheim",
+    ]);
+    await expect(
+      page.getByText("„Abrufkontingent, Stichwort: Konrad-Adenauer-Stiftung“").first(),
+    ).toBeVisible();
+    await expect(page.getByText("77,68 € / Nacht")).toBeVisible();
+    await expect(page.getByText(/verfällt ab Mitte März 2027/)).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: /Buchen\s*:\s*Schlafladen Hildesheim/ }),
+    ).toHaveAttribute("href", "https://schlafladen.de/");
+    await expect(page.getByText("Novotel")).toHaveCount(0);
   });
 
   /**
@@ -146,11 +158,21 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
     await expect(page.getByText("Text noch nicht abgestimmt").first()).toBeVisible();
   });
 
+  /** Porträts liegen erst für einen Teil des Orga-Teams vor; die übrigen zeigen Initialen. */
+  test("Kontakt zeigt die hinterlegten Porträts", async ({ page }) => {
+    await page.goto("/kontakt");
+
+    for (const name of ["Konstantin Gerbrich", "Torben Burdorf", "Pia Gerbrich"]) {
+      await expect(page.getByRole("img", { name: `Porträt von ${name}` })).toBeVisible();
+    }
+    await expect(page.getByRole("img", { name: "Porträt von Johanna Mahler" })).toHaveCount(0);
+  });
+
   test("Kontakt zeigt den Tagungsort", async ({ page }) => {
     await page.goto("/kontakt");
 
     await expect(page.getByRole("heading", { name: "Tagungsort" })).toBeVisible();
-    await expect(page.getByText("Bahnhofsallee 38")).toBeVisible();
+    await expect(page.getByText("Mariano-Josephinum").first()).toBeVisible();
   });
 
   test("FAQ lässt sich ohne JavaScript auf- und zuklappen", async ({ page }) => {
@@ -225,12 +247,6 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
     await expect(page.getByText(/die Verweise suchen nach dem Namen/).first()).toBeVisible();
   });
 
-  test("Ankündigungen zeigt die Einträge, neueste zuerst", async ({ page }) => {
-    await page.goto("/ankuendigungen");
-
-    await expect(page.locator(".liste > li")).toHaveCount(2);
-  });
-
   test("Begrüßung zeigt drei Grußworte in fester Reihenfolge", async ({ page }) => {
     await page.goto("/begruessung");
 
@@ -238,23 +254,29 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
     await expect(namen).toHaveCount(3);
     await expect(namen.nth(0)).toContainText("Matthias Wilkes");
     await expect(namen.nth(1)).toContainText("Annegret Kramp-Karrenbauer");
-    await expect(namen.nth(2)).toContainText("Sebastian Lechner");
+    await expect(namen.nth(2)).toContainText("Ingo Meyer");
   });
 
   /**
-   * Solange die Originaltexte fehlen, muss an jedem Grusswort stehen, dass es
-   * ein Beispiel ist - sonst haelt es jemand fuer abgestimmt und zitiert es.
+   * Solange ein Originaltext fehlt, muss am Grusswort stehen, dass es ein
+   * Beispiel ist - sonst haelt es jemand fuer abgestimmt und zitiert es. Laut
+   * Programmheft 2027 fehlt nur noch der Text von Annegret Kramp-Karrenbauer.
    */
-  test("Begrüßung weist jeden Text als Beispiel aus", async ({ page }) => {
+  test("Begrüßung weist fehlende Originaltexte als Beispiel aus", async ({ page }) => {
     await page.goto("/begruessung");
 
-    await expect(page.getByText("Beispieltext – Originaltext folgt")).toHaveCount(3);
+    const beispiel = page.getByText("Beispieltext – Originaltext folgt");
+    await expect(beispiel).toHaveCount(1);
+    await expect(page.locator(".grusswort").filter({ has: beispiel })).toContainText(
+      "Annegret Kramp-Karrenbauer",
+    );
   });
 
-  test("Begrüßung zeigt zu jedem Grußwort ein Porträt", async ({ page }) => {
+  /** Für Dr. Ingo Meyer liegt noch kein Porträt vor; sein Grußwort steht ohne Bild. */
+  test("Begrüßung zeigt die vorhandenen Porträts", async ({ page }) => {
     await page.goto("/begruessung");
 
-    await expect(page.locator(".grusswort img")).toHaveCount(3);
+    await expect(page.locator(".grusswort img")).toHaveCount(2);
   });
 
   /**
@@ -297,6 +319,22 @@ test.describe("schmale Geräte", () => {
       await page.goto(`/${bereich.slug}`);
 
       await erwarteKeinSeitenScroll(page);
+    });
+  }
+});
+
+test.describe("Pflichtangaben", () => {
+  /* Von einer Unterseite aus, nicht nur von der Startseite: Die Angaben muessen
+     ueberall erreichbar sein. */
+  for (const titel of ["Impressum", "Datenschutzerklärung"]) {
+    test(`${titel} ist aus der Fußzeile erreichbar`, async ({ page }) => {
+      await page.goto("/programm");
+      await page
+        .getByRole("navigation", { name: "Rechtliches" })
+        .getByRole("link", { name: titel })
+        .click();
+
+      await expect(page.getByRole("heading", { level: 1, name: titel })).toBeVisible();
     });
   }
 });
