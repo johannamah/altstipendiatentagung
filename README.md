@@ -58,6 +58,9 @@ Die App läuft unter **https://altstipendiaten-jahrestagung.de** auf Vercel
 - Pull Requests bekommen über die Git-Anbindung von Vercel eine Vorschau.
 - Bis zum Go-Live ist die Zugangsabfrage aus
   [ADR-0010](docs/decisions/0010-zugangssperre.md) aktiv.
+- Ankündigungen kommen zur Laufzeit aus einer Supabase-Datenbank
+  ([ADR-0014](docs/decisions/0014-ankuendigungen-aus-supabase.md)); Einrichtung und
+  Pflege: [docs/betrieb/einrichtung-supabase.html](docs/betrieb/einrichtung-supabase.html).
 - Einrichtung von Vercel, Strato und GitHub Schritt für Schritt:
   [docs/betrieb/einrichtung-vercel.html](docs/betrieb/einrichtung-vercel.html)
   (im Browser öffnen).

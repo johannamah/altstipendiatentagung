@@ -74,6 +74,26 @@ Zurück auf einen früheren Stand: im Vercel-Dashboard unter Deployments bei der
 gewünschten Version **Instant Rollback**. Das nächste Deployment von `main`
 überschreibt den Rollback.
 
+## Ankündigungen und Supabase
+
+Ankündigungen lädt der Browser zur Laufzeit aus Supabase
+([ADR-0014](docs/decisions/0014-ankuendigungen-aus-supabase.md)). Lokal ohne `.env`
+zeigt die Seite „noch nicht mit der Datenbank verbunden". Mit eigener Verbindung:
+`.env.example` nach `.env` kopieren und Projektadresse sowie den
+**veröffentlichbaren** Schlüssel eintragen, nie den geheimen.
+
+Die Datenbankstruktur steht in `supabase/migrations/`. Eine Änderung daran ist eine
+Datenmodelländerung: früh abstimmen, neue Migrationsdatei statt die alte ändern, und
+im SQL Editor von Supabase ausführen (siehe
+[docs/betrieb/einrichtung-supabase.html](docs/betrieb/einrichtung-supabase.html)). In
+Tests wird Supabase nie angefragt; die E2E-Tests fangen die Anfragen ab.
+
+Zwei Admins pflegen die Ankündigungen auf `/verwaltung`. Was sie dürfen, regelt allein
+Row Level Security. `tests/unit/datenbank.test.ts` spielt dazu alle Migrationen in ein
+echtes Postgres im Prozess (PGlite) und probiert aus, was Besucher, angemeldete Konten
+und Admins lesen und schreiben können. Wer eine Migration ändert, sieht dort sofort,
+ob sich Rechte verschieben.
+
 ## Aufbau
 
 ```
