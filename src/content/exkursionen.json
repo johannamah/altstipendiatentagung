@@ -104,8 +104,16 @@
     "info": "Wie spiegeln Kunst und Kultur die gesellschaftlichen Umbrüche Europas wider? Das Sprengel Museum Hannover zählt zu den bedeutendsten Museen für moderne und zeitgenössische Kunst in Deutschland. Werke international renommierter Künstler wie Pablo Picasso, Max Beckmann und Kurt Schwitters eröffnen faszinierende Perspektiven auf die europäische Geschichte. Bei einer Führung durch ausgewählte Sammlungsbereiche entdecken wir, wie Kunst gesellschaftliche Veränderungen aufgreift, politische Entwicklungen hinterfragt und neue Denkweisen anstößt. Im Mittelpunkt steht die Frage, welche Bedeutung künstlerische Freiheit und kultureller Austausch für Demokratie und eine gemeinsame europäische Identität besitzen."
   },
   {
-    "id": "exkursion-continental",
+    "id": "exkursion-landtag",
     "reihenfolge": 10,
+    "titel": "Politik, Debatten und Entscheidungen im Niedersächsischen Landtag – Demokratie hautnah erleben",
+    "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
+    "ortId": "landtag-hannover",
+    "info": "Wo wird Demokratie konkret gestaltet und wie entstehen politische Entscheidungen? Im Niedersächsischen Landtag, dem Herzen der Landespolitik, erleben wir parlamentarische Demokratie aus nächster Nähe. Bei einer Führung durch das historische Leineschloss und den modernen Plenarsaal erhalten wir Einblicke in die Arbeit der Abgeordneten, parlamentarische Abläufe und politische Entscheidungsprozesse. Dabei beleuchten wir auch das Zusammenspiel zwischen Landes-, Bundes- und Europapolitik und gehen der Frage nach, wie demokratische Mitbestimmung und politische Verantwortung unsere Gesellschaft prägen."
+  },
+  {
+    "id": "exkursion-continental",
+    "reihenfolge": 11,
     "titel": "Europas Zukunft der Mobilität bei Continental – Innovation trifft Industrie",
     "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
     "ortId": "continental",

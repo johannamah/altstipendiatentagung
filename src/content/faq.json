@@ -101,8 +101,14 @@
     }
   },
   {
-    "id": "fragen-vor-ort",
+    "id": "fotografie",
     "reihenfolge": 11,
+    "frage": "Wird auf der Tagung fotografiert?",
+    "antwort": "Die Veranstaltung wird fotografisch begleitet. Die Teilnehmenden erklären mit der Anmeldung ihr Einverständnis, dass der Altstipendiaten der Konrad-Adenauer-Stiftung e.V. das vor, während oder nach der Veranstaltung entstandene Fotomaterial für Zwecke der Presse- und Öffentlichkeitsarbeit nutzt."
+  },
+  {
+    "id": "fragen-vor-ort",
+    "reihenfolge": 12,
     "frage": "An wen wende ich mich bei kurzfristigen Fragen vor Ort?",
     "antwort": "An das Organisationsteam. Wer wofür zuständig ist und wie du die Ansprechpersonen erreichst, steht unter „Kontakt & Orga-Team“.",
     "verweis": {

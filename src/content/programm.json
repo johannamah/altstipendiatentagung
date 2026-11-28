@@ -340,5 +340,14 @@
     "beginn": "2027-05-09T10:00",
     "ende": "2027-05-09T10:30",
     "ortId": "mariano-josephinum"
+  },
+  {
+    "id": "exkursion-landtag",
+    "titel": "Politik, Debatten und Entscheidungen im Niedersächsischen Landtag – Demokratie hautnah erleben",
+    "beginn": "2027-05-07T12:30",
+    "ende": "2027-05-07T17:00",
+    "ortId": "landtag-hannover",
+    "spur": "exkursion",
+    "hinweis": "Treffpunkt, Transfer und Ansprechperson werden noch bekanntgegeben."
   }
 ]

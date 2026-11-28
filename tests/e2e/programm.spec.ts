@@ -18,12 +18,12 @@ test("zeigt alle fuenf Tagungstage in zeitlicher Reihenfolge", async ({ page }) 
 });
 
 /**
- * Der Kern von Issue #8: Die zehn Exkursionen am Freitag sind Alternativen
+ * Der Kern von Issue #8: Die elf Exkursionen am Freitag sind Alternativen
  * zueinander. Eine schlichte Liste liest sich wie eine Abfolge - dann meint man,
  * man koenne alle mitnehmen.
  */
 test("weist gleichzeitige Exkursionen als Auswahl aus", async ({ page }) => {
-  await expect(page.getByText("Exkursionen · 10 zur Wahl")).toBeVisible();
+  await expect(page.getByText("Exkursionen · 11 zur Wahl")).toBeVisible();
 });
 
 /**
@@ -56,7 +56,7 @@ test("zeigt die aktualisierten Zeiten und Orte aus dem Programmheft", async ({ p
  * unten. Zugeklappt zeigt der Gruppenkopf, dass es sie gibt und wie viele.
  */
 test("Exkursionen sind anfangs zugeklappt und lassen sich ausklappen", async ({ page }) => {
-  const umschalter = page.getByRole("button", { name: /10 gleichzeitige Punkte/ });
+  const umschalter = page.getByRole("button", { name: /11 gleichzeitige Punkte/ });
   const exkursion = page.locator('.punkt[data-id="exkursion-hennies"]');
 
   await expect(umschalter).toHaveAttribute("aria-expanded", "false");
@@ -95,7 +95,7 @@ test("bietet das Programmheft nur zusammen mit einer echten Datei an", async ({
 
 test("kündigt die Exkursionen mit einem Einleitungstext an", async ({ page }) => {
   await expect(
-    page.getByText(/eröffnen zehn Exkursionen unterschiedliche Perspektiven/),
+    page.getByText(/eröffnen elf Exkursionen unterschiedliche Perspektiven/),
   ).toBeVisible();
 });
 
@@ -134,7 +134,7 @@ test("die Titel bleiben Ueberschriften, auch zugeklappt", async ({ page }) => {
 });
 
 /**
- * Am Freitag stehen zehn Exkursionen zur Wahl. Eine schlichte Liste liest
+ * Am Freitag stehen elf Exkursionen zur Wahl. Eine schlichte Liste liest
  * sich wie eine Abfolge - deshalb Einrueckung, Verbindungslinie UND ein Satz,
  * der es ausspricht.
  */
@@ -142,7 +142,7 @@ test("gleichzeitige Punkte sind eingerueckt und als Auswahl benannt", async ({ p
   await expect(page.getByText(/Diese Punkte laufen parallel/).first()).toBeVisible();
 
   const eingerueckt = page.locator("#tag-2027-05-07 .eintrag[data-gruppe]");
-  await expect(eingerueckt).toHaveCount(10);
+  await expect(eingerueckt).toHaveCount(11);
 
   const innen = await eingerueckt.first().evaluate((el) => getComputedStyle(el).borderLeftWidth);
   expect(parseFloat(innen)).toBeGreaterThan(0);

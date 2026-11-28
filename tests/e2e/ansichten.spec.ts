@@ -128,12 +128,13 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
     }
   });
 
-  test("Exkursionen stellt alle zehn Angebote mit Übersicht vor", async ({ page }) => {
+  test("Exkursionen stellt alle elf Angebote mit Übersicht vor", async ({ page }) => {
     await page.goto("/exkursionen");
 
     const uebersicht = page.getByRole("navigation", { name: "Übersicht der Exkursionen" });
-    await expect(uebersicht.getByRole("link")).toHaveCount(10);
-    await expect(page.getByRole("article")).toHaveCount(10);
+    await expect(uebersicht.getByRole("link")).toHaveCount(11);
+    await expect(page.getByRole("article")).toHaveCount(11);
+    await expect(uebersicht.getByRole("link", { name: /Niedersächsischen Landtag/ })).toBeVisible();
 
     await uebersicht.getByRole("link", { name: /Willi Hennies/ }).click();
     const hennies = page.getByRole("article").filter({ hasText: "Willi Hennies" });
@@ -168,12 +169,40 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
   test("Kontakt zeigt das Orga-Team in der festgelegten Reihenfolge", async ({ page }) => {
     await page.goto("/kontakt");
 
-    const namen = page.locator(".personen h3");
+    const namen = page.locator(".personen").first().locator("h3");
     await expect(namen).toHaveCount(8);
     await expect(namen.nth(0)).toHaveText("Konstantin Gerbrich");
     await expect(namen.nth(1)).toHaveText("Torben Burdorf");
     await expect(namen.nth(7)).toHaveText("Ferdinand Meißner");
   });
+
+  /** Die Geschäftsstelle gehört nicht zum Orga-Team und steht deshalb für sich. */
+  test("Kontakt nennt die Geschäftsstelle mit Telefon und E-Mail", async ({ page }) => {
+    await page.goto("/kontakt");
+
+    await expect(page.getByRole("heading", { level: 2, name: "Geschäftsstelle" })).toBeVisible();
+    const gergej = page
+      .getByRole("listitem")
+      .filter({ has: page.getByRole("heading", { name: "Sergej Gergej" }) });
+    await expect(gergej).toContainText("Leiter der Geschäftsstelle");
+    await expect(gergej.getByRole("link", { name: "s.gergej@altstipendiaten.de" })).toHaveAttribute(
+      "href",
+      "mailto:s.gergej@altstipendiaten.de",
+    );
+    await expect(gergej.getByRole("link", { name: "030 23000-322" })).toHaveAttribute(
+      "href",
+      "tel:+493023000322",
+    );
+  });
+
+  /** Der Hinweis ist Teil der Anmeldung - er steht dort und bei den Fotos. */
+  for (const pfad of ["/anmeldung", "/fotos"]) {
+    test(`${pfad} weist darauf hin, dass fotografiert wird`, async ({ page }) => {
+      await page.goto(pfad);
+
+      await expect(page.getByText(/Die Veranstaltung wird fotografisch begleitet\./)).toBeVisible();
+    });
+  }
 
   test("Kontakt verlinkt hinterlegte Telefonnummern und E-Mail-Adressen", async ({ page }) => {
     await page.goto("/kontakt");

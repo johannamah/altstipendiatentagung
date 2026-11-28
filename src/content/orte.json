@@ -201,5 +201,13 @@
     "stadt": "Hannover",
     "art": "exkursion",
     "hinweis": "Genauer Standort wird noch bekanntgegeben."
+  },
+  {
+    "id": "landtag-hannover",
+    "name": "Niedersächsischer Landtag",
+    "adresse": "Hannah-Arendt-Platz 1",
+    "plz": "30159",
+    "stadt": "Hannover",
+    "art": "exkursion"
   }
 ]
