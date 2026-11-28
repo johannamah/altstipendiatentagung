@@ -12,10 +12,11 @@ const VORHER = new Date(Date.UTC(2026, 10, 1, 9, 0));
 /** 07.05.2027, 14:00 Uhr Ortszeit – die Exkursionen laufen. */
 const WAEHREND = new Date(Date.UTC(2027, 4, 7, 12, 0));
 /**
- * 08.05.2027, 15:00 Uhr Ortszeit – Pause zwischen dem Panel (bis 14:30) und dem
- * Konzert um 15:30. Freitag 12:00 Uhr taugt nicht: Dann laeuft der Stehimbiss.
+ * 07.05.2027, 19:30 Uhr Ortszeit – Pause zwischen dem Ende der Exkursionen
+ * (17:00) und dem Weinfest um 20:00. Samstag 15:00 Uhr taugt seit dem Programm
+ * vom 25.10. nicht mehr: Dann laeuft der Fussweg zum Dom.
  */
-const PAUSE = new Date(Date.UTC(2027, 4, 8, 13, 0));
+const PAUSE = new Date(Date.UTC(2027, 4, 7, 17, 30));
 /** Nach der Tagung. */
 const DANACH = new Date(Date.UTC(2027, 5, 1, 9, 0));
 

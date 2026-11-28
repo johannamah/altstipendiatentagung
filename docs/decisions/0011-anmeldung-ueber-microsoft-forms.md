@@ -53,3 +53,14 @@ Zweck und Löschfrist.
   entfernen, sobald sie voll ist)? Das FAQ beschreibt die Auswahl noch so, als sei sie
   technisch begrenzt.
 - ADR-0004 wird wieder relevant, sobald F2 geklärt ist oder die Handarbeit zu groß wird.
+
+## Nachtrag (28.11.2026)
+
+- Die Kachel „Anmeldung“ führt nicht mehr direkt zum Formular, sondern auf eine eigene
+  Seite `/anmeldung`. Dort stehen vor dem Formular-Link die Teilnahmeoptionen
+  (`src/content/teilnahme.json`); die Beiträge legt der Verein noch fest.
+- Neue Formularadresse: `https://forms.cloud.microsoft/e/sg2gfhJ2uc`
+  (`src/daten/anmeldung.ts`, gleichlautend in der FAQ).
+- Exkursionen werden nicht mehr nach „first come, first served“ vergeben: Teilnehmende
+  geben Wünsche an, das Orga-Team verteilt. Damit erledigt sich die offene Frage nach
+  Kontingenten im Formular.

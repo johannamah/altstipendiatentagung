@@ -10,7 +10,6 @@
     "zimmer": [
       {
         "typ": "Einzelzimmer",
-        "anzahl": 70,
         "preis": "77,68 € / Nacht",
         "hinweis": "auch als Doppelzimmer buchbar: 87,68 € / Nacht"
       }
@@ -33,7 +32,6 @@
     "zimmer": [
       {
         "typ": "Einzelzimmer",
-        "anzahl": 20,
         "preis": "95,00 € / Nacht",
         "hinweis": "auch als Doppelzimmer buchbar: 115,00 € / Nacht"
       }
@@ -56,25 +54,21 @@
     "zimmer": [
       {
         "typ": "Standard-Doppelzimmer (Straßenseite)",
-        "anzahl": 7,
         "preis": "89,00 € / Nacht",
         "hinweis": "bei Einzelnutzung 74,00 € / Nacht"
       },
       {
         "typ": "Comfort-Doppelzimmer (Hofseite)",
-        "anzahl": 6,
         "preis": "99,00 € / Nacht",
         "hinweis": "bei Einzelnutzung 84,00 € / Nacht"
       },
       {
         "typ": "Juniorsuite",
-        "anzahl": 1,
         "preis": "124,00 € / Nacht bei Einzelnutzung",
         "hinweis": "jede weitere Person +15,00 € / Nacht; Doppelbett, Einzelbett und Doppelschlafsofa, Platz für bis zu 5 Personen"
       },
       {
         "typ": "Suite",
-        "anzahl": 2,
         "preis": "144,00 € / Nacht bei Einzelnutzung",
         "hinweis": "jede weitere Person +15,00 € / Nacht; zwei separate Zimmer: Schlafzimmer mit Doppelbett, Wohnzimmer mit Doppelschlafcouch"
       }
@@ -96,17 +90,14 @@
     "zimmer": [
       {
         "typ": "Einzelzimmer",
-        "anzahl": 11,
         "preis": "75,00 € / Nacht"
       },
       {
         "typ": "Doppelzimmer",
-        "anzahl": 7,
         "preis": "90,00 € / Nacht"
       }
     ],
     "fruehstueck": "inbegriffen",
-    "hinweis": "Das Abrufkontingent verfällt ab Mitte März 2027. Danach gehen die nicht abgerufenen Zimmer in den freien Verkauf.",
     "telefon": "+49 (0) 51 21 – 179 29 0",
     "email": "info@hotelbuergermeisterkapelle.de",
     "web": "https://hotelbuergermeisterkapelle.de/",

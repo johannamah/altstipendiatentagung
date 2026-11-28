@@ -25,7 +25,8 @@ export type Kachelfarbe =
   | "gold"
   | "orange"
   | "schiefer"
-  | "bordeaux";
+  | "bordeaux"
+  | "oliv";
 
 export interface Bereich {
   /** Adressfragment, z. B. "programm" fuer /programm. */
@@ -37,9 +38,10 @@ export interface Bereich {
   readonly ikone: string;
   readonly farbe: Kachelfarbe;
   /**
-   * Externe Adresse, falls die Kachel die App verlaesst (z. B. das
-   * Anmeldeformular, ADR-0011). Dann gibt es keine eigene Seite, und die
-   * Kachel oeffnet einen neuen Tab - die Unterzeile muss das ankuendigen.
+   * Externe Adresse, falls die Kachel die App verlaesst. Dann gibt es keine
+   * eigene Seite, und die Kachel oeffnet einen neuen Tab - die Unterzeile muss
+   * das ankuendigen. Derzeit nutzt das keine Kachel: Die Anmeldung hat seit dem
+   * 28.11.2026 eine eigene Seite, die auf das Formular verlinkt (ADR-0011).
    */
   readonly extern?: string;
 }
@@ -67,19 +69,18 @@ export const BEREICHE: readonly Bereich[] = [
     farbe: "blau",
   },
   {
-    slug: "referenten",
-    titel: "Referenten & Gäste",
-    unterzeile: "Wer auf der Tagung spricht",
-    ikone: "mic",
+    slug: "exkursionen",
+    titel: "Exkursionen",
+    unterzeile: "Die Angebote am Freitagnachmittag",
+    ikone: "compass",
     farbe: "bordeaux",
   },
   {
     slug: "anmeldung",
     titel: "Anmeldung",
-    unterzeile: "Zum Anmeldeformular (öffnet neuen Tab)",
+    unterzeile: "Formular und Teilnahmeoptionen",
     ikone: "edit",
     farbe: "pink",
-    extern: "https://forms.cloud.microsoft/e/yyrAWFASLc",
   },
   {
     slug: "unterbringung",
@@ -101,6 +102,13 @@ export const BEREICHE: readonly Bereich[] = [
     unterzeile: "Geschichte, Sehenswürdigkeiten & Tipps",
     ikone: "landmark",
     farbe: "orange",
+  },
+  {
+    slug: "essen-trinken",
+    titel: "Essen & Trinken",
+    unterzeile: "Restaurants und Cafés",
+    ikone: "utensils",
+    farbe: "oliv",
   },
   {
     slug: "faq",

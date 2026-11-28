@@ -44,9 +44,9 @@ src/**/*.docx
 /src/assets/*.*
 
 # Das Orga-Team legt Rohdateien auch in Unterordnern ab: Texte (teils mit
-# privaten Telefonnummern), Originalbilder mit Leerzeichen oder
-# Unterstrichen im Namen und den ganzen Ordner unterbringung/. Aufbereitete
+# privaten Telefonnummern), Originalbilder mit Leerzeichen, Unterstrichen,
+# Umlauten oder anderen Zeichen außerhalb von a-z, 0-9, Punkt und Bindestrich im Namen und den ganzen Ordner unterbringung/. Aufbereitete
 # Fassungen heißen klein-mit-bindestrich.jpg (Hotels: src/assets/unterkuenfte/).
 /src/assets/**/*.txt
-/src/assets/**/*[_ ]*
+/src/assets/**/*[^a-z0-9.-]*
 /src/assets/unterbringung/

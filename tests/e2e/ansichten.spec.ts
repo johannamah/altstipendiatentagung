@@ -1,7 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
-import { BEREICHE, kachelZiel, SEITENBEREICHE } from "../../src/daten/bereiche.ts";
+import { SEITENBEREICHE } from "../../src/daten/bereiche.ts";
 import { erwarteKeinSeitenScroll } from "./hilfen.ts";
 
 /**
@@ -79,7 +79,9 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
       page.getByText("„Abrufkontingent, Stichwort: Konrad-Adenauer-Stiftung“").first(),
     ).toBeVisible();
     await expect(page.getByText("77,68 € / Nacht")).toBeVisible();
-    await expect(page.getByText(/verfällt ab Mitte März 2027/)).toBeVisible();
+    // Für Teilnehmende ohne Belang: keine reservierten Zimmerzahlen, kein Verfallsdatum.
+    await expect(page.getByRole("columnheader", { name: "Reserviert" })).toHaveCount(0);
+    await expect(page.getByText(/verfällt/)).toHaveCount(0);
     await expect(
       page.getByRole("link", { name: /Buchen\s*:\s*Schlafladen Hildesheim/ }),
     ).toHaveAttribute("href", "https://schlafladen.de/");
@@ -100,20 +102,67 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
   });
 
   /**
-   * Die Anmeldung laeuft ueber Microsoft Forms (ADR-0011). Geprueft wird das
-   * Ziel der Kachel, nicht das Formular selbst: Ein Test, der bei Microsoft
-   * anklopft, haengt an deren Erreichbarkeit und erzeugt dort Aufrufe.
+   * Die Anmeldung laeuft ueber Microsoft Forms (ADR-0011). Geprueft wird der
+   * Verweis, nicht das Formular selbst: Ein Test, der bei Microsoft anklopft,
+   * haengt an deren Erreichbarkeit und erzeugt dort Aufrufe.
    */
-  test("Anmeldung öffnet das Anmeldeformular in einem neuen Tab", async ({ page }) => {
-    const anmeldung = BEREICHE.find((bereich) => bereich.slug === "anmeldung")!;
+  test("Anmeldung zeigt die Teilnahmeoptionen und verlinkt das Formular", async ({ page }) => {
+    await page.goto("/anmeldung");
+
+    const formular = page.getByRole("link", { name: /Zum Anmeldeformular/ });
+    await expect(formular).toHaveAttribute("href", "https://forms.cloud.microsoft/e/sg2gfhJ2uc");
+    await expect(formular).toHaveAttribute("target", "_blank");
+
+    const tabelle = page.getByRole("table", { name: "Teilnahmeoptionen" });
+    await expect(
+      tabelle.getByRole("columnheader", { name: "Mitglied", exact: true }),
+    ).toBeVisible();
+    await expect(tabelle.getByRole("columnheader", { name: "Nicht-Mitglied" })).toBeVisible();
+    for (const option of [
+      "Ganze Tagung",
+      "Tagung ohne Festabend",
+      "Stipendiaten | Stipendiatenbeirat",
+      "Chor und Orchester",
+    ]) {
+      await expect(tabelle.getByText(option).first()).toBeVisible();
+    }
+  });
+
+  test("Exkursionen stellt alle zehn Angebote mit Übersicht vor", async ({ page }) => {
+    await page.goto("/exkursionen");
+
+    const uebersicht = page.getByRole("navigation", { name: "Übersicht der Exkursionen" });
+    await expect(uebersicht.getByRole("link")).toHaveCount(10);
+    await expect(page.getByRole("article")).toHaveCount(10);
+
+    await uebersicht.getByRole("link", { name: /Willi Hennies/ }).click();
+    const hennies = page.getByRole("article").filter({ hasText: "Willi Hennies" });
+    await expect(hennies).toBeInViewport();
+    await expect(hennies.getByText(/^Was für die einen Abfall ist/)).toBeVisible();
+    await expect(
+      page.getByText(/Exkursionswünsche gibst du während der Anmeldung an/),
+    ).toBeVisible();
+  });
+
+  test("Essen & Trinken nennt die Empfehlungen mit Kartenlinks", async ({ page }) => {
+    await page.goto("/essen-trinken");
+
+    for (const lokal of ["Zur Scharfen Ecke", "Gasthof Kupferschmiede", "Café Bar Tasca Arcada"]) {
+      await expect(page.getByText(lokal).first()).toBeVisible();
+    }
+    await expect(page.getByRole("link", { name: /Google Maps/ })).toHaveCount(6);
+  });
+
+  test("Hildesheim führt die Restaurants nicht mehr doppelt", async ({ page }) => {
+    await page.goto("/hildesheim");
+
+    await expect(page.getByText("Zur Scharfen Ecke")).toHaveCount(0);
+  });
+
+  test("Die Fußzeile nennt nur den Verein", async ({ page }) => {
     await page.goto("/");
 
-    const kachel = page.getByRole("link", { name: /Anmeldung/ });
-    await expect(kachel).toHaveAttribute("href", kachelZiel(anmeldung));
-    await expect(kachel).toHaveAttribute("target", "_blank");
-    await expect(kachel).toHaveAttribute("rel", /noopener/);
-    // Dass ein neuer Tab aufgeht, steht sichtbar auf der Kachel.
-    await expect(kachel).toContainText("öffnet neuen Tab");
+    await expect(page.getByText(/im Aufbau/)).toHaveCount(0);
   });
 
   test("Kontakt zeigt das Orga-Team in der festgelegten Reihenfolge", async ({ page }) => {
@@ -146,29 +195,22 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
     expect(faqHinweis!.y).toBeLessThan(erstePerson!.y);
   });
 
-  test("Referenten & Gäste stellt jede Person mit Funktion und Kurzvorstellung vor", async ({
-    page,
-  }) => {
-    await page.goto("/referenten");
-
-    for (const name of ["Norbert Lammert", "Annegret Kramp-Karrenbauer", "Christian Wulff"]) {
-      const person = page.getByRole("article").filter({
-        has: page.getByRole("heading", { name }),
-      });
-      await expect(person, `${name} fehlt`).toBeVisible();
-      // Ohne Funktion bleibt offen, warum die Person auf der Tagung spricht.
-      await expect(person.locator("p").first()).not.toBeEmpty();
-    }
-  });
-
   /** Porträts liegen erst für einen Teil des Orga-Teams vor; die übrigen zeigen Initialen. */
   test("Kontakt zeigt die hinterlegten Porträts", async ({ page }) => {
     await page.goto("/kontakt");
 
-    for (const name of ["Konstantin Gerbrich", "Torben Burdorf", "Pia Gerbrich", "Brit Fillies"]) {
+    for (const name of [
+      "Konstantin Gerbrich",
+      "Torben Burdorf",
+      "Pia Gerbrich",
+      "Johanna Mahler",
+      "Marvin Pawelczyk",
+      "Brit Fillies",
+      "Sven Lüdiger",
+    ]) {
       await expect(page.getByRole("img", { name: `Porträt von ${name}` })).toBeVisible();
     }
-    await expect(page.getByRole("img", { name: "Porträt von Johanna Mahler" })).toHaveCount(0);
+    await expect(page.getByRole("img", { name: "Porträt von Ferdinand Meißner" })).toHaveCount(0);
   });
 
   /**
@@ -195,6 +237,30 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
     await expect(page.getByText("Mariano-Josephinum").first()).toBeVisible();
   });
 
+  test("FAQ beginnt mit der Anleitung für den Startbildschirm", async ({ page }) => {
+    await page.goto("/faq");
+
+    const fragen = page.locator("summary");
+    await expect(fragen.nth(0)).toContainText("Startbildschirm? (Android)");
+    await expect(fragen.nth(1)).toContainText("Home-Bildschirm? (iPhone, iPad)");
+  });
+
+  test("FAQ verlinkt Anmeldeformular und Orga-Team", async ({ page }) => {
+    await page.goto("/faq");
+
+    await page.getByText("Wie melde ich mich an?").click();
+    await expect(page.getByRole("link", { name: /Zum Anmeldeformular/ })).toHaveAttribute(
+      "href",
+      "https://forms.cloud.microsoft/e/sg2gfhJ2uc",
+    );
+
+    await page.getByText("An wen wende ich mich bei kurzfristigen Fragen vor Ort?").click();
+    await expect(page.getByRole("link", { name: /Orga-Team/ }).first()).toHaveAttribute(
+      "href",
+      "/kontakt",
+    );
+  });
+
   test("FAQ lässt sich ohne JavaScript auf- und zuklappen", async ({ page }) => {
     await page.goto("/faq");
 
@@ -215,6 +281,7 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
     await expect(ueberschriften.nth(3)).toContainText("Hildesheim heute");
     await expect(ueberschriften.nth(4)).toContainText("hiApp");
     await expect(ueberschriften.nth(5)).toContainText("Lauschtour");
+    await expect(page.getByRole("heading", { level: 2, name: /Essen & Trinken/ })).toHaveCount(0);
   });
 
   test("Hildesheim zeigt die Eckdaten als Wert-Erklärung-Paare", async ({ page }) => {
@@ -244,12 +311,9 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
     await expect(page.getByText(/22. März 1945/)).toBeVisible();
   });
 
-  /**
-   * Die Empfehlungen werden nachgereicht. Bis dahin steht dort bewusst keine
-   * Liste - eine ungepruefte Auswahl waere keine Empfehlung.
-   */
-  test("Hildesheim listet die Lokale mit Weiterleitung an Karten-Apps", async ({ page }) => {
-    await page.goto("/hildesheim");
+  /** Die Empfehlungen stehen seit dem 28.11.2026 auf einer eigenen Seite. */
+  test("Essen & Trinken listet die Lokale mit Weiterleitung an Karten-Apps", async ({ page }) => {
+    await page.goto("/essen-trinken");
 
     const lokale = page.locator(".lokale > li");
     await expect(lokale).toHaveCount(6);
@@ -261,8 +325,8 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
    * Die Adressen fehlen - dann muss dastehen, dass die Verweise nur suchen.
    * Sonst hält man den Treffer für geprüft.
    */
-  test("Hildesheim sagt, dass die Verweise ohne Adresse nur suchen", async ({ page }) => {
-    await page.goto("/hildesheim");
+  test("Essen & Trinken sagt, dass die Verweise ohne Adresse nur suchen", async ({ page }) => {
+    await page.goto("/essen-trinken");
 
     await expect(page.getByText(/Die Kartenlinks suchen nach dem Namen/).first()).toBeVisible();
   });
@@ -311,7 +375,8 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
     await page.goto("/fotos");
 
     await expect(page.getByRole("link", { name: /Fotos ansehen/ })).toHaveCount(0);
-    await expect(page.getByText(/Sobald das Album eingerichtet ist/)).toBeVisible();
+    await expect(page.getByText(/Passwort/).first()).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Vor dem Hochladen/ })).toHaveCount(0);
   });
 });
 

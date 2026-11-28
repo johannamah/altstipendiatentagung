@@ -136,16 +136,36 @@ describe("Programmdaten", () => {
     expect(punkte.find((p) => p.id === id)?.titel).toBe(titel);
   });
 
-  /**
-   * "noch nicht bestätigt" steht nur dort, wo das Programmheft 2027 selbst
-   * einen Vorbehalt macht: Beim Museumsbesuch im Partnerprogramm sind Führung
-   * und Ausstellung noch zu bestätigen. Alle anderen Punkte nennt das Heft
-   * ohne Vorbehalt - ein Etikett "vorläufig" verunsichert dort grundlos.
-   */
-  it("führt nur die im Programmheft offenen Punkte als vorläufig", () => {
-    const vorlaeufig = punkte.filter((p) => p.status === "vorlaeufig").map((p) => p.id);
+  /** Entscheidung des Orga-Teams vom 28.11.2026: Alle Punkte gelten als bestätigt. */
+  it("führt keinen Programmpunkt als vorläufig", () => {
+    const vorlaeufig = punkte.filter((p) => p.status && p.status !== "bestaetigt").map((p) => p.id);
 
-    expect(vorlaeufig).toEqual(["partnerprogramm"]);
+    expect(vorlaeufig).toEqual([]);
+  });
+
+  /** Zeiten und Orte laut Programm-Arbeitsfassung vom 25.10.2026 (src/assets/programm/). */
+  it.each([
+    ["pause-donnerstag", "2027-05-06T17:00", "2027-05-06T19:00", undefined],
+    ["ankommen-freitag", "2027-05-07T09:30", "2027-05-07T10:00", "mariano-josephinum"],
+    ["ankommen-samstag", "2027-05-08T08:45", "2027-05-08T09:15", "mariano-josephinum"],
+    ["studium-generale", "2027-05-08T09:15", "2027-05-08T12:00", "mariano-josephinum"],
+    ["mittagsimbiss-samstag", "2027-05-08T12:00", "2027-05-08T13:30", "mariano-josephinum"],
+    ["panel-nie-wieder", "2027-05-08T13:30", "2027-05-08T15:00", "mariano-josephinum"],
+    ["transfer-dom", "2027-05-08T15:00", "2027-05-08T15:30", undefined],
+    ["konzert", "2027-05-08T15:30", "2027-05-08T17:00", "dom"],
+    ["ankommen-sonntag", "2027-05-09T10:00", "2027-05-09T10:30", "mariano-josephinum"],
+    ["gottesdienst", "2027-05-09T12:15", "2027-05-09T13:15", "dom"],
+  ])("%s läuft von %s bis %s", (id, beginn, ende, ortId) => {
+    const punkt = punkte.find((p) => p.id === id);
+
+    expect(punkt, `${id} fehlt`).toBeDefined();
+    expect([punkt?.beginn, punkt?.ende, punkt?.ortId]).toEqual([beginn, ende, ortId]);
+  });
+
+  it("verabschiedet ab 13:15 Uhr", () => {
+    const punkt = punkte.find((p) => p.id === "verabschiedung");
+
+    expect([punkt?.beginn, punkt?.zeitHinweis]).toEqual(["2027-05-09T13:15", "ab 13:15 Uhr"]);
   });
 
   /**

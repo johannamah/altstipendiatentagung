@@ -3,8 +3,14 @@ import { getCollection } from "astro:content";
 
 import Basis from "../layouts/Basis.astro";
 import Seitenkopf from "../components/Seitenkopf.astro";
+import { FOTOALBUM_URL } from "../daten/fotos.ts";
+import { PROGRAMMHEFT_URL } from "../lib/programmheft.ts";
 
-const eintraege = await getCollection("faq");
+const eintraege = (await getCollection("faq"))
+  // Antworten, die auf Programmheft oder Fotoalbum verweisen, erst wenn es sie gibt.
+  .filter((eintrag) => eintrag.id !== "programm-als-pdf" || PROGRAMMHEFT_URL)
+  .filter((eintrag) => eintrag.id !== "fotos" || FOTOALBUM_URL)
+  .sort((a, b) => a.data.reihenfolge - b.data.reihenfolge);
 ---
 
 <Basis
@@ -39,6 +45,18 @@ const eintraege = await getCollection("faq");
           )}
 
           {eintrag.data.hinweis && <p class="hinweis">{eintrag.data.hinweis}</p>}
+
+          {eintrag.data.verweis &&
+            (eintrag.data.verweis.href.startsWith("https://") ? (
+              <a class="verweis" href={eintrag.data.verweis.href} target="_blank" rel="noopener">
+                {eintrag.data.verweis.text}
+                <span class="nur-vorlesen"> – öffnet in neuem Tab</span>
+              </a>
+            ) : (
+              <a class="verweis" href={eintrag.data.verweis.href}>
+                {eintrag.data.verweis.text}
+              </a>
+            ))}
         </div>
       </details>
     ))}
@@ -46,6 +64,15 @@ const eintraege = await getCollection("faq");
 </Basis>
 
 <style>
+  .verweis {
+    /* Mindestgroesse fuer Beruehrung (Regel 7). */
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin-top: var(--raum-2);
+    font-weight: 600;
+  }
+
   details {
     padding: 0;
   }

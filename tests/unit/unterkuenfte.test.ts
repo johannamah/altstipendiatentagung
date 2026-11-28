@@ -59,6 +59,13 @@ describe("Unterkünfte", () => {
     },
   );
 
+  /** Wie viele Zimmer reserviert sind, ist für Teilnehmende ohne Belang (28.11.2026). */
+  it("nennen keine reservierten Zimmerzahlen und keine Verfallsfrist", () => {
+    const text = JSON.stringify(unterkuenfte);
+
+    expect(text).not.toMatch(/"anzahl"|verfällt/);
+  });
+
   /** Kampagnen- und Klick-Kennungen verraten Dritten, woher jemand kommt. */
   it.each(unterkuenfte.map((u) => [u.name, u.web ?? ""] as const))(
     "Buchungslink von %s enthält keine Tracking-Parameter",

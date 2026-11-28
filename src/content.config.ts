@@ -118,6 +118,8 @@ const programm = defineCollection({
 const exkursionen = defineCollection({
   loader: file("src/content/exkursionen.json"),
   schema: z.object({
+    /** Nummer im Programmheft - Astro liefert die Eintraege sonst nach Kennung. */
+    reihenfolge: z.number().int(),
     titel: z.string().min(1),
     /**
      * Plaetze insgesamt, sofern bekannt. Das Programmheft 2027 nennt keine;
@@ -154,8 +156,6 @@ const unterkuenfte = defineCollection({
           .array(
             z.object({
               typ: z.string(),
-              /** Reservierte Zimmer; fehlt, wenn das Hotel keine Zahl nennt. */
-              anzahl: z.number().int().positive().optional(),
               preis: z.string(),
               /** Weitere Belegung, Ausstattung, z. B. "bei Einzelnutzung 74,00 € / Nacht". */
               hinweis: z.string().optional(),
@@ -164,8 +164,6 @@ const unterkuenfte = defineCollection({
           .default([]),
         /** z. B. "inbegriffen" oder "nicht inbegriffen, 9,90 € pro Person". */
         fruehstueck: z.string().optional(),
-        /** Bedingungen des Kontingents, etwa eine Verfallsfrist. Oeffentlich sichtbar. */
-        hinweis: z.string().optional(),
         adresse: z.string().optional(),
         telefon: z.string().optional(),
         email: z.string().optional(),
@@ -236,42 +234,6 @@ const grussworte = defineCollection({
       }),
 });
 
-/**
- * Referierende und Gaeste der Tagung.
- *
- * Getrennt vom Feld `personen` im Programm: Hier stehen nur Personen, deren
- * Nennung das Orga-Team ausdruecklich freigegeben hat (F14). Welcher
- * Programmpunkt zu wem gehoert, ist noch offen - deshalb gibt es bewusst
- * noch keine Verknuepfung.
- *
- * Portraits wie bei den Grussworten nur mit Bildnachweis (F16); bis dahin
- * stehen Initialen.
- */
-const referenten = defineCollection({
-  loader: file("src/content/referenten.json"),
-  schema: ({ image }) =>
-    z
-      .object({
-        name: z.string().min(1),
-        /** Funktion in einer Zeile, z. B. "Bundespräsident a. D.". */
-        rolle: z.string().min(1),
-        /** Kurzvorstellung, ein Eintrag je Absatz. */
-        absaetze: z.array(z.string().min(1)).min(1),
-        bild: image().optional(),
-        bildnachweis: z.string().optional(),
-        /** Kleinere Zahl steht weiter oben. */
-        reihenfolge: z.number().int(),
-        /**
-         * "bestaetigt" erst, wenn die Person bzw. ihr Buero die Kurzvorstellung
-         * abgenommen hat. Bis dahin kennzeichnet die Seite den Text.
-         */
-        status: bestaetigung.default("vorlaeufig"),
-      })
-      .refine((eintrag) => eintrag.bild === undefined || eintrag.bildnachweis !== undefined, {
-        message: "Zu jedem Bild gehoert ein Bildnachweis",
-      }),
-});
-
 const faq = defineCollection({
   loader: file("src/content/faq.json"),
   schema: z.object({
@@ -285,6 +247,41 @@ const faq = defineCollection({
     schritte: z.array(z.string().min(1)).min(2).optional(),
     /** Nachgestellte Einordnung, z. B. warum ein Schritt fehlschlagen kann. */
     hinweis: z.string().min(1).optional(),
+    /** Kleinere Zahl steht weiter oben - Astro liefert die Eintraege nach Kennung. */
+    reihenfolge: z.number().int(),
+    /**
+     * Weiterfuehrender Link unter der Antwort: eine Seite der App ("/kontakt")
+     * oder eine externe https-Adresse, die dann in einem neuen Tab oeffnet.
+     */
+    verweis: z
+      .object({
+        text: z.string().min(1),
+        href: z.string().regex(/^(\/[a-z0-9-]+|https:\/\/\S+)$/),
+      })
+      .optional(),
+  }),
+});
+
+/**
+ * Teilnahmeoptionen auf der Seite "Anmeldung". Die Beitraege legt der Verein
+ * noch fest; solange einer fehlt, steht in der Tabelle "folgt".
+ */
+const teilnahme = defineCollection({
+  loader: file("src/content/teilnahme.json"),
+  schema: z.object({
+    gruppe: z.string().min(1),
+    /** Etwa "Ganze Tagung"; fehlt, wenn die Gruppe nur eine Option hat. */
+    umfang: z.string().min(1).optional(),
+    /** Als Eurobetrag, z. B. "180 €". */
+    beitragMitglied: z
+      .string()
+      .regex(/^\d+(,\d{2})? €$/)
+      .optional(),
+    beitragNichtMitglied: z
+      .string()
+      .regex(/^\d+(,\d{2})? €$/)
+      .optional(),
+    reihenfolge: z.number().int(),
   }),
 });
 
@@ -330,8 +327,8 @@ export const collections = {
   unterkuenfte,
   kontakte,
   faq,
+  teilnahme,
   grussworte,
-  referenten,
   stadt,
   stadtzahlen,
   stadtlinks,

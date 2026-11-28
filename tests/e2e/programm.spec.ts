@@ -1,7 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
-import { erwarteKeinSeitenScroll } from "./hilfen.ts";
+import { erwarteKeinSeitenScroll, oeffneProgrammpunkt } from "./hilfen.ts";
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/programm");
@@ -41,13 +41,62 @@ test("zeigt die aktualisierten Zeiten und Orte aus dem Programmheft", async ({ p
   await expect(page.getByText("20:00–24:00 Uhr")).toBeVisible();
   // Der Abschluss am Sonntag beginnt jetzt um 10:30.
   await expect(page.getByText("10:30–12:00 Uhr")).toBeVisible();
+  await expect(page.getByText("09:15–12:00 Uhr")).toBeVisible();
+  // Das Konzert ist in den Dom umgezogen.
+  await expect(
+    page.locator('.punkt[data-id="konzert"]').getByText("Dom Mariä Himmelfahrt").first(),
+  ).toBeVisible();
   await expect(page.getByText("Mariano-Josephinum").first()).toBeVisible();
   await expect(page.getByText("deseo Cafe . Restaurant . Bar").first()).toBeVisible();
   await expect(page.getByRole("heading", { name: /Verabschiedung und Rückreise/ })).toBeVisible();
 });
 
-test("kennzeichnet unbestaetigte Punkte als Text, nicht nur farblich", async ({ page }) => {
-  await expect(page.getByText("noch nicht bestätigt").first()).toBeVisible();
+/**
+ * Zehn Exkursionen untereinander schieben den Rest des Freitags weit nach
+ * unten. Zugeklappt zeigt der Gruppenkopf, dass es sie gibt und wie viele.
+ */
+test("Exkursionen sind anfangs zugeklappt und lassen sich ausklappen", async ({ page }) => {
+  const umschalter = page.getByRole("button", { name: /10 gleichzeitige Punkte/ });
+  const exkursion = page.locator('.punkt[data-id="exkursion-hennies"]');
+
+  await expect(umschalter).toHaveAttribute("aria-expanded", "false");
+  await expect(exkursion).toBeHidden();
+
+  await umschalter.click();
+  await expect(umschalter).toHaveAttribute("aria-expanded", "true");
+  await expect(exkursion).toBeVisible();
+});
+
+test("verweist auf die Übersicht aller Exkursionen", async ({ page }) => {
+  await expect(page.getByRole("link", { name: "Alle Exkursionen im Überblick" })).toHaveAttribute(
+    "href",
+    "/exkursionen",
+  );
+});
+
+/**
+ * Das Programmheft erscheint erst, wenn eine veröffentlichungsreife Fassung
+ * vorliegt. Dann müssen Link und FAQ-Antwort zusammen da sein und die Datei
+ * ein PDF sein - nicht nur eines von beiden.
+ */
+test("bietet das Programmheft nur zusammen mit einer echten Datei an", async ({
+  page,
+  request,
+}) => {
+  const link = page.getByRole("link", { name: /Programmheft als PDF/ });
+  if ((await link.count()) === 0) {
+    await page.goto("/faq");
+    await expect(page.getByText(/Programmheft als PDF/)).toHaveCount(0);
+    return;
+  }
+  const antwort = await request.get((await link.getAttribute("href")) ?? "");
+  expect(antwort.headers()["content-type"]).toContain("application/pdf");
+});
+
+test("kündigt die Exkursionen mit einem Einleitungstext an", async ({ page }) => {
+  await expect(
+    page.getByText(/eröffnen zehn Exkursionen unterschiedliche Perspektiven/),
+  ).toBeVisible();
 });
 
 /**
@@ -99,16 +148,18 @@ test("gleichzeitige Punkte sind eingerueckt und als Auswahl benannt", async ({ p
   expect(parseFloat(innen)).toBeGreaterThan(0);
 });
 
+/** Mitgliederversammlung und Partnerprogramm: aufgeklappt, aber einklappbar. */
 test("eine Gruppe laesst sich einklappen und wieder ausklappen", async ({ page }) => {
-  const umschalter = page.locator('[data-gruppe="2027-05-07-2"]').first();
+  const umschalter = page.getByRole("button", { name: /3 gleichzeitige Punkte/ });
+  const partnerprogramm = page.locator('.punkt[data-id="partnerprogramm"]');
   await expect(umschalter).toHaveAttribute("aria-expanded", "true");
 
   await umschalter.click();
   await expect(umschalter).toHaveAttribute("aria-expanded", "false");
-  await expect(page.locator('.eintrag[data-gruppe="2027-05-07-2"]').first()).toBeHidden();
+  await expect(partnerprogramm).toBeHidden();
 
   await umschalter.click();
-  await expect(page.locator('.eintrag[data-gruppe="2027-05-07-2"]').first()).toBeVisible();
+  await expect(partnerprogramm).toBeVisible();
 });
 
 /**
@@ -129,7 +180,7 @@ test("blendet den Abschnitt fuer Punkte ohne Termin aus, solange es keine gibt",
  */
 test("zeigt die Beschreibung einer Exkursion beim Aufklappen", async ({ page }) => {
   const punkt = page.locator('.punkt[data-id="exkursion-hennies"]');
-  await punkt.locator("summary").click();
+  await oeffneProgrammpunkt(page, "exkursion-hennies");
 
   await expect(punkt.getByText(/^Was für die einen Abfall ist/)).toBeVisible();
   await expect(punkt.getByText(/^Bei unserem Unternehmensbesuch/)).toBeVisible();

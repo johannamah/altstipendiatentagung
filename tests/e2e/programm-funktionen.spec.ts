@@ -84,6 +84,32 @@ test.describe("Mein Programm", () => {
     ).toHaveAttribute("aria-pressed", "true");
   });
 
+  /** Eine gemerkte Exkursion darf nicht in der zugeklappten Gruppe verschwinden. */
+  test("zeigt im eigenen Programm auch eine gemerkte Exkursion", async ({ page }) => {
+    await oeffneProgrammpunkt(page, "exkursion-ndr");
+    await page
+      .locator('.punkt[data-id="exkursion-ndr"]')
+      .getByRole("button", { name: /Merken/ })
+      .click();
+    await page.reload();
+
+    await page.getByRole("button", { name: "Nur mein Programm" }).click();
+    await expect(page.locator('.punkt[data-id="exkursion-ndr"]')).toBeVisible();
+  });
+
+  /** Nach dem Filtern gilt wieder, was vorher galt: Exkursionen zugeklappt. */
+  test("stellt nach dem Filtern die zugeklappten Exkursionen wieder her", async ({ page }) => {
+    const exkursionen = page.getByRole("button", { name: /10 gleichzeitige Punkte/ });
+    await expect(exkursionen).toHaveAttribute("aria-expanded", "false");
+
+    await page.getByRole("button", { name: "Nur mein Programm" }).click();
+    await expect(exkursionen).toBeHidden();
+    await page.getByRole("button", { name: "Ganzes Programm" }).click();
+
+    await expect(exkursionen).toHaveAttribute("aria-expanded", "false");
+    await expect(page.locator('.punkt[data-id="exkursion-ndr"]')).toBeHidden();
+  });
+
   test("filtert auf die eigene Auswahl und wieder zurueck", async ({ page }) => {
     await oeffneProgrammpunkt(page, "konzert");
     await page

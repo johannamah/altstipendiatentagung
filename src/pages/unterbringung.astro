@@ -67,7 +67,6 @@ const empfehlungen = alle.filter((eintrag) => !eintrag.data.kontingent);
               <thead>
                 <tr>
                   <th scope="col">Zimmerart</th>
-                  <th scope="col">Reserviert</th>
                   <th scope="col">Preis</th>
                 </tr>
               </thead>
@@ -78,7 +77,6 @@ const empfehlungen = alle.filter((eintrag) => !eintrag.data.kontingent);
                       {zimmer.typ}
                       {zimmer.hinweis && <span class="zimmerhinweis">{zimmer.hinweis}</span>}
                     </th>
-                    <td>{zimmer.anzahl ?? "keine Angabe"}</td>
                     <td>{zimmer.preis}</td>
                   </tr>
                 ))}
@@ -90,12 +88,6 @@ const empfehlungen = alle.filter((eintrag) => !eintrag.data.kontingent);
           <p class="zeile">
             <Ikone name="coffee" />
             <span>Frühstück: {haus.fruehstueck}</span>
-          </p>
-        )}
-        {haus.hinweis && (
-          <p class="kontingenthinweis">
-            <Ikone name="alert" />
-            <span>{haus.hinweis}</span>
           </p>
         )}
         {haus.web && (
@@ -218,17 +210,6 @@ const empfehlungen = alle.filter((eintrag) => !eintrag.data.kontingent);
     font-size: var(--schrift-klein);
     font-weight: 400;
     color: var(--text-leise);
-  }
-
-  .kontingenthinweis {
-    display: flex;
-    gap: var(--raum-2);
-    align-items: flex-start;
-    padding: var(--raum-2) var(--raum-3);
-    color: var(--hinweis-text);
-    background: var(--hinweis-flaeche);
-    border: 1px solid var(--hinweis-rand);
-    border-radius: var(--radius-klein);
   }
 
   .buchen {

@@ -1,0 +1,55 @@
+---
+import { getCollection } from "astro:content";
+
+import Basis from "../layouts/Basis.astro";
+import Seitenkopf from "../components/Seitenkopf.astro";
+import Ortsangabe from "../components/Ortsangabe.astro";
+import type { Ort } from "../lib/orte.ts";
+
+/** Empfehlungen aus orte.json (art "gastronomie"); bis 28.11.2026 ein Abschnitt auf "Hildesheim". */
+const lokale: Ort[] = (await getCollection("orte"))
+  .map((eintrag) => ({ id: eintrag.id, ...eintrag.data }))
+  .filter((ort) => ort.art === "gastronomie");
+---
+
+<Basis
+  titel="Essen & Trinken – Jahrestagung 2027"
+  beschreibung="Restaurant- und Café-Empfehlungen in Hildesheim zur Altstipendiatentagung 2027."
+>
+  <Seitenkopf
+    ikone="utensils"
+    titel="Essen & Trinken"
+    einleitung="Rund um den Marktplatz und die Almstraße liegen zahlreiche Restaurants und Cafés. Tippt bei einem Lokal auf Google Maps oder Apple Karten, um euch hinführen zu lassen."
+  />
+
+  <ul class="lokale">
+    {lokale.map((lokal) => (
+      <li class="karte">
+        {lokal.hinweis && <p class="kueche">{lokal.hinweis}</p>}
+        <Ortsangabe ort={lokal} />
+      </li>
+    ))}
+  </ul>
+</Basis>
+
+<style>
+  .lokale {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    gap: var(--raum-4);
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .lokale .karte {
+    margin-bottom: 0;
+  }
+
+  .kueche {
+    margin: 0 0 var(--raum-2);
+    font-size: var(--schrift-klein);
+    font-weight: 600;
+    color: var(--akzent);
+  }
+</style>

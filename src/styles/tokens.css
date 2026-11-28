@@ -118,12 +118,17 @@
   --kachel-orange-bis: #ff9c00;
   --kachel-orange-text: #1b2430;
 
-  /* Bordeaux fuer "Referenten & Gaeste" - dunkel genug fuer weisse Schrift
-     auf beiden Verlaufsenden (10,05:1 bzw. 7,07:1), deutlich getrennt von Rot
-     und Pink. */
+  /* Bordeaux fuer "Exkursionen" - weisse Schrift auf beiden Verlaufsenden
+     (10,05:1 bzw. 7,07:1), deutlich getrennt von Rot und Pink. */
   --kachel-bordeaux-von: #7b1e3a;
   --kachel-bordeaux-bis: #a3284e;
   --kachel-bordeaux-text: #ffffff;
+
+  /* Oliv fuer "Essen & Trinken" - weisse Schrift 7,30:1 bzw. 4,86:1,
+     dunkler und gelbstichiger als das Gruen der Begruessung. */
+  --kachel-oliv-von: #4b5d16;
+  --kachel-oliv-bis: #66791f;
+  --kachel-oliv-text: #ffffff;
 
   /* ===== Dunkle Palette =====
      Hier EINMAL gepflegt. Die beiden Bloecke darunter weisen die Werte nur zu,

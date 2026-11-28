@@ -1,0 +1,154 @@
+---
+import { getCollection } from "astro:content";
+
+import Basis from "../layouts/Basis.astro";
+import Seitenkopf from "../components/Seitenkopf.astro";
+import Ikone from "../components/Ikone.astro";
+import { ANMELDEFORMULAR } from "../daten/anmeldung.ts";
+
+/**
+ * Anmeldung: Vor dem Formular stehen die Teilnahmeoptionen, damit man weiss,
+ * was man dort auswaehlt (Entscheidung vom 28.11.2026). Das Formular selbst
+ * bleibt bei Microsoft Forms (ADR-0011).
+ */
+const optionen = (await getCollection("teilnahme"))
+  .map((eintrag) => eintrag.data)
+  .sort((a, b) => a.reihenfolge - b.reihenfolge);
+
+/* Aufeinanderfolgende Optionen derselben Gruppe stehen unter einer
+   gemeinsamen Zeilenueberschrift ("Altstipendiaten" -> drei Umfaenge). */
+const gruppen: { gruppe: string; optionen: typeof optionen }[] = [];
+for (const option of optionen) {
+  const letzte = gruppen.at(-1);
+  if (letzte?.gruppe === option.gruppe) letzte.optionen.push(option);
+  else gruppen.push({ gruppe: option.gruppe, optionen: [option] });
+}
+
+const beitraegeOffen = optionen.some(
+  (option) => !option.beitragMitglied || !option.beitragNichtMitglied,
+);
+const OFFEN = "folgt";
+---
+
+<Basis
+  titel="Anmeldung – Jahrestagung 2027"
+  beschreibung="Anmeldung und Teilnahmeoptionen der Altstipendiatentagung 2027 in Hildesheim."
+>
+  <Seitenkopf
+    ikone="edit"
+    titel="Anmeldung"
+    einleitung="Die Anmeldung läuft über ein Online-Formular. Dort gibst du auch deine Exkursionswünsche an."
+  />
+
+  <section class="karte">
+    <h2>Anmeldeformular</h2>
+    <p>Das Formular von Microsoft Forms öffnet sich in einem neuen Tab.</p>
+    <a class="knopf" href={ANMELDEFORMULAR} target="_blank" rel="noopener">
+      <Ikone name="edit" />
+      <span>Zum Anmeldeformular</span>
+      <span class="nur-vorlesen"> – öffnet in neuem Tab</span>
+    </a>
+  </section>
+
+  <section class="karte">
+    <h2 id="teilnahmeoptionen">Teilnahmeoptionen</h2>
+    {beitraegeOffen && <p>Die Teilnahmebeiträge werden derzeit festgelegt und hier ergänzt.</p>}
+
+    {/* Breiter als ein schmales Display? Dann scrollt die Tabelle in ihrem
+        eigenen Bereich, nie die Seite (Regel 10). */}
+    <div class="tabellenbereich" tabindex="0" role="group" aria-labelledby="teilnahmeoptionen">
+      <table aria-label="Teilnahmeoptionen">
+        <thead>
+          <tr>
+            <th scope="col">Teilnahme</th>
+            <th scope="col">Mitglied</th>
+            <th scope="col">Nicht-Mitglied</th>
+          </tr>
+        </thead>
+        {gruppen.map(({ gruppe, optionen: inGruppe }) =>
+          inGruppe.length === 1 && !inGruppe[0]!.umfang ? (
+            <tbody>
+              <tr>
+                <th scope="row">{gruppe}</th>
+                <td>{inGruppe[0]!.beitragMitglied ?? OFFEN}</td>
+                <td>{inGruppe[0]!.beitragNichtMitglied ?? OFFEN}</td>
+              </tr>
+            </tbody>
+          ) : (
+            <tbody>
+              <tr class="gruppe">
+                <th scope="rowgroup" colspan="3">
+                  {gruppe}
+                </th>
+              </tr>
+              {inGruppe.map((option) => (
+                <tr>
+                  <th scope="row" class="umfang">
+                    {option.umfang}
+                  </th>
+                  <td>{option.beitragMitglied ?? OFFEN}</td>
+                  <td>{option.beitragNichtMitglied ?? OFFEN}</td>
+                </tr>
+              ))}
+            </tbody>
+          ),
+        )}
+      </table>
+    </div>
+  </section>
+</Basis>
+
+<style>
+  h2 {
+    font-size: var(--schrift-h3);
+  }
+
+  .knopf {
+    display: inline-flex;
+    gap: var(--raum-2);
+    align-items: center;
+    min-height: 44px;
+    padding: var(--raum-3) var(--raum-6);
+    font-weight: 700;
+    color: var(--kachel-pink-text);
+    text-decoration: none;
+    background: var(--kachel-pink-von);
+    border-radius: 999px;
+  }
+
+  .tabellenbereich {
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    padding: var(--raum-2) var(--raum-3);
+    text-align: left;
+    border-bottom: 1px solid var(--rand);
+  }
+
+  thead th {
+    font-size: var(--schrift-klein);
+    color: var(--text-leise);
+  }
+
+  .gruppe th {
+    padding-top: var(--raum-4);
+    font-weight: 700;
+    border-bottom: none;
+  }
+
+  .umfang {
+    padding-left: var(--raum-6);
+    font-weight: 400;
+  }
+
+  td {
+    white-space: nowrap;
+  }
+</style>
