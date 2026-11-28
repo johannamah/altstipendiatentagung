@@ -152,7 +152,6 @@ export const STATUS_TEXT: Record<Bestaetigung, string | null> = {
   platzhalter: "Platzhalter",
 };
 
-/** Ueberschrift fuer eine Gruppe gleichzeitiger Punkte derselben Spur. */
 /** Einleitung über einer Gruppe, Wortlaut laut Programm vom 25.10.2026. */
 export const SPUR_EINLEITUNG: Partial<Record<Spur, string>> = {
   exkursion:
@@ -166,6 +165,7 @@ export const SPUR_EINLEITUNG: Partial<Record<Spur, string>> = {
  */
 export const SPUR_ZUGEKLAPPT: ReadonlySet<Spur> = new Set<Spur>(["exkursion", "studium-generale"]);
 
+/** Ueberschrift fuer eine Gruppe gleichzeitiger Punkte derselben Spur. */
 export const SPUR_TEXT: Record<Spur, string | null> = {
   haupt: null,
   exkursion: "Exkursionen",

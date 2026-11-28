@@ -2,6 +2,7 @@
 import Basis from "../layouts/Basis.astro";
 import Seitenkopf from "../components/Seitenkopf.astro";
 import Ikone from "../components/Ikone.astro";
+import { FOTOALBUM_URL } from "../daten/fotos.ts";
 
 /**
  * Fotoalbum im OneDrive des Vereins (Entscheidung vom 27.09.2026 fuer
@@ -13,10 +14,9 @@ import Ikone from "../components/Ikone.astro";
  * ausserhalb der Anwendung: Wir speichern keine Fotos und muessen keine
  * loeschen.
  *
- * Sobald die Adresse feststeht, wird sie hier eingetragen - eine Zeile. Bis
- * dahin steht KEIN Knopf da, der ins Leere fuehrt.
+ * Die Adresse steht in src/daten/fotos.ts. Bis sie feststeht, steht KEIN
+ * Knopf da, der ins Leere fuehrt.
  */
-const FOTOALBUM_URL: string | null = null;
 ---
 
 <Basis

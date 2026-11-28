@@ -264,7 +264,7 @@ const faq = defineCollection({
 
 /**
  * Teilnahmeoptionen auf der Seite "Anmeldung". Die Beitraege legt der Verein
- * noch fest; solange einer fehlt, steht in der Tabelle "wird noch festgelegt".
+ * noch fest; solange einer fehlt, steht in der Tabelle "folgt".
  */
 const teilnahme = defineCollection({
   loader: file("src/content/teilnahme.json"),

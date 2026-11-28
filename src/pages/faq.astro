@@ -3,11 +3,13 @@ import { getCollection } from "astro:content";
 
 import Basis from "../layouts/Basis.astro";
 import Seitenkopf from "../components/Seitenkopf.astro";
+import { FOTOALBUM_URL } from "../daten/fotos.ts";
 import { PROGRAMMHEFT_URL } from "../lib/programmheft.ts";
 
 const eintraege = (await getCollection("faq"))
-  // Die Antwort zum Programmheft nur, wenn es das PDF wirklich gibt.
+  // Antworten, die auf Programmheft oder Fotoalbum verweisen, erst wenn es sie gibt.
   .filter((eintrag) => eintrag.id !== "programm-als-pdf" || PROGRAMMHEFT_URL)
+  .filter((eintrag) => eintrag.id !== "fotos" || FOTOALBUM_URL)
   .sort((a, b) => a.data.reihenfolge - b.data.reihenfolge);
 ---
 

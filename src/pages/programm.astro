@@ -400,11 +400,26 @@ const tageAufbereitet = tage.map((tag) => ({
     });
   }
 
+  /* Beim Filtern muss eine gemerkte Exkursion sichtbar sein: Alle Gruppen
+     gehen auf, und ihre Umschalter verschwinden, damit niemand sie dabei
+     wieder zuklappt. Danach gilt wieder der Zustand von vorher. */
+  let offenVorDemFilter: boolean[] = [];
+
   nurMeine?.addEventListener("click", () => {
     nurAuswahlZeigen = !nurAuswahlZeigen;
     nurMeine.setAttribute("aria-pressed", String(nurAuswahlZeigen));
-    // Eine gemerkte Exkursion darf nicht in einer zugeklappten Gruppe stecken.
-    if (nurAuswahlZeigen) for (const knopf of umschalter) setzeGruppe(knopf, true);
+    if (nurAuswahlZeigen) {
+      offenVorDemFilter = umschalter.map((k) => k.getAttribute("aria-expanded") !== "false");
+      for (const knopf of umschalter) {
+        setzeGruppe(knopf, true);
+        knopf.hidden = true;
+      }
+    } else {
+      umschalter.forEach((knopf, i) => {
+        knopf.hidden = false;
+        setzeGruppe(knopf, offenVorDemFilter[i] ?? true);
+      });
+    }
     if (nurMeineText) {
       nurMeineText.textContent = nurAuswahlZeigen ? "Ganzes Programm" : "Nur mein Programm";
     }
