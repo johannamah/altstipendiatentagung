@@ -48,3 +48,21 @@ test("nennt die Wege aus dem Plan auch als Text", async ({ page }) => {
 test("zeigt keinen Platzhalter mehr anstelle einer Karte", async ({ page }) => {
   await expect(page.getByText(/fehlen noch die Koordinaten/)).toHaveCount(0);
 });
+
+/**
+ * Entscheidung vom 28.11.2026: Die Exkursionsorte stehen vorerst nicht auf
+ * "Orte & Anfahrt" - sie stehen bei den Exkursionen selbst.
+ */
+test("zeigt die Exkursionsorte vorerst nicht", async ({ page }) => {
+  const gruppen = page.getByRole("heading", { level: 2 });
+
+  await expect(gruppen.filter({ hasText: /^Exkursion/ })).toHaveCount(0);
+  await expect(page.getByText("Sprengel Museum Hannover")).toHaveCount(0);
+  await expect(page.getByText("Hof Riepl-Bauer")).toHaveCount(0);
+  // Tagungsort, Rahmenprogramm und Hotels bleiben.
+  await expect(gruppen.filter({ hasText: "Tagungsort" })).toHaveCount(1);
+  await expect(page.getByText("Halle39").filter({ visible: true }).first()).toBeVisible();
+  await expect(
+    page.getByText("Van der Valk Hotel Hildesheim").filter({ visible: true }).first(),
+  ).toBeVisible();
+});

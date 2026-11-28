@@ -37,13 +37,19 @@ const vollbild = await getImage({ src: stadtplan, format: "webp", quality: 90 })
 /* Die selbst gezeichnete Koordinatenkarte erscheint weiterhin, sobald Orte
    Koordinaten haben. Ob sie neben dem Stadtplan dann noch gebraucht wird, ist
    eine Produktfrage - bis dahin bleibt sie still. */
-const punkte = alsKartenpunkte(orte);
-const ohneKoordinaten = orte.length - punkte.length;
+/* Exkursionsorte stehen vorerst nicht auf dieser Seite (Orga-Team,
+   28.11.2026) - sie stehen bei den Exkursionen selbst. In orte.json bleiben
+   sie, Programm und Exkursionsseite verweisen darauf. */
+const angezeigt = orte.filter((ort) => ort.art !== "exkursion");
+const ARTEN_AUF_DIESER_SEITE = ARTREIHENFOLGE.filter((art) => art !== "exkursion");
 
-const gruppen = ARTREIHENFOLGE.map((art) => ({
+const punkte = alsKartenpunkte(angezeigt);
+const ohneKoordinaten = angezeigt.length - punkte.length;
+
+const gruppen = ARTEN_AUF_DIESER_SEITE.map((art) => ({
   art,
   bezeichnung: ARTBEZEICHNUNG[art],
-  orte: orte.filter((ort) => ort.art === art),
+  orte: angezeigt.filter((ort) => ort.art === art),
 })).filter((gruppe) => gruppe.orte.length > 0);
 ---
 
@@ -126,8 +132,8 @@ const gruppen = ARTREIHENFOLGE.map((art) => ({
         {ohneKoordinaten > 0 && (
           <>
             {" "}
-            {ohneKoordinaten} von {orte.length} Orten fehlen noch die Koordinaten und sind deshalb
-            nicht eingezeichnet.
+            {ohneKoordinaten} von {angezeigt.length} Orten fehlen noch die Koordinaten und sind
+            deshalb nicht eingezeichnet.
           </>
         )}
       </figcaption>
