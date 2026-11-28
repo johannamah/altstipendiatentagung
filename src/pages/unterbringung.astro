@@ -170,7 +170,15 @@ const empfehlungen = alle.filter((eintrag) => !eintrag.data.kontingent);
      Smartphone darüber. */
   .haus {
     display: grid;
+    /* minmax(0, ...): Eine automatische Spalte wüchse mit der breiten
+       Zimmertabelle mit, und die Seite ließe sich bei 320 px seitwärts
+       schieben. So scrollt nur die Tabelle in ihrem eigenen Bereich. */
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--raum-4);
+  }
+
+  .angaben {
+    min-width: 0;
   }
 
   @media (min-width: 48rem) {
