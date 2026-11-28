@@ -32,7 +32,8 @@
     "name": "Johanna Mahler",
     "bereich": "[Zuständigkeitsbereich einfügen]",
     "telefon": "[Telefonnummer einfügen]",
-    "email": "[E-Mail einfügen]"
+    "email": "[E-Mail einfügen]",
+    "bild": "../assets/kontakte/johanna-mahler.jpg"
   },
   {
     "id": "marvin-pawelczyk",
@@ -40,7 +41,8 @@
     "name": "Marvin Pawelczyk",
     "bereich": "[Zuständigkeitsbereich einfügen]",
     "telefon": "[Telefonnummer einfügen]",
-    "email": "[E-Mail einfügen]"
+    "email": "[E-Mail einfügen]",
+    "bild": "../assets/kontakte/marvin-pawelczyk.jpg"
   },
   {
     "id": "brit-fillies",
@@ -57,7 +59,8 @@
     "name": "Sven Lüdiger",
     "bereich": "[Zuständigkeitsbereich einfügen]",
     "telefon": "[Telefonnummer einfügen]",
-    "email": "[E-Mail einfügen]"
+    "email": "[E-Mail einfügen]",
+    "bild": "../assets/kontakte/sven-luediger.jpg"
   },
   {
     "id": "ferdinand-meissner",
