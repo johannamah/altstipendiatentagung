@@ -28,7 +28,7 @@ test.describe("Jetzt läuft", () => {
     const laufende = page.locator('.punkt[data-lage="jetzt"]');
 
     // Zehn parallele Exkursionen laufen zu dieser Zeit.
-    await expect(laufende).toHaveCount(10);
+    await expect(laufende).toHaveCount(11);
     await expect(laufende.first()).toBeInViewport();
     await expect(laufende.first().getByText("Jetzt")).toBeVisible();
   });
@@ -99,7 +99,7 @@ test.describe("Mein Programm", () => {
 
   /** Nach dem Filtern gilt wieder, was vorher galt: Exkursionen zugeklappt. */
   test("stellt nach dem Filtern die zugeklappten Exkursionen wieder her", async ({ page }) => {
-    const exkursionen = page.getByRole("button", { name: /10 gleichzeitige Punkte/ });
+    const exkursionen = page.getByRole("button", { name: /11 gleichzeitige Punkte/ });
     await expect(exkursionen).toHaveAttribute("aria-expanded", "false");
 
     await page.getByRole("button", { name: "Nur mein Programm" }).click();

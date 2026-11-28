@@ -193,6 +193,8 @@ const kontakte = defineCollection({
       name: z.string().min(1),
       /** Kleinere Zahl steht weiter oben. Bewusst gesetzt statt alphabetisch. */
       reihenfolge: z.number().int(),
+      /** Orga-Team oder Geschaeftsstelle des Vereins - zwei Abschnitte auf "Kontakt". */
+      gruppe: z.enum(["orga", "geschaeftsstelle"]).default("orga"),
       bereich: z.string().optional(),
       telefon: z.string().optional(),
       email: z.string().optional(),
