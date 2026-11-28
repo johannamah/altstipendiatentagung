@@ -6,7 +6,8 @@
     "beginn": "2027-05-05T19:00",
     "spur": "rahmen",
     "ortId": "deseo",
-    "optional": true
+    "optional": true,
+    "hinweis": "Anmeldung notwendig."
   },
   {
     "id": "registrierung",
@@ -59,12 +60,10 @@
   {
     "id": "partnerprogramm",
     "titel": "Partnerprogramm: Mensch und Kultur – Eine Entdeckungsreise im Museum",
-    "status": "vorlaeufig",
     "beginn": "2027-05-06T15:00",
     "ende": "2027-05-06T17:00",
     "ortId": "roemer-pelizaeus",
-    "beschreibung": "Eine Führung im Roemer- und Pelizaeus-Museum widmet sich der Vielfalt menschlichen Zusammenlebens. Die vorgesehene Dauerausstellung „Es ist angerichtet: Was tun wir Menschen alles?“ führt zu Lebensweisen, Vorstellungen und Handlungen unterschiedlicher Kulturen und Epochen.\n\nTreffpunkt: Haupteingang Mariano-Josephinum.",
-    "hinweis": "Führung und Ausstellung werden noch bestätigt."
+    "beschreibung": "Eine Führung im Roemer- und Pelizaeus-Museum widmet sich der Vielfalt menschlichen Zusammenlebens. Die vorgesehene Dauerausstellung „Es ist angerichtet: Was tun wir Menschen alles?“ führt zu Lebensweisen, Vorstellungen und Handlungen unterschiedlicher Kulturen und Epochen.\n\nTreffpunkt: Haupteingang Mariano-Josephinum."
   },
   {
     "id": "partnerprogramm-weinfest",
@@ -91,14 +90,16 @@
     "beschreibung": "Künstliche Intelligenz, globaler Wettbewerb und geopolitische Abhängigkeiten fordern Europas wirtschaftliche und politische Handlungsfähigkeit heraus. Das Panel fragt, wie Europa seine Innovationskraft stärken, technologische Souveränität sichern und seine Zukunft selbstbestimmt gestalten kann.",
     "personen": [
       {
-        "name": "Dr. Christoph Israng"
+        "name": "Dr. Christoph Israng",
+        "rolle": "Deutscher Diplomat und Leiter der Europa-Abteilung im Auswärtigen Amt"
       },
       {
-        "name": "Nico Lange"
+        "name": "Nico Lange",
+        "rolle": "Deutscher Politikwissenschaftler, Politikberater und Publizist"
       },
       {
         "name": "Marvin Pawelczyk",
-        "rolle": "Moderation"
+        "rolle": "Referent Bitkom, Moderation"
       }
     ],
     "hinweis": "Weitere Podiumsgäste folgen."
@@ -208,23 +209,23 @@
   {
     "id": "studium-generale",
     "titel": "Studium Generale",
-    "beginn": "2027-05-08T09:00",
-    "ende": "2027-05-08T11:45",
+    "beginn": "2027-05-08T09:15",
+    "ende": "2027-05-08T12:00",
     "hinweis": "Die einzelnen Vorträge und Räume werden noch bekanntgegeben.",
     "ortId": "mariano-josephinum"
   },
   {
     "id": "mittagsimbiss-samstag",
     "titel": "Mittagsimbiss",
-    "beginn": "2027-05-08T11:45",
-    "ende": "2027-05-08T13:00",
+    "beginn": "2027-05-08T12:00",
+    "ende": "2027-05-08T13:30",
     "ortId": "mariano-josephinum"
   },
   {
     "id": "panel-nie-wieder",
     "titel": "Nie wieder? – Deutschlands Verantwortung für Frieden und Freiheit in Europa",
-    "beginn": "2027-05-08T13:00",
-    "ende": "2027-05-08T14:30",
+    "beginn": "2027-05-08T13:30",
+    "ende": "2027-05-08T15:00",
     "ortId": "mariano-josephinum",
     "beschreibung": "Am 8. Mai 2027 jährt sich das Ende des Zweiten Weltkriegs in Europa zum 82. Mal. Aus der historischen Verantwortung Deutschlands erwächst der Auftrag, Frieden, Freiheit und Demokratie zu bewahren. Das Panel diskutiert, was „Nie wieder“ angesichts neuer Kriege, geopolitischer Spannungen und wachsender Bedrohungen für Europas Sicherheit bedeutet.",
     "personen": [
@@ -238,7 +239,7 @@
       },
       {
         "name": "Julia Ruhs",
-        "rolle": "Moderation"
+        "rolle": "Journalistin, Moderation"
       }
     ],
     "hinweis": "Weitere Podiumsgäste folgen."
@@ -249,11 +250,11 @@
     "beginn": "2027-05-08T15:30",
     "ende": "2027-05-08T17:00",
     "spur": "rahmen",
-    "ortId": "st-godehard"
+    "ortId": "dom"
   },
   {
     "id": "zeit-zum-umziehen",
-    "titel": "Zeit zum Umziehen",
+    "titel": "Zeit zum Umziehen & Transfer zur Halle39",
     "beginn": "2027-05-08T17:00",
     "ende": "2027-05-08T19:00",
     "spur": "rahmen"
@@ -283,8 +284,8 @@
   {
     "id": "gottesdienst",
     "titel": "Ökumenischer Gottesdienst",
-    "beginn": "2027-05-09T12:00",
-    "ende": "2027-05-09T13:00",
+    "beginn": "2027-05-09T12:15",
+    "ende": "2027-05-09T13:15",
     "spur": "rahmen",
     "ortId": "dom",
     "personen": [
@@ -301,8 +302,43 @@
   {
     "id": "verabschiedung",
     "titel": "Verabschiedung und Rückreise",
-    "zeitHinweis": "ab 13:30 Uhr",
-    "beginn": "2027-05-09T13:30",
+    "zeitHinweis": "ab 13:15 Uhr",
+    "beginn": "2027-05-09T13:15",
     "spur": "rahmen"
+  },
+  {
+    "id": "pause-donnerstag",
+    "titel": "Pause",
+    "beginn": "2027-05-06T17:00",
+    "ende": "2027-05-06T19:00",
+    "spur": "rahmen"
+  },
+  {
+    "id": "ankommen-freitag",
+    "titel": "Ankommen & Austausch bei Kaffee",
+    "beginn": "2027-05-07T09:30",
+    "ende": "2027-05-07T10:00",
+    "ortId": "mariano-josephinum"
+  },
+  {
+    "id": "ankommen-samstag",
+    "titel": "Ankommen & Austausch bei Kaffee",
+    "beginn": "2027-05-08T08:45",
+    "ende": "2027-05-08T09:15",
+    "ortId": "mariano-josephinum"
+  },
+  {
+    "id": "transfer-dom",
+    "titel": "Transfer zu Fuß zum Dom Mariä Himmelfahrt",
+    "beginn": "2027-05-08T15:00",
+    "ende": "2027-05-08T15:30",
+    "spur": "rahmen"
+  },
+  {
+    "id": "ankommen-sonntag",
+    "titel": "Ankommen & Austausch bei Kaffee",
+    "beginn": "2027-05-09T10:00",
+    "ende": "2027-05-09T10:30",
+    "ortId": "mariano-josephinum"
   }
 ]

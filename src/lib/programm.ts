@@ -153,6 +153,19 @@ export const STATUS_TEXT: Record<Bestaetigung, string | null> = {
 };
 
 /** Ueberschrift fuer eine Gruppe gleichzeitiger Punkte derselben Spur. */
+/** Einleitung über einer Gruppe, Wortlaut laut Programm vom 25.10.2026. */
+export const SPUR_EINLEITUNG: Partial<Record<Spur, string>> = {
+  exkursion:
+    "Am Nachmittag eröffnen zehn Exkursionen unterschiedliche Perspektiven auf das Tagungsmotto: von religiösem und kulturellem Erbe über Landwirtschaft, Industrie und Medien bis zu Kreislaufwirtschaft und Kunst.",
+};
+
+/**
+ * Gruppen dieser Spuren sind anfangs zugeklappt: Zehn Exkursionen oder
+ * mehrere parallele Vorträge untereinander schöben den Rest des Tages weit
+ * nach unten. Der Gruppenkopf zeigt trotzdem, dass es sie gibt und wie viele.
+ */
+export const SPUR_ZUGEKLAPPT: ReadonlySet<Spur> = new Set<Spur>(["exkursion", "studium-generale"]);
+
 export const SPUR_TEXT: Record<Spur, string | null> = {
   haupt: null,
   exkursion: "Exkursionen",

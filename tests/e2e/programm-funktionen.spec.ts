@@ -84,6 +84,19 @@ test.describe("Mein Programm", () => {
     ).toHaveAttribute("aria-pressed", "true");
   });
 
+  /** Eine gemerkte Exkursion darf nicht in der zugeklappten Gruppe verschwinden. */
+  test("zeigt im eigenen Programm auch eine gemerkte Exkursion", async ({ page }) => {
+    await oeffneProgrammpunkt(page, "exkursion-ndr");
+    await page
+      .locator('.punkt[data-id="exkursion-ndr"]')
+      .getByRole("button", { name: /Merken/ })
+      .click();
+    await page.reload();
+
+    await page.getByRole("button", { name: "Nur mein Programm" }).click();
+    await expect(page.locator('.punkt[data-id="exkursion-ndr"]')).toBeVisible();
+  });
+
   test("filtert auf die eigene Auswahl und wieder zurueck", async ({ page }) => {
     await oeffneProgrammpunkt(page, "konzert");
     await page

@@ -8,7 +8,9 @@ import {
   formatiereDatum,
   formatiereTagKurz,
   nachTagenGruppieren,
+  SPUR_EINLEITUNG,
   SPUR_TEXT,
+  SPUR_ZUGEKLAPPT,
   type Programmpunkt as Punkt,
   type Spur,
 } from "../lib/programm.ts";
@@ -137,6 +139,12 @@ const tageAufbereitet = tage.map((tag) => ({
                       {SPUR_TEXT[gruppe.spur] ?? "Gleichzeitig"} · {gruppe.punkte.length} zur Wahl
                     </b>
                     <br />
+                    {SPUR_EINLEITUNG[gruppe.spur] && (
+                      <>
+                        {SPUR_EINLEITUNG[gruppe.spur]}
+                        <br />
+                      </>
+                    )}
                     Diese Punkte laufen parallel – ihr entscheidet euch für einen.
                   </span>
 
@@ -146,6 +154,7 @@ const tageAufbereitet = tage.map((tag) => ({
                     type="button"
                     aria-expanded="true"
                     data-gruppe={gruppenKennung}
+                    data-anfangs-zu={SPUR_ZUGEKLAPPT.has(gruppe.spur) ? "" : undefined}
                     hidden
                   >
                     <span data-umschalter-text>Einklappen</span>
@@ -249,6 +258,7 @@ const tageAufbereitet = tage.map((tag) => ({
     /* Was gerade laeuft, wird aufgeklappt: Wer waehrend der Tagung die Seite
        oeffnet, will die Einzelheiten sehen und nicht erst tippen muessen. */
     if (zielElement instanceof HTMLDetailsElement) zielElement.open = true;
+    klappeGruppeAuf(zielElement);
     zielElement?.scrollIntoView({
       // Wer Bewegung reduziert haben will, springt (Regel 37).
       behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
@@ -340,32 +350,47 @@ const tageAufbereitet = tage.map((tag) => ({
 
   /* ===== Gruppen auf- und zuklappen =====
      Ohne JavaScript bleibt alles sichtbar - der Umschalter erscheint erst
-     hier. Zugeklappt wird nur die Darstellung; die Punkte bleiben im Dokument
-     und damit fuer "Mein Programm" und die Jetzt-Markierung erreichbar. */
-  for (const knopf of document.querySelectorAll<HTMLButtonElement>(".gruppe-umschalter")) {
-    const kennung = knopf.dataset.gruppe;
-    if (!kennung) continue;
+     hier, und erst hier klappen Exkursionen anfangs zu. Zugeklappt wird nur
+     die Darstellung; die Punkte bleiben im Dokument und damit fuer "Mein
+     Programm" und die Jetzt-Markierung erreichbar.
 
+     Eigenes Attribut statt hidden: hidden gehoert dem Filter "Nur mein
+     Programm" - teilten sich beide eins, oeffnete jedes Neuzeichnen der
+     Auswahl alle Gruppen wieder. */
+  const umschalter = [...document.querySelectorAll<HTMLButtonElement>(".gruppe-umschalter")];
+
+  function setzeGruppe(knopf: HTMLButtonElement, offen: boolean): void {
+    for (const eintrag of document.querySelectorAll<HTMLElement>(
+      `.eintrag[data-gruppe="${knopf.dataset.gruppe}"]`,
+    )) {
+      eintrag.toggleAttribute("data-zugeklappt", !offen);
+    }
+    knopf.setAttribute("aria-expanded", String(offen));
+    const text = knopf.querySelector("[data-umschalter-text]");
+    if (text) text.textContent = offen ? "Einklappen" : "Ausklappen";
+  }
+
+  /** Oeffnet die Gruppe, in der ein Punkt steckt - sonst fuehrte ein Sprung ins Leere. */
+  function klappeGruppeAuf(element: Element | null): void {
+    const kennung = element?.closest<HTMLElement>(".eintrag[data-gruppe]")?.dataset.gruppe;
+    const knopf = umschalter.find((k) => k.dataset.gruppe === kennung);
+    if (knopf) setzeGruppe(knopf, true);
+  }
+
+  for (const knopf of umschalter) {
     knopf.removeAttribute("hidden");
+    if (knopf.hasAttribute("data-anfangs-zu")) setzeGruppe(knopf, false);
 
     knopf.addEventListener("click", () => {
-      const offen = knopf.getAttribute("aria-expanded") !== "false";
-      const text = knopf.querySelector("[data-umschalter-text]");
-
-      for (const eintrag of document.querySelectorAll<HTMLElement>(
-        `.eintrag[data-gruppe="${kennung}"]`,
-      )) {
-        eintrag.toggleAttribute("hidden", offen);
-      }
-
-      knopf.setAttribute("aria-expanded", String(!offen));
-      if (text) text.textContent = offen ? "Ausklappen" : "Einklappen";
+      setzeGruppe(knopf, knopf.getAttribute("aria-expanded") === "false");
     });
   }
 
   nurMeine?.addEventListener("click", () => {
     nurAuswahlZeigen = !nurAuswahlZeigen;
     nurMeine.setAttribute("aria-pressed", String(nurAuswahlZeigen));
+    // Eine gemerkte Exkursion darf nicht in einer zugeklappten Gruppe stecken.
+    if (nurAuswahlZeigen) for (const knopf of umschalter) setzeGruppe(knopf, true);
     if (nurMeineText) {
       nurMeineText.textContent = nurAuswahlZeigen ? "Ganzes Programm" : "Nur mein Programm";
     }
@@ -506,6 +531,10 @@ const tageAufbereitet = tage.map((tag) => ({
 
   /* Eingerueckt und mit Verbindungslinie: Die Punkte gehoeren zum Kopf
      darueber und stehen nicht gleichrangig im Tagesablauf. */
+  .eintrag[data-gruppe][data-zugeklappt] {
+    display: none;
+  }
+
   .eintrag[data-gruppe] {
     position: relative;
     padding-left: var(--raum-4);

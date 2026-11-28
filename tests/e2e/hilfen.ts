@@ -99,6 +99,15 @@ export async function erwarteKeinSeitenScroll(page: Page): Promise<void> {
 export async function oeffneProgrammpunkt(page: Page, kennung: string): Promise<void> {
   const punkt = page.locator(`.punkt[data-id="${kennung}"]`);
 
+  // Steckt der Punkt in einer zugeklappten Gruppe (Exkursionen), klappt ein
+  // Mensch zuerst die Gruppe auf.
+  const gruppe = await punkt.evaluate(
+    (element) => element.closest("li[data-gruppe]")?.getAttribute("data-gruppe") ?? null,
+  );
+  if (gruppe && (await punkt.isHidden())) {
+    await page.locator(`.gruppe-umschalter[data-gruppe="${gruppe}"]`).click();
+  }
+
   if (await punkt.evaluate((element) => (element as HTMLDetailsElement).open)) return;
 
   await punkt.locator("summary").click();
