@@ -1,7 +1,6 @@
 ---
 import Basis from "../layouts/Basis.astro";
 import Seitenkopf from "../components/Seitenkopf.astro";
-import Platzhalterhinweis from "../components/Platzhalterhinweis.astro";
 
 /**
  * Datenschutzerklaerung - Grundfassung.
@@ -9,9 +8,10 @@ import Platzhalterhinweis from "../components/Platzhalterhinweis.astro";
  * Beschrieben ist nur, was die Anwendung tatsaechlich tut: statische Seiten bei
  * Vercel, Ankuendigungen aus Supabase, Speicherung allein auf dem Geraet, Verweise auf Microsoft Forms,
  * SharePoint und Karten-Apps. Was der Verein festlegen muss (Speicherdauer,
- * Datenschutzbeauftragter, Anmeldedaten nach F4), steht NICHT erfunden im Text,
- * sondern im Platzhalterhinweis. Der Vorstand prueft und gibt frei, bevor die
- * Seite oeffentlich wird.
+ * Datenschutzbeauftragter, Anmeldedaten nach F4), steht NICHT erfunden im Text.
+ * Der sichtbare Hinweis darauf ist auf Wunsch des Orga-Teams entfallen; die
+ * offenen Punkte stehen in docs/offene-fragen.md (F4). Der Vorstand prueft
+ * und gibt frei, bevor die Seite oeffentlich wird.
  *
  * Aendert sich, was die App speichert oder an wen sie verweist, ist diese
  * Seite im selben Pull Request anzupassen.
@@ -27,13 +27,6 @@ import Platzhalterhinweis from "../components/Platzhalterhinweis.astro";
     titel="Datenschutzerklärung"
     einleitung="für die Altstipendiaten der Konrad-Adenauer-Stiftung e. V."
   />
-
-  <Platzhalterhinweis>
-    Grundfassung, vom Vorstand vor der Veröffentlichung zu prüfen. Offen sind: ob ein
-    Datenschutzbeauftragter benannt ist, wie lange Vercel Zugriffsprotokolle aufbewahrt, in welcher
-    Region die Supabase-Datenbank liegt, welche Daten die Anmeldung erhebt und wie lange sie
-    aufbewahrt werden (F4), sowie das Datum dieser Fassung.
-  </Platzhalterhinweis>
 
   <section class="karte">
     <h2>Verantwortlicher</h2>

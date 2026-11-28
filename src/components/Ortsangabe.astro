@@ -65,11 +65,7 @@ const genau = istGenauBestimmt(ort);
     </p>
   )}
 
-  {!knapp && !genau && (
-    <p class="offen">
-      Die genaue Adresse ist noch nicht hinterlegt – die Verweise suchen nach dem Namen.
-    </p>
-  )}
+  {!knapp && !genau && <p class="offen">Die Kartenlinks suchen nach dem Namen.</p>}
 </div>
 
 <style>

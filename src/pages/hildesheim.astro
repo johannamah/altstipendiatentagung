@@ -3,7 +3,6 @@ import { getCollection, render } from "astro:content";
 
 import Basis from "../layouts/Basis.astro";
 import Seitenkopf from "../components/Seitenkopf.astro";
-import Platzhalterhinweis from "../components/Platzhalterhinweis.astro";
 import Ikone from "../components/Ikone.astro";
 import Ortsangabe from "../components/Ortsangabe.astro";
 import type { Ort } from "../lib/orte.ts";
@@ -105,12 +104,6 @@ const sehenswuerdigkeiten = [
       ))}
     </ul>
   </section>
-
-  <Platzhalterhinweis>
-    Diese Liste stammt aus öffentlichen Bewertungsportalen (Stand: Recherche 2026) und ist noch
-    nicht vom Orga-Team geprüft. Die Straßenadressen fehlen – die Verweise suchen deshalb nach dem
-    Namen. Eine kuratierte Auswahl mit vollständigen Adressen wird nachgereicht.
-  </Platzhalterhinweis>
 
   <section class="karte">
     <h2>
