@@ -311,12 +311,9 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
     await expect(page.getByText(/22. März 1945/)).toBeVisible();
   });
 
-  /**
-   * Die Empfehlungen werden nachgereicht. Bis dahin steht dort bewusst keine
-   * Liste - eine ungepruefte Auswahl waere keine Empfehlung.
-   */
-  test("Hildesheim listet die Lokale mit Weiterleitung an Karten-Apps", async ({ page }) => {
-    await page.goto("/hildesheim");
+  /** Die Empfehlungen stehen seit dem 28.11.2026 auf einer eigenen Seite. */
+  test("Essen & Trinken listet die Lokale mit Weiterleitung an Karten-Apps", async ({ page }) => {
+    await page.goto("/essen-trinken");
 
     const lokale = page.locator(".lokale > li");
     await expect(lokale).toHaveCount(6);

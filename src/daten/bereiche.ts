@@ -106,7 +106,7 @@ export const BEREICHE: readonly Bereich[] = [
   {
     slug: "essen-trinken",
     titel: "Essen & Trinken",
-    unterzeile: "Empfehlungen in Hildesheim",
+    unterzeile: "Restaurants und Cafés",
     ikone: "utensils",
     farbe: "oliv",
   },
