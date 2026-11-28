@@ -8,7 +8,7 @@
     "absaetze": [
       "Unter dem Motto „Demokratie leben – Europa gestalten“ führt die Jahrestagung 2027 nach Hildesheim. Vier Tage bieten Raum für politische Diskussionen, persönliche Begegnungen und gemeinsame Entdeckungen.",
       "Im Mittelpunkt stehen Europas Zukunft zwischen künstlicher Intelligenz, Wettbewerb und Souveränität sowie Deutschlands Verantwortung für Frieden und Freiheit. Die Exkursionen verbinden diese Fragen mit konkreten Einblicken in Kultur, Wirtschaft, Medien und den Umgang mit Ressourcen. Das Studium Generale ergänzt unseren Austausch innerhalb des Altstipendiaten Vereins. Konzert, Festabend und ökumenischer Gottesdienst schaffen einen festlichen Rahmen für unsere Gemeinschaft.",
-      "Wir freuen uns auf anregende Gespräche und gemeinsame Tage in Hildesheim."
+      "Zentral für die Tagung ist unsere neue Tagungsapp, in der viele weitere hilfreiche Informationen enthalten sind und kurzfristige Änderungen kommuniziert werden. Wir freuen uns auf anregende Gespräche und gemeinsame Tage in Hildesheim."
     ]
   },
   {
@@ -33,15 +33,10 @@
     "reihenfolge": 2,
     "name": "Annegret Kramp-Karrenbauer",
     "rolle": "Vorsitzende der Konrad-Adenauer-Stiftung e. V.",
-    "bild": "../assets/grussworte/annegret-kramp-karrenbauer.webp",
+    "bild": "../assets/grussworte/annegret-kramp-karrenbauer.jpg",
     "bildnachweis": "[Quelle und Rechteinhaber eintragen]",
     "status": "platzhalter",
-    "absaetze": [
-      "Liebe Altstipendiatinnen und Altstipendiaten,",
-      "die Konrad-Adenauer-Stiftung begleitet ihre Stipendiatinnen und Stipendiaten weit über die Förderzeit hinaus. Dass Sie sich als Alumni Jahr für Jahr zusammenfinden, ist ein Zeichen dafür, dass diese Verbindung trägt.",
-      "Europa steht vor Fragen, die sich nicht nebenbei beantworten lassen. Es braucht Menschen, die bereit sind, Verantwortung zu übernehmen – im Beruf, im Ehrenamt, im politischen Gespräch.",
-      "Ich wünsche Ihnen eine anregende Tagung in Hildesheim."
-    ]
+    "absaetze": ["Das Grußwort folgt in Kürze."]
   },
   {
     "id": "ingo-meyer",
@@ -55,6 +50,8 @@
       "Demokratie lebt vom Austausch unterschiedlicher Perspektiven, vom offenen Dialog und von Menschen, die bereit sind, Verantwortung für unsere Gesellschaft zu übernehmen. Gerade in Zeiten großer politischer und gesellschaftlicher Herausforderungen ist es wichtig, demokratische Werte mit Leben zu füllen und die Zukunft Europas aktiv mitzugestalten.",
       "Dass Sie mit Ihrer Tagung in Hildesheim zu Gast sind, passt in besonderer Weise zu diesem Anliegen. Hildesheim ist eine Stadt der Bildung und Kultur und überregional bekannt für internationale Museen, für das Theater für Niedersachsen und für ein kulturelles Erbe, das auf eine über 1200-jährige Geschichte zurückgeht, die an vielen Orten und besonders prominent an gleich zwei UNESCO-Welterbestätten sichtbar wird. Hildesheim ist aber ebenso auch ein bedeutender Ort für junge Kultur: Für Gegenwartsliteratur, für zeitgenössische Kunst und für eine Freie Theaterszene, die bundesweit ihres gleichen sucht. Keimzelle hierfür sind v.a. die Hildesheimer Hochschulen, von wo aus der kreative Nachwuchs in das ganze Land und weit darüber hinaus entsandt wird.",
       "Abschließend wünsche ich Ihnen anregende Diskussionen, neue Impulse und Begegnungen, die über das Tagungswochenende hinauswirken, sowie einen angenehmen Aufenthalt in unserer schönen Stadt."
-    ]
+    ],
+    "bild": "../assets/grussworte/ingo-meyer.jpg",
+    "bildnachweis": "[Quelle und Rechteinhaber eintragen]"
   }
 ]

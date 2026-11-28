@@ -18,7 +18,9 @@
     "fruehstueck": "nicht inbegriffen, 9,90 € pro Person",
     "telefon": "+49 6146 815350-7",
     "email": "hildesheim@hotelbb.com",
-    "web": "https://www.hotel-bb.com/de/hotel/hildesheim"
+    "web": "https://www.hotel-bb.com/de/hotel/hildesheim",
+    "bild": "../assets/unterkuenfte/bb-hotel.jpg",
+    "bildbeschreibung": "Außenansicht des B&B Hotel Hildesheim"
   },
   {
     "id": "hey-lou-hotel",
@@ -39,7 +41,9 @@
     "fruehstueck": "inbegriffen",
     "telefon": "+49 (0) 5121 912 870 0",
     "email": "info.hil@heylouhotels.com",
-    "web": "https://hil.heylouhotels.com/de/"
+    "web": "https://hil.heylouhotels.com/de/",
+    "bild": "../assets/unterkuenfte/hey-lou-hotel.jpg",
+    "bildbeschreibung": "Außenansicht des HeyLou Hotel Hildesheim mit seinem runden Glasturm"
   },
   {
     "id": "schlafladen",
@@ -77,7 +81,9 @@
     ],
     "telefon": "05121 93593-55",
     "email": "info@schlafladen.de",
-    "web": "https://schlafladen.de/"
+    "web": "https://schlafladen.de/",
+    "bild": "../assets/unterkuenfte/schlafladen.jpg",
+    "bildbeschreibung": "Doppelzimmer im Schlafladen Hildesheim"
   },
   {
     "id": "buergermeisterkapelle",
@@ -103,7 +109,9 @@
     "hinweis": "Das Abrufkontingent verfällt ab Mitte März 2027. Danach gehen die nicht abgerufenen Zimmer in den freien Verkauf.",
     "telefon": "+49 (0) 51 21 – 179 29 0",
     "email": "info@hotelbuergermeisterkapelle.de",
-    "web": "https://hotelbuergermeisterkapelle.de/"
+    "web": "https://hotelbuergermeisterkapelle.de/",
+    "bild": "../assets/unterkuenfte/buergermeisterkapelle.jpg",
+    "bildbeschreibung": "Außenansicht des Hotels Bürgermeisterkapelle Hildesheim"
   },
   {
     "id": "van-der-valk",
@@ -122,6 +130,8 @@
     "fruehstueck": "nicht inbegriffen, 23,50 € pro Person",
     "telefon": "+49 5121 300 0",
     "email": "info@hildesheim.valk.com",
-    "web": "https://hildesheim.vandervalk.de/"
+    "web": "https://www.vandervalkhotelgroup.com/de/hotels/hotel-hildesheim",
+    "bild": "../assets/unterkuenfte/van-der-valk.jpg",
+    "bildbeschreibung": "Fachwerkhäuser am Hildesheimer Marktplatz, in denen das Van der Valk Hotel liegt"
   }
 ]

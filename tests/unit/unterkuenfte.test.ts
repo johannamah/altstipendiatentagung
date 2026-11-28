@@ -18,6 +18,8 @@ interface Unterkunft {
   stichwort?: string;
   web?: string;
   ortId?: string;
+  bild?: string;
+  bildbeschreibung?: string;
 }
 
 const unterkuenfte = lade("unterkuenfte.json") as Unterkunft[];
@@ -41,6 +43,19 @@ describe("Unterkünfte", () => {
       // Wortlaut laut Programmheft - so wird er bei der Buchung angegeben.
       expect(unterkunft.stichwort).toBe("Abrufkontingent, Stichwort: Konrad-Adenauer-Stiftung");
       expect(unterkunft.web).toMatch(/^https:\/\//);
+    },
+  );
+
+  /**
+   * Ein Bild je Hotel, verkleinert unter src/assets/unterkuenfte/ - nie das
+   * Original aus der Ablage des Orga-Teams. Ohne Beschreibung fehlte
+   * Screenreadern der Alternativtext.
+   */
+  it.each(unterkuenfte.map((u) => [u.name, u] as const))(
+    "%s hat ein Bild mit Beschreibung",
+    (_name, unterkunft) => {
+      expect(unterkunft.bild).toMatch(/^\.\.\/assets\/unterkuenfte\/[a-z0-9-]+\.jpg$/);
+      expect(unterkunft.bildbeschreibung).toBeTruthy();
     },
   );
 
