@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
 
 import Basis from "../layouts/Basis.astro";
@@ -30,82 +31,95 @@ const empfehlungen = alle.filter((eintrag) => !eintrag.data.kontingent);
   <h2>Hotels mit Zimmerkontingent</h2>
 
   {mitKontingent.map(({ data: haus }) => (
-    <section class="karte">
-      <h3>{haus.name}</h3>
-
-      {haus.stichwort && (
-        <p class="stichwort">
-          Bei der Buchung angeben: <b>„{haus.stichwort}“</b>
-          {haus.zeitraum && <> · Zeitraum {haus.zeitraum}</>}
-        </p>
+    <section class:list={["karte", "haus", { "mit-bild": haus.bild }]}>
+      {haus.bild && (
+        /* Verkleinert und als WebP ausgeliefert; lazy, weil nur das erste Hotel
+             im ersten Bildschirm steht. */
+        <Image
+          class="hausbild"
+          src={haus.bild}
+          alt={haus.bildbeschreibung ?? ""}
+          widths={[400, 800]}
+          sizes="(min-width: 48rem) 22rem, calc(100vw - 4rem)"
+        />
       )}
+      <div class="angaben">
+        <h3>{haus.name}</h3>
 
-      {haus.zimmer.length > 0 && (
-        /* Die Tabelle darf breiter sein als ein schmales Display und scrollt dann
-           in ihrem eigenen Bereich - die Seite nie (Regel 10). tabindex macht den
-           Bereich mit der Tastatur scrollbar. */
-        <div
-          class="tabellenbereich"
-          tabindex="0"
-          role="group"
-          aria-label={`Zimmerkontingent ${haus.name}`}
-        >
-          <table>
-            <thead>
-              <tr>
-                <th scope="col">Zimmerart</th>
-                <th scope="col">Reserviert</th>
-                <th scope="col">Preis</th>
-              </tr>
-            </thead>
-            <tbody>
-              {haus.zimmer.map((zimmer) => (
+        {haus.stichwort && (
+          <p class="stichwort">
+            Bei der Buchung angeben: <b>„{haus.stichwort}“</b>
+            {haus.zeitraum && <> · Zeitraum {haus.zeitraum}</>}
+          </p>
+        )}
+
+        {haus.zimmer.length > 0 && (
+          /* Die Tabelle darf breiter sein als ein schmales Display und scrollt dann
+             in ihrem eigenen Bereich - die Seite nie (Regel 10). tabindex macht den
+             Bereich mit der Tastatur scrollbar. */
+          <div
+            class="tabellenbereich"
+            tabindex="0"
+            role="group"
+            aria-label={`Zimmerkontingent ${haus.name}`}
+          >
+            <table>
+              <thead>
                 <tr>
-                  <th scope="row">
-                    {zimmer.typ}
-                    {zimmer.hinweis && <span class="zimmerhinweis">{zimmer.hinweis}</span>}
-                  </th>
-                  <td>{zimmer.anzahl ?? "keine Angabe"}</td>
-                  <td>{zimmer.preis}</td>
+                  <th scope="col">Zimmerart</th>
+                  <th scope="col">Reserviert</th>
+                  <th scope="col">Preis</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-      {haus.fruehstueck && (
-        <p class="zeile">
-          <Ikone name="coffee" />
-          <span>Frühstück: {haus.fruehstueck}</span>
-        </p>
-      )}
-      {haus.hinweis && (
-        <p class="kontingenthinweis">
-          <Ikone name="alert" />
-          <span>{haus.hinweis}</span>
-        </p>
-      )}
-      {haus.web && (
-        <p>
-          <a class="buchen" href={haus.web} target="_blank" rel="noopener">
-            <Ikone name="globe" />
-            Buchen<span class="nur-vorlesen">: {haus.name}</span>
-          </a>
-        </p>
-      )}
-      {haus.ortId && orte.get(haus.ortId) && <Ortsangabe ort={orte.get(haus.ortId)!} />}
-      {haus.telefon && (
-        <p class="zeile">
-          <Ikone name="phone" />
-          <a href={telefonVerweis(haus.telefon)}>{haus.telefon}</a>
-        </p>
-      )}
-      {haus.email && (
-        <p class="zeile">
-          <Ikone name="mail" />
-          <a href={`mailto:${haus.email}`}>{haus.email}</a>
-        </p>
-      )}
+              </thead>
+              <tbody>
+                {haus.zimmer.map((zimmer) => (
+                  <tr>
+                    <th scope="row">
+                      {zimmer.typ}
+                      {zimmer.hinweis && <span class="zimmerhinweis">{zimmer.hinweis}</span>}
+                    </th>
+                    <td>{zimmer.anzahl ?? "keine Angabe"}</td>
+                    <td>{zimmer.preis}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+        {haus.fruehstueck && (
+          <p class="zeile">
+            <Ikone name="coffee" />
+            <span>Frühstück: {haus.fruehstueck}</span>
+          </p>
+        )}
+        {haus.hinweis && (
+          <p class="kontingenthinweis">
+            <Ikone name="alert" />
+            <span>{haus.hinweis}</span>
+          </p>
+        )}
+        {haus.web && (
+          <p>
+            <a class="buchen" href={haus.web} target="_blank" rel="noopener">
+              <Ikone name="globe" />
+              Buchen<span class="nur-vorlesen">: {haus.name}</span>
+            </a>
+          </p>
+        )}
+        {haus.ortId && orte.get(haus.ortId) && <Ortsangabe ort={orte.get(haus.ortId)!} />}
+        {haus.telefon && (
+          <p class="zeile">
+            <Ikone name="phone" />
+            <a href={telefonVerweis(haus.telefon)}>{haus.telefon}</a>
+          </p>
+        )}
+        {haus.email && (
+          <p class="zeile">
+            <Ikone name="mail" />
+            <a href={`mailto:${haus.email}`}>{haus.email}</a>
+          </p>
+        )}
+      </div>
     </section>
   ))}
 
@@ -152,6 +166,41 @@ const empfehlungen = alle.filter((eintrag) => !eintrag.data.kontingent);
 </Basis>
 
 <style>
+  /* Auf breiten Bildschirmen steht das Bild links neben den Angaben, auf dem
+     Smartphone darüber. */
+  .haus {
+    display: grid;
+    /* minmax(0, ...): Eine automatische Spalte wüchse mit der breiten
+       Zimmertabelle mit, und die Seite ließe sich bei 320 px seitwärts
+       schieben. So scrollt nur die Tabelle in ihrem eigenen Bereich. */
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--raum-4);
+  }
+
+  .angaben {
+    min-width: 0;
+  }
+
+  @media (min-width: 48rem) {
+    .haus.mit-bild {
+      grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+      align-items: start;
+    }
+  }
+
+  .hausbild {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    border-radius: var(--radius-klein);
+  }
+
+  .angaben > :first-child {
+    margin-top: 0;
+  }
+
   h2 {
     margin-top: var(--raum-8);
   }

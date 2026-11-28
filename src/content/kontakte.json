@@ -22,8 +22,8 @@
     "reihenfolge": 3,
     "name": "Pia Gerbrich",
     "bereich": "[Zuständigkeitsbereich einfügen]",
-    "telefon": "[Telefonnummer einfügen]",
-    "email": "[E-Mail einfügen]",
+    "telefon": "+49 1516 4934114",
+    "email": "pia.gerbrich@gmx.de",
     "bild": "../assets/kontakte/pia-gerbrich.jpg"
   },
   {
@@ -48,7 +48,8 @@
     "name": "Brit Fillies",
     "bereich": "[Zuständigkeitsbereich einfügen]",
     "telefon": "[Telefonnummer einfügen]",
-    "email": "[E-Mail einfügen]"
+    "email": "[E-Mail einfügen]",
+    "bild": "../assets/kontakte/brit-fillies.jpg"
   },
   {
     "id": "sven-luediger",

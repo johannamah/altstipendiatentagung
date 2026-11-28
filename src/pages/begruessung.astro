@@ -4,14 +4,11 @@ import { getCollection } from "astro:content";
 
 import Basis from "../layouts/Basis.astro";
 import Seitenkopf from "../components/Seitenkopf.astro";
-import Platzhalterhinweis from "../components/Platzhalterhinweis.astro";
 
 const eintraege = await getCollection("grussworte");
 const grussworte = eintraege
   .map((eintrag) => eintrag.data)
   .sort((a, b) => a.reihenfolge - b.reihenfolge);
-
-const alleVorlaeufig = grussworte.every((grusswort) => grusswort.status !== "bestaetigt");
 ---
 
 <Basis
@@ -23,14 +20,6 @@ const alleVorlaeufig = grussworte.every((grusswort) => grusswort.status !== "bes
     titel="Begrüßungsworte"
     einleitung="Ein herzliches Willkommen zur Jahrestagung 2027."
   />
-
-  {alleVorlaeufig && (
-    <Platzhalterhinweis>
-      Die folgenden Texte sind Beispiele und noch nicht abgestimmt. Die Originaltexte werden
-      nachgereicht; bis dahin bitte nichts davon zitieren oder weitergeben. Auch die Bildnachweise
-      fehlen noch.
-    </Platzhalterhinweis>
-  )}
 
   {grussworte.map((grusswort) => (
     <article class="grusswort">
@@ -52,9 +41,6 @@ const alleVorlaeufig = grussworte.every((grusswort) => grusswort.status !== "bes
         <div>
           <h2>{grusswort.name}</h2>
           <p class="rolle">{grusswort.rolle}</p>
-          {grusswort.status !== "bestaetigt" && (
-            <p class="marke">Beispieltext – Originaltext folgt</p>
-          )}
         </div>
       </header>
 
@@ -109,17 +95,6 @@ const alleVorlaeufig = grussworte.every((grusswort) => grusswort.status !== "bes
 
   /* Der Hinweis steht als Text, nicht nur als Farbe (Regel 19) - und direkt am
      Namen, damit niemand den Beispieltext fuer abgestimmt haelt. */
-  .marke {
-    display: inline-block;
-    padding: 2px var(--raum-2);
-    margin: 0;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--hinweis-text);
-    background: var(--hinweis-flaeche);
-    border: 1px solid var(--hinweis-rand);
-    border-radius: 999px;
-  }
 
   .text p:last-child {
     margin-bottom: 0;

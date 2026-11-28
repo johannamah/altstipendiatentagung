@@ -1,7 +1,6 @@
 ---
 import Basis from "../layouts/Basis.astro";
 import Seitenkopf from "../components/Seitenkopf.astro";
-import Platzhalterhinweis from "../components/Platzhalterhinweis.astro";
 import Ikone from "../components/Ikone.astro";
 
 /**
@@ -27,12 +26,6 @@ const SHAREPOINT_URL: string | null = null;
     titel="Fotos"
     einleitung="Teilt eure schönsten Momente der Tagung und schaut euch die Fotos der anderen Teilnehmenden an."
   />
-
-  <Platzhalterhinweis>
-    Es ist noch kein Fotoalbum verknüpft. Das Orga-Team hinterlegt den Link in
-    <code>src/pages/fotos.astro</code> – etwa ein geteiltes Album, eine Nextcloud-Freigabe oder ein
-    vergleichbarer Dienst, bei dem ohne eigenes Konto hochgeladen werden kann.
-  </Platzhalterhinweis>
 
   <section class="karte">
     <h2>

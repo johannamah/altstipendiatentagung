@@ -138,38 +138,47 @@ const exkursionen = defineCollection({
 /** Hotels mit eigenem Zimmerkontingent und Empfehlungen ohne Kontingent. */
 const unterkuenfte = defineCollection({
   loader: file("src/content/unterkuenfte.json"),
-  schema: z.object({
-    name: z.string().min(1),
-    /** Kleinere Zahl steht weiter oben - die Reihenfolge der Kontingentuebersicht. */
-    reihenfolge: z.number().int(),
-    /** Verweist auf einen Eintrag in orte.json. */
-    ortId: z.string().optional(),
-    /** true = eigenes Kontingent fuer die Tagung, false = blosse Empfehlung. */
-    kontingent: z.boolean().default(false),
-    zeitraum: z.string().optional(),
-    stichwort: z.string().optional(),
-    zimmer: z
-      .array(
-        z.object({
-          typ: z.string(),
-          /** Reservierte Zimmer; fehlt, wenn das Hotel keine Zahl nennt. */
-          anzahl: z.number().int().positive().optional(),
-          preis: z.string(),
-          /** Weitere Belegung, Ausstattung, z. B. "bei Einzelnutzung 74,00 € / Nacht". */
-          hinweis: z.string().optional(),
-        }),
-      )
-      .default([]),
-    /** z. B. "inbegriffen" oder "nicht inbegriffen, 9,90 € pro Person". */
-    fruehstueck: z.string().optional(),
-    /** Bedingungen des Kontingents, etwa eine Verfallsfrist. Oeffentlich sichtbar. */
-    hinweis: z.string().optional(),
-    adresse: z.string().optional(),
-    telefon: z.string().optional(),
-    email: z.string().optional(),
-    // z.url() statt z.string().url(): Letzteres ist in zod 4 abgekuendigt.
-    web: z.url().optional(),
-  }),
+  schema: ({ image }) =>
+    z
+      .object({
+        name: z.string().min(1),
+        /** Kleinere Zahl steht weiter oben - die Reihenfolge der Kontingentuebersicht. */
+        reihenfolge: z.number().int(),
+        /** Verweist auf einen Eintrag in orte.json. */
+        ortId: z.string().optional(),
+        /** true = eigenes Kontingent fuer die Tagung, false = blosse Empfehlung. */
+        kontingent: z.boolean().default(false),
+        zeitraum: z.string().optional(),
+        stichwort: z.string().optional(),
+        zimmer: z
+          .array(
+            z.object({
+              typ: z.string(),
+              /** Reservierte Zimmer; fehlt, wenn das Hotel keine Zahl nennt. */
+              anzahl: z.number().int().positive().optional(),
+              preis: z.string(),
+              /** Weitere Belegung, Ausstattung, z. B. "bei Einzelnutzung 74,00 € / Nacht". */
+              hinweis: z.string().optional(),
+            }),
+          )
+          .default([]),
+        /** z. B. "inbegriffen" oder "nicht inbegriffen, 9,90 € pro Person". */
+        fruehstueck: z.string().optional(),
+        /** Bedingungen des Kontingents, etwa eine Verfallsfrist. Oeffentlich sichtbar. */
+        hinweis: z.string().optional(),
+        adresse: z.string().optional(),
+        telefon: z.string().optional(),
+        email: z.string().optional(),
+        // z.url() statt z.string().url(): Letzteres ist in zod 4 abgekuendigt.
+        web: z.url().optional(),
+        /** Verkleinerte Fassung unter src/assets/unterkuenfte/, nie das Original. */
+        bild: image().optional(),
+        /** Alternativtext: was auf dem Bild zu sehen ist. */
+        bildbeschreibung: z.string().min(1).optional(),
+      })
+      .refine((haus) => haus.bild === undefined || haus.bildbeschreibung !== undefined, {
+        message: "Zu jedem Bild gehoert eine Bildbeschreibung (Alternativtext)",
+      }),
 });
 
 /**

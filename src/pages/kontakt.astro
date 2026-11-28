@@ -26,10 +26,6 @@ const initialen = (name: string) =>
     .map((teil) => teil[0])
     .join("")
     .slice(0, 2);
-
-const alleOhneKontaktdaten = kontakte.filter(
-  (person) => istPlatzhalter(person.telefon) && istPlatzhalter(person.email),
-).length;
 ---
 
 <Basis
@@ -55,13 +51,6 @@ const alleOhneKontaktdaten = kontakte.filter(
 
   <h2>Ansprechpersonen</h2>
 
-  {alleOhneKontaktdaten > 0 && (
-    <p class="einleitung">
-      Für {alleOhneKontaktdaten} von {kontakte.length} Personen sind Telefon und E-Mail noch nicht
-      hinterlegt. Wendet euch bis dahin an die beiden oben genannten Ansprechpersonen.
-    </p>
-  )}
-
   <ul class="personen">
     {kontakte.map((person) => (
       <li class="karte">
@@ -85,29 +74,25 @@ const alleOhneKontaktdaten = kontakte.filter(
 
           <div>
             <h3>{person.name}</h3>
-            <p class="bereich">
-              {istPlatzhalter(person.bereich) ? "Zuständigkeit noch offen" : person.bereich}
-            </p>
+            {!istPlatzhalter(person.bereich) && <p class="bereich">{person.bereich}</p>}
           </div>
         </div>
 
-        <p class="zeile">
-          <Ikone name="phone" />
-          {istPlatzhalter(person.telefon) ? (
-            <span class="offen">noch nicht hinterlegt</span>
-          ) : (
+        {/* Kontaktdaten gibt es nur für die Ansprechpersonen. Bei allen anderen
+            steht nichts statt "noch nicht hinterlegt" - es kommt nichts nach. */}
+        {!istPlatzhalter(person.telefon) && (
+          <p class="zeile">
+            <Ikone name="phone" />
             <a href={telefonVerweis(person.telefon!)}>{person.telefon}</a>
-          )}
-        </p>
+          </p>
+        )}
 
-        <p class="zeile">
-          <Ikone name="mail" />
-          {istPlatzhalter(person.email) ? (
-            <span class="offen">noch nicht hinterlegt</span>
-          ) : (
+        {!istPlatzhalter(person.email) && (
+          <p class="zeile">
+            <Ikone name="mail" />
             <a href={`mailto:${person.email}`}>{person.email}</a>
-          )}
-        </p>
+          </p>
+        )}
       </li>
     ))}
   </ul>
@@ -137,11 +122,6 @@ const alleOhneKontaktdaten = kontakte.filter(
 
   .zuerst p {
     margin: 0;
-  }
-
-  .einleitung {
-    font-size: var(--schrift-klein);
-    color: var(--text-leise);
   }
 
   h2 {
@@ -214,10 +194,5 @@ const alleOhneKontaktdaten = kontakte.filter(
     display: inline-flex;
     align-items: center;
     min-height: 44px;
-  }
-
-  .offen {
-    font-style: italic;
-    color: var(--text-leise);
   }
 </style>

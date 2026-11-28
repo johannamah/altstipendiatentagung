@@ -79,7 +79,7 @@ describe("Platzhalter", () => {
     expect(exkursionen).toContain("[Treffpunkt einfügen");
   });
 
-  it.each(["kontakt"])("%s.astro erkennt Platzhalter und ersetzt sie durch Klartext", (seite) => {
+  it.each(["kontakt"])("%s.astro erkennt Platzhalter und blendet sie aus", (seite) => {
     const quelle = readFileSync(`${seitenVerzeichnis}/${seite}.astro`, "utf8");
 
     expect(quelle).toContain("istPlatzhalter");

@@ -85,6 +85,20 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
     ).toHaveAttribute("href", "https://schlafladen.de/");
   });
 
+  test("Unterbringung zeigt zu jedem Hotel ein Bild", async ({ page }) => {
+    await page.goto("/unterbringung");
+
+    for (const hotel of [
+      "B&B Hotel",
+      "HeyLou",
+      "Schlafladen",
+      "Bürgermeisterkapelle",
+      "Van der Valk",
+    ]) {
+      await expect(page.getByRole("img", { name: new RegExp(hotel) })).toHaveCount(1);
+    }
+  });
+
   /**
    * Die Anmeldung laeuft ueber Microsoft Forms (ADR-0011). Geprueft wird das
    * Ziel der Kachel, nicht das Formular selbst: Ein Test, der bei Microsoft
@@ -147,24 +161,31 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
     }
   });
 
-  /**
-   * Die Kurzvorstellungen sind von uns verfasst, nicht von den Personen
-   * freigegeben. Das muss als Text dastehen, nicht nur farblich.
-   */
-  test("Referenten & Gäste kennzeichnet nicht abgestimmte Texte", async ({ page }) => {
-    await page.goto("/referenten");
-
-    await expect(page.getByText("Text noch nicht abgestimmt").first()).toBeVisible();
-  });
-
   /** Porträts liegen erst für einen Teil des Orga-Teams vor; die übrigen zeigen Initialen. */
   test("Kontakt zeigt die hinterlegten Porträts", async ({ page }) => {
     await page.goto("/kontakt");
 
-    for (const name of ["Konstantin Gerbrich", "Torben Burdorf", "Pia Gerbrich"]) {
+    for (const name of ["Konstantin Gerbrich", "Torben Burdorf", "Pia Gerbrich", "Brit Fillies"]) {
       await expect(page.getByRole("img", { name: `Porträt von ${name}` })).toBeVisible();
     }
     await expect(page.getByRole("img", { name: "Porträt von Johanna Mahler" })).toHaveCount(0);
+  });
+
+  /**
+   * Telefon und E-Mail gibt es nur für die drei Ansprechpersonen. Bei allen
+   * anderen steht nichts - kein "noch nicht hinterlegt", das auf etwas warten
+   * ließe, das nicht kommt.
+   */
+  test("Kontakt nennt Telefon und E-Mail nur bei den Ansprechpersonen", async ({ page }) => {
+    await page.goto("/kontakt");
+
+    const person = (name: string) =>
+      page.getByRole("listitem").filter({ has: page.getByRole("heading", { name }) });
+    for (const name of ["Konstantin Gerbrich", "Torben Burdorf", "Pia Gerbrich"]) {
+      await expect(person(name).getByRole("link", { name: /@/ }), name).toHaveCount(1);
+      await expect(person(name).getByRole("link", { name: /\d{3}/ }), name).toHaveCount(1);
+    }
+    await expect(person("Johanna Mahler").getByRole("link")).toHaveCount(0);
   });
 
   test("Kontakt zeigt den Tagungsort", async ({ page }) => {
@@ -243,7 +264,7 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
   test("Hildesheim sagt, dass die Verweise ohne Adresse nur suchen", async ({ page }) => {
     await page.goto("/hildesheim");
 
-    await expect(page.getByText(/die Verweise suchen nach dem Namen/).first()).toBeVisible();
+    await expect(page.getByText(/Die Kartenlinks suchen nach dem Namen/).first()).toBeVisible();
   });
 
   /** Reihenfolge wie im Programmheft 2027: zuerst das Orga-Team, dann die Grußworte. */
@@ -260,25 +281,26 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
   });
 
   /**
-   * Solange ein Originaltext fehlt, muss am Grusswort stehen, dass es ein
-   * Beispiel ist - sonst haelt es jemand fuer abgestimmt und zitiert es. Laut
-   * Programmheft 2027 fehlt nur noch der Text von Annegret Kramp-Karrenbauer.
+   * Der Text von Annegret Kramp-Karrenbauer fehlt noch. Statt eines erfundenen
+   * Beispiels oder Blindtexts unter ihrem Namen steht dort, dass er folgt.
    */
-  test("Begrüßung weist fehlende Originaltexte als Beispiel aus", async ({ page }) => {
+  test("Begrüßung sagt, dass ein fehlendes Grußwort folgt", async ({ page }) => {
     await page.goto("/begruessung");
 
-    const beispiel = page.getByText("Beispieltext – Originaltext folgt");
-    await expect(beispiel).toHaveCount(1);
-    await expect(page.locator(".grusswort").filter({ has: beispiel })).toContainText(
-      "Annegret Kramp-Karrenbauer",
-    );
+    const grusswort = page.getByRole("article").filter({
+      has: page.getByRole("heading", { name: "Annegret Kramp-Karrenbauer" }),
+    });
+    await expect(grusswort).toContainText("Das Grußwort folgt in Kürze.");
+    await expect(page.getByText(/Lorem ipsum|Beispieltext/)).toHaveCount(0);
   });
 
-  /** Für Dr. Ingo Meyer liegt noch kein Porträt vor; sein Grußwort steht ohne Bild. */
-  test("Begrüßung zeigt die vorhandenen Porträts", async ({ page }) => {
+  /** Das Orga-Team steht ohne Bild, die drei Grußworte mit Porträt. */
+  test("Begrüßung zeigt die Porträts der drei Gastredner", async ({ page }) => {
     await page.goto("/begruessung");
 
-    await expect(page.locator(".grusswort img")).toHaveCount(2);
+    for (const name of ["Dr. Matthias Wilkes", "Annegret Kramp-Karrenbauer", "Dr. Ingo Meyer"]) {
+      await expect(page.getByRole("img", { name: `Porträt von ${name}` })).toBeVisible();
+    }
   });
 
   /**
@@ -289,8 +311,26 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
     await page.goto("/fotos");
 
     await expect(page.getByRole("link", { name: /Fotos ansehen/ })).toHaveCount(0);
-    await expect(page.getByText(/noch kein Fotoalbum verknüpft/)).toBeVisible();
+    await expect(page.getByText(/Sobald das Album eingerichtet ist/)).toBeVisible();
   });
+});
+
+/**
+ * Hinweise an das Orga-Team ("Platzhalter", "Beispieltext", "noch nicht
+ * abgestimmt") gehören nicht in die veröffentlichte App. Was noch fehlt, steht
+ * im Backlog, nicht auf der Seite.
+ */
+test.describe("keine Entwurfshinweise", () => {
+  const ENTWURF =
+    /Platzhalter|Beispieltext|noch nicht abgestimmt|noch nicht hinterlegt|Zuständigkeit noch offen|Das Orga-Team hinterlegt|nicht vom Orga-Team geprüft|vom Vorstand vor der Veröffentlichung zu prüfen/;
+
+  for (const pfad of [...SEITENBEREICHE.map((bereich) => `/${bereich.slug}`), "/datenschutz"]) {
+    test(`${pfad} zeigt keine Entwurfshinweise`, async ({ page }) => {
+      await page.goto(pfad);
+
+      await expect(page.getByText(ENTWURF)).toHaveCount(0);
+    });
+  }
 });
 
 test.describe("Barrierefreiheit aller Bereiche", () => {
