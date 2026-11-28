@@ -67,6 +67,32 @@ test("Exkursionen sind anfangs zugeklappt und lassen sich ausklappen", async ({ 
   await expect(exkursion).toBeVisible();
 });
 
+test("verweist auf die Übersicht aller Exkursionen", async ({ page }) => {
+  await expect(page.getByRole("link", { name: "Alle Exkursionen im Überblick" })).toHaveAttribute(
+    "href",
+    "/exkursionen",
+  );
+});
+
+/**
+ * Das Programmheft erscheint erst, wenn eine veröffentlichungsreife Fassung
+ * vorliegt. Dann müssen Link und FAQ-Antwort zusammen da sein und die Datei
+ * ein PDF sein - nicht nur eines von beiden.
+ */
+test("bietet das Programmheft nur zusammen mit einer echten Datei an", async ({
+  page,
+  request,
+}) => {
+  const link = page.getByRole("link", { name: /Programmheft als PDF/ });
+  if ((await link.count()) === 0) {
+    await page.goto("/faq");
+    await expect(page.getByText(/Programmheft als PDF/)).toHaveCount(0);
+    return;
+  }
+  const antwort = await request.get((await link.getAttribute("href")) ?? "");
+  expect(antwort.headers()["content-type"]).toContain("application/pdf");
+});
+
 test("kündigt die Exkursionen mit einem Einleitungstext an", async ({ page }) => {
   await expect(
     page.getByText(/eröffnen zehn Exkursionen unterschiedliche Perspektiven/),

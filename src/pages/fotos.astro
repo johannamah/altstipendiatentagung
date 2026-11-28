@@ -4,7 +4,9 @@ import Seitenkopf from "../components/Seitenkopf.astro";
 import Ikone from "../components/Ikone.astro";
 
 /**
- * Fotoalbum auf dem SharePoint des Vereins (Entscheidung vom 27.09.2026).
+ * Fotoalbum im OneDrive des Vereins (Entscheidung vom 27.09.2026 fuer
+ * Microsoft 365, ADR-0009; seit 28.11.2026 OneDrive). Der Zugang ist mit einem
+ * Passwort geschuetzt, das auf der Tagung bekannt gegeben wird.
  *
  * Die App verlinkt nur - sie nimmt selbst keine Bilder entgegen. Das haelt die
  * offene Rechtsfrage F5 (Einwilligung, Widerruf, Loeschung bei Personenbildern)
@@ -14,7 +16,7 @@ import Ikone from "../components/Ikone.astro";
  * Sobald die Adresse feststeht, wird sie hier eingetragen - eine Zeile. Bis
  * dahin steht KEIN Knopf da, der ins Leere fuehrt.
  */
-const SHAREPOINT_URL: string | null = null;
+const FOTOALBUM_URL: string | null = null;
 ---
 
 <Basis
@@ -32,33 +34,21 @@ const SHAREPOINT_URL: string | null = null;
       <Ikone name="camera" /> Gemeinsames Fotoalbum
     </h2>
 
-    {SHAREPOINT_URL ? (
-      <>
-        <p>
-          Über den Link könnt ihr eigene Fotos hochladen und die Fotos aller Teilnehmenden ansehen.
-        </p>
-        <a class="knopf" href={SHAREPOINT_URL} target="_blank" rel="noopener">
-          <Ikone name="upload" />
-          <span>Fotos ansehen & hochladen</span>
-        </a>
-      </>
-    ) : (
-      <p>
-        Sobald das Album eingerichtet ist, steht der Link an dieser Stelle. Bis dahin sammelt das
-        Orga-Team Fotos über die bekannten Wege.
-      </p>
-    )}
-  </section>
-
-  <section class="karte">
-    <h2>
-      <Ikone name="alert" /> Vor dem Hochladen
-    </h2>
     <p>
-      Auf Fotos sind Menschen zu erkennen – das sind personenbezogene Daten. Wie Einwilligung,
-      Widerruf und Löschung geregelt werden, ist noch nicht geklärt. Diese Frage wird vor der Tagung
-      beantwortet und hier verständlich beschrieben.
+      Die Fotos der Tagung liegen im OneDrive des Vereins. Dort gibt es auch einen Bereich, in dem
+      ihr selbst Fotos teilen könnt. Der Zugang ist durch ein Passwort geschützt, das auf der Tagung
+      bekannt gegeben wird.
     </p>
+
+    {FOTOALBUM_URL ? (
+      <a class="knopf" href={FOTOALBUM_URL} target="_blank" rel="noopener">
+        <Ikone name="upload" />
+        <span>Fotos ansehen & hochladen</span>
+        <span class="nur-vorlesen"> – öffnet in neuem Tab</span>
+      </a>
+    ) : (
+      <p>Der Link zum Fotoalbum steht hier, sobald das Album eingerichtet ist.</p>
+    )}
   </section>
 </Basis>
 

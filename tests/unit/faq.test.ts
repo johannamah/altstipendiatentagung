@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
@@ -17,6 +17,8 @@ interface Eintrag {
   antwort: string;
   schritte?: readonly string[];
   hinweis?: string;
+  reihenfolge: number;
+  verweis?: { text: string; href: string };
 }
 
 const eintraege: readonly Eintrag[] = JSON.parse(
@@ -85,6 +87,55 @@ describe("Anleitung zum Startbildschirm", () => {
       for (const text of texte) {
         expect(text ?? "", `Platzhalter in ${id}`).not.toMatch(/\[[^\]]+\]/);
       }
+    }
+  });
+});
+
+describe("FAQ-Inhalte vom 28.11.2026", () => {
+  const ids = eintraege.map((e) => e.id);
+
+  it("beginnen mit den Anleitungen für den Startbildschirm", () => {
+    const reihenfolge = [...eintraege].sort((a, b) => a.reihenfolge - b.reihenfolge);
+    expect(reihenfolge.slice(0, 2).map((e) => e.id)).toEqual([
+      "startbildschirm-android",
+      "startbildschirm-ios",
+    ]);
+  });
+
+  it("verlinkt bei der Anmeldung direkt das Formular", () => {
+    const verweis = finde("anmeldung")?.verweis;
+    expect(verweis?.href).toBe("https://forms.cloud.microsoft/e/sg2gfhJ2uc");
+  });
+
+  it.each([
+    ["fragen-vor-ort", "/kontakt"],
+    ["fotos", "/fotos"],
+    ["teilnahmebeitrag", "/anmeldung"],
+    ["exkursion-waehlen", "/exkursionen"],
+  ])("%s verweist auf %s", (id, ziel) => {
+    expect(finde(id)?.verweis?.href).toBe(ziel);
+  });
+
+  it("beantwortet die Frage nach der Teilnehmendenliste", () => {
+    expect(ids).toContain("teilnehmendenliste");
+  });
+
+  /** Interne Verweise muessen auf eine echte Seite zeigen. */
+  it("verweist intern nur auf vorhandene Seiten", () => {
+    for (const eintrag of eintraege) {
+      const href = eintrag.verweis?.href;
+      if (!href?.startsWith("/")) continue;
+      const seite = fileURLToPath(new URL(`../../src/pages${href}.astro`, import.meta.url));
+      expect(existsSync(seite), `${eintrag.id}: ${href}`).toBe(true);
+    }
+  });
+
+  it("enthält keine Platzhalter wie „xxx EUR“ oder [eckige Klammern]", () => {
+    for (const eintrag of eintraege) {
+      const text = [eintrag.frage, eintrag.antwort, eintrag.hinweis, ...(eintrag.schritte ?? [])]
+        .filter(Boolean)
+        .join(" ");
+      expect(text, eintrag.id).not.toMatch(/x{3}|\[[^\]]+\]/i);
     }
   });
 });

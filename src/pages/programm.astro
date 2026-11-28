@@ -14,6 +14,7 @@ import {
   type Programmpunkt as Punkt,
   type Spur,
 } from "../lib/programm.ts";
+import { PROGRAMMHEFT_DATEINAME, PROGRAMMHEFT_URL } from "../lib/programmheft.ts";
 
 const orte = new Map(
   (await getCollection("orte")).map((eintrag) => [eintrag.id, { id: eintrag.id, ...eintrag.data }]),
@@ -83,6 +84,11 @@ const tageAufbereitet = tage.map((tag) => ({
       Hier findet ihr alle Programmpunkte, Tag für Tag. Tippt auf einen Punkt für Beschreibung,
       Adresse und Wegbeschreibung.
     </p>
+    {PROGRAMMHEFT_URL && (
+      <a class="programmheft" href={PROGRAMMHEFT_URL} download={PROGRAMMHEFT_DATEINAME}>
+        <Ikone name="download" /> Programmheft als PDF herunterladen
+      </a>
+    )}
   </div>
 
   {/* Braucht JavaScript und wird erst davon eingeblendet. */}
@@ -146,6 +152,14 @@ const tageAufbereitet = tage.map((tag) => ({
                       </>
                     )}
                     Diese Punkte laufen parallel – ihr entscheidet euch für einen.
+                    {gruppe.spur === "exkursion" && (
+                      <>
+                        <br />
+                        <a class="gruppenlink" href="/exkursionen">
+                          Alle Exkursionen im Überblick
+                        </a>
+                      </>
+                    )}
                   </span>
 
                   {/* Braucht JavaScript und wird erst davon eingeblendet. */}
@@ -531,6 +545,16 @@ const tageAufbereitet = tage.map((tag) => ({
 
   /* Eingerueckt und mit Verbindungslinie: Die Punkte gehoeren zum Kopf
      darueber und stehen nicht gleichrangig im Tagesablauf. */
+  .gruppenlink,
+  .programmheft {
+    /* Mindestgroesse fuer Beruehrung (Regel 7). */
+    display: inline-flex;
+    gap: var(--raum-2);
+    align-items: center;
+    min-height: 44px;
+    font-weight: 600;
+  }
+
   .eintrag[data-gruppe][data-zugeklappt] {
     display: none;
   }

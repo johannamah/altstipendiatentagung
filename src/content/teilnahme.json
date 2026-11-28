@@ -1,0 +1,27 @@
+[
+  {
+    "id": "altstipendiaten-ganz",
+    "reihenfolge": 1,
+    "gruppe": "Altstipendiaten",
+    "umfang": "Ganze Tagung"
+  },
+  {
+    "id": "altstipendiaten-ohne-festabend",
+    "reihenfolge": 2,
+    "gruppe": "Altstipendiaten",
+    "umfang": "Tagung ohne Festabend"
+  },
+  {
+    "id": "altstipendiaten-festabend",
+    "reihenfolge": 3,
+    "gruppe": "Altstipendiaten",
+    "umfang": "Nur Festabend"
+  },
+  { "id": "stipendiaten", "reihenfolge": 4, "gruppe": "Stipendiaten | Stipendiatenbeirat" },
+  {
+    "id": "chor-orchester",
+    "reihenfolge": 5,
+    "gruppe": "Chor und Orchester",
+    "umfang": "Nur Festabend"
+  }
+]

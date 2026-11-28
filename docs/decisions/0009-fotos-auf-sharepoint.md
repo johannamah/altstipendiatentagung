@@ -63,3 +63,9 @@ versprechen, was sie nicht hält.
   der ins Leere führt.
 - Sollte sich zeigen, dass zu wenige Teilnehmende einen Vereinszugang haben, ist diese
   Entscheidung neu zu treffen.
+
+## Nachtrag (28.11.2026)
+
+Das Album liegt im OneDrive des Vereins (ebenfalls Microsoft 365). Der Zugang ist mit
+einem Passwort geschützt, das auf der Tagung bekannt gegeben wird. Die Adresse steht als
+`FOTOALBUM_URL` in `src/pages/fotos.astro`; solange sie fehlt, zeigt die Seite keinen Knopf.

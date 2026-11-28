@@ -1,6 +1,7 @@
 [
   {
     "id": "exkursion-dom",
+    "reihenfolge": 1,
     "titel": "Glaube, Werte, Europa – Europa im Mariendom und in der St. Michaeliskirche",
     "plaetze": 50,
     "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
@@ -13,6 +14,7 @@
   },
   {
     "id": "exkursion-landwirtschaft",
+    "reihenfolge": 2,
     "titel": "Europas Landwirtschaft im Wandel – Tradition, Hightech und Agrarpolitik auf dem Hof Riepl-Bauer",
     "plaetze": 50,
     "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
@@ -25,6 +27,7 @@
   },
   {
     "id": "exkursion-stadt",
+    "reihenfolge": 3,
     "titel": "Stadtführung I: Hildesheim entdecken – Bräuche, Rituale und Traditionen",
     "plaetze": 50,
     "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
@@ -37,6 +40,7 @@
   },
   {
     "id": "exkursion-stadt-2",
+    "reihenfolge": 4,
     "titel": "Stadtführung II: Hildesheim entdecken – Sagenhaftes Fachwerkviertel: Vom Kesselflicker zum Domprobst",
     "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
     "ortId": "tourist-information",
@@ -46,6 +50,7 @@
   },
   {
     "id": "exkursion-ndr",
+    "reihenfolge": 5,
     "titel": "Zwischen Fakten und Fake News – Journalismus im digitalen Europa beim NDR",
     "plaetze": 50,
     "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
@@ -58,6 +63,7 @@
   },
   {
     "id": "exkursion-mittelstand",
+    "reihenfolge": 6,
     "titel": "Von Hildesheim in Europas Stadien – Zu Besuch bei helo sports",
     "plaetze": 50,
     "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
@@ -70,6 +76,7 @@
   },
   {
     "id": "exkursion-bosch",
+    "reihenfolge": 7,
     "titel": "Mobilität im Umbruch – Hightech, Elektromobilität und Europas industrielle Zukunft bei Bosch",
     "plaetze": 50,
     "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
@@ -82,6 +89,7 @@
   },
   {
     "id": "exkursion-hennies",
+    "reihenfolge": 8,
     "titel": "Kreislaufwirtschaft bei Willi Hennies Recycling – Vom Schrott zum Rohstoff",
     "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
     "ortId": "willi-hennies",
@@ -89,6 +97,7 @@
   },
   {
     "id": "exkursion-sprengel",
+    "reihenfolge": 9,
     "titel": "Kunst kennt keine Grenzen – Europäische Kunst und gesellschaftlicher Wandel im Sprengel Museum",
     "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
     "ortId": "sprengel-museum",
@@ -96,6 +105,7 @@
   },
   {
     "id": "exkursion-continental",
+    "reihenfolge": 10,
     "titel": "Europas Zukunft der Mobilität bei Continental – Innovation trifft Industrie",
     "zeitrahmen": "Freitag, 7. Mai 2027 · 12:30–17:00 Uhr (inkl. An- und Abreise)",
     "ortId": "continental",

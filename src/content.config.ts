@@ -118,6 +118,8 @@ const programm = defineCollection({
 const exkursionen = defineCollection({
   loader: file("src/content/exkursionen.json"),
   schema: z.object({
+    /** Nummer im Programmheft - Astro liefert die Eintraege sonst nach Kennung. */
+    reihenfolge: z.number().int(),
     titel: z.string().min(1),
     /**
      * Plaetze insgesamt, sofern bekannt. Das Programmheft 2027 nennt keine;
@@ -245,6 +247,41 @@ const faq = defineCollection({
     schritte: z.array(z.string().min(1)).min(2).optional(),
     /** Nachgestellte Einordnung, z. B. warum ein Schritt fehlschlagen kann. */
     hinweis: z.string().min(1).optional(),
+    /** Kleinere Zahl steht weiter oben - Astro liefert die Eintraege nach Kennung. */
+    reihenfolge: z.number().int(),
+    /**
+     * Weiterfuehrender Link unter der Antwort: eine Seite der App ("/kontakt")
+     * oder eine externe https-Adresse, die dann in einem neuen Tab oeffnet.
+     */
+    verweis: z
+      .object({
+        text: z.string().min(1),
+        href: z.string().regex(/^(\/[a-z0-9-]+|https:\/\/\S+)$/),
+      })
+      .optional(),
+  }),
+});
+
+/**
+ * Teilnahmeoptionen auf der Seite "Anmeldung". Die Beitraege legt der Verein
+ * noch fest; solange einer fehlt, steht in der Tabelle "wird noch festgelegt".
+ */
+const teilnahme = defineCollection({
+  loader: file("src/content/teilnahme.json"),
+  schema: z.object({
+    gruppe: z.string().min(1),
+    /** Etwa "Ganze Tagung"; fehlt, wenn die Gruppe nur eine Option hat. */
+    umfang: z.string().min(1).optional(),
+    /** Als Eurobetrag, z. B. "180 €". */
+    beitragMitglied: z
+      .string()
+      .regex(/^\d+(,\d{2})? €$/)
+      .optional(),
+    beitragNichtMitglied: z
+      .string()
+      .regex(/^\d+(,\d{2})? €$/)
+      .optional(),
+    reihenfolge: z.number().int(),
   }),
 });
 
@@ -290,6 +327,7 @@ export const collections = {
   unterkuenfte,
   kontakte,
   faq,
+  teilnahme,
   grussworte,
   stadt,
   stadtzahlen,

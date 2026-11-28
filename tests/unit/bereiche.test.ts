@@ -55,14 +55,23 @@ describe("Bereiche der Startseite", () => {
 });
 
 /**
- * Die Anmeldung laeuft ueber Microsoft Forms des Vereins (ADR-0011). Die
- * Kachel fuehrt deshalb direkt dorthin, ohne Zwischenseite in der App.
+ * Die Anmeldung laeuft weiter ueber Microsoft Forms (ADR-0011). Seit dem
+ * 28.11.2026 fuehrt die Kachel aber auf eine eigene Seite: Vor dem Formular
+ * stehen die Teilnahmeoptionen und -beitraege.
  */
-describe("Kacheln mit externem Ziel", () => {
+describe("Kachelziele", () => {
   const anmeldung = BEREICHE.find((b) => b.slug === "anmeldung")!;
 
-  it("Anmeldung fuehrt direkt auf das Anmeldeformular", () => {
-    expect(kachelZiel(anmeldung)).toBe("https://forms.cloud.microsoft/e/yyrAWFASLc");
+  it("Anmeldung fuehrt auf die eigene Seite mit den Teilnahmeoptionen", () => {
+    expect(kachelZiel(anmeldung)).toBe("/anmeldung");
+  });
+
+  it.each(["exkursionen", "essen-trinken"])("%s hat eine eigene Kachel", (slug) => {
+    expect(BEREICHE.find((b) => b.slug === slug)).toBeDefined();
+  });
+
+  it("Referenten & Gäste gibt es nicht mehr", () => {
+    expect(BEREICHE.find((b) => b.slug === "referenten")).toBeUndefined();
   });
 
   it("interne Kacheln fuehren auf ihre eigene Seite", () => {
@@ -77,8 +86,10 @@ describe("Kacheln mit externem Ziel", () => {
   });
 
   it("nur Kacheln ohne externes Ziel haben eine eigene Seite", () => {
-    expect(SEITENBEREICHE.map((b) => b.slug)).not.toContain("anmeldung");
-    expect(SEITENBEREICHE.map((b) => b.slug)).toContain("programm");
+    for (const bereich of BEREICHE) {
+      expect(SEITENBEREICHE.includes(bereich), bereich.slug).toBe(bereich.extern === undefined);
+    }
+    expect(SEITENBEREICHE.map((b) => b.slug)).toContain("anmeldung");
   });
 
   /**

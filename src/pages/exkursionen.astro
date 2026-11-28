@@ -1,0 +1,125 @@
+---
+import { getCollection } from "astro:content";
+
+import Basis from "../layouts/Basis.astro";
+import Seitenkopf from "../components/Seitenkopf.astro";
+import Ikone from "../components/Ikone.astro";
+import Ortsangabe from "../components/Ortsangabe.astro";
+import type { Ort } from "../lib/orte.ts";
+import { SPUR_EINLEITUNG } from "../lib/programm.ts";
+
+/**
+ * Alle Exkursionen auf einer Seite: oben eine Übersicht zum Springen, darunter
+ * je Angebot Zeit, Ort und Beschreibung. Im Programm stehen sie zugeklappt in
+ * einer Gruppe - zum Auswählen vor der Anmeldung braucht man sie nebeneinander.
+ */
+const orte = new Map<string, Ort>(
+  (await getCollection("orte")).map((eintrag) => [eintrag.id, { id: eintrag.id, ...eintrag.data }]),
+);
+// Hinweise wie "Treffpunkt ... wird noch bekanntgegeben" stehen am Programmpunkt.
+const hinweise = new Map(
+  (await getCollection("programm")).map((eintrag) => [eintrag.id, eintrag.data.hinweis]),
+);
+
+const exkursionen = (await getCollection("exkursionen"))
+  .sort((a, b) => a.data.reihenfolge - b.data.reihenfolge)
+  .map(({ id, data }) => ({
+    id,
+    titel: data.titel,
+    zeitrahmen: data.zeitrahmen,
+    ort: data.ortId ? orte.get(data.ortId) : undefined,
+    hinweis: hinweise.get(id),
+    absaetze: (data.info ?? "").split(/\n\s*\n/).filter((absatz) => absatz.trim()),
+  }));
+---
+
+<Basis
+  titel="Exkursionen – Jahrestagung 2027"
+  beschreibung="Die Exkursionen am Freitagnachmittag der Altstipendiatentagung 2027 in Hildesheim."
+>
+  <Seitenkopf ikone="compass" titel="Exkursionen" einleitung={SPUR_EINLEITUNG.exkursion} />
+
+  <section class="karte auswahl">
+    <h2>So wählst du</h2>
+    <p>
+      Alle Exkursionen finden am Freitag, 7. Mai 2027, parallel statt. Deine Exkursionswünsche gibst
+      du während der Anmeldung an. Eine nachträgliche Änderung ist nicht vorgesehen.
+    </p>
+    <a href="/anmeldung">Zur Anmeldung</a>
+  </section>
+
+  <nav class="karte uebersicht" aria-label="Übersicht der Exkursionen">
+    <h2>Übersicht</h2>
+    <ol>
+      {exkursionen.map((exkursion) => (
+        <li>
+          <a href={`#${exkursion.id}`}>{exkursion.titel}</a>
+        </li>
+      ))}
+    </ol>
+  </nav>
+
+  {exkursionen.map((exkursion, nummer) => (
+    <article class="karte exkursion" id={exkursion.id} aria-labelledby={`titel-${exkursion.id}`}>
+      <h2 id={`titel-${exkursion.id}`}>
+        <span class="nummer">{nummer + 1}.</span> {exkursion.titel}
+      </h2>
+
+      {exkursion.zeitrahmen && (
+        <p class="zeile">
+          <Ikone name="calendar" />
+          <span>{exkursion.zeitrahmen}</span>
+        </p>
+      )}
+      {exkursion.ort && <Ortsangabe ort={exkursion.ort} />}
+      {exkursion.hinweis && <p class="hinweis">{exkursion.hinweis}</p>}
+
+      {exkursion.absaetze.map((absatz) => (
+        <p>{absatz}</p>
+      ))}
+    </article>
+  ))}
+</Basis>
+
+<style>
+  h2 {
+    font-size: var(--schrift-h3);
+  }
+
+  .auswahl a,
+  .uebersicht a {
+    /* Mindestgroesse fuer Beruehrung (Regel 7). */
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-weight: 600;
+  }
+
+  .uebersicht ol {
+    padding-left: var(--raum-6);
+    margin: 0;
+  }
+
+  .exkursion {
+    /* Beim Sprung aus der Übersicht nicht unter dem Seitenkopf verschwinden. */
+    scroll-margin-top: var(--raum-6);
+  }
+
+  .nummer {
+    color: var(--akzent);
+  }
+
+  .zeile {
+    display: flex;
+    gap: var(--raum-2);
+    align-items: center;
+    font-size: var(--schrift-klein);
+    color: var(--text-leise);
+  }
+
+  .hinweis {
+    font-size: var(--schrift-klein);
+    font-weight: 600;
+    color: var(--akzent);
+  }
+</style>
