@@ -49,11 +49,11 @@ iptables -A OUTPUT -o lo -j ACCEPT
 # DROP-Policy und der Aufruf laeuft in einen Timeout, waehrend `curl` im Container
 # sauber 200 liefert — eine Fehlersuche, die leicht eine Stunde kostet.
 #
-# Literale 8080 statt ${PREVIEW_PORT}: das Skript laeuft per `sudo`, und sudo raeumt die
-# Umgebung aus (env_reset) — die Variable aus containerEnv kaeme hier nie an. Wird der
-# Port geaendert, muss er an drei Stellen mitgeaendert werden: hier, PREVIEW_PORT und
-# forwardPorts in devcontainer.json.
-iptables -A INPUT -p tcp --dport 8080 -j ACCEPT
+# Literale 4321 (Astro-Entwicklungsserver) statt ${PREVIEW_PORT}: das Skript laeuft per
+# `sudo`, und sudo raeumt die Umgebung aus (env_reset) — die Variable aus containerEnv
+# kaeme hier nie an. Wird der Port geaendert, muss er an drei Stellen mitgeaendert
+# werden: hier, PREVIEW_PORT und forwardPorts in devcontainer.json.
+iptables -A INPUT -p tcp --dport 4321 -j ACCEPT
 
 ipset create allowed-domains hash:net
 
@@ -96,6 +96,13 @@ done < <(echo "$gh_ranges" | jq -r '(.web + .api + .git)[]' | aggregate -q)
 # auf dem Windows-Host, nicht im Container) — noetig wird er, sobald hier drin ein
 # Abruf stattfindet, etwa um die Bibliotheken lokal zu vendorn oder eine Version zu pruefen.
 #
+# Playwright-Browser (`npx playwright install`): Playwright 1.63 laedt ueber die Mirror-
+# Liste PLAYWRIGHT_CDN_MIRRORS in playwright-core, zuerst von cdn.playwright.dev. Der
+# Host antwortet fuer die dbazure-Pfade mit 307 auf playwright.download.prss.microsoft.com
+# — ohne den ZWEITEN Eintrag laeuft der Download nach der Weiterleitung in einen Timeout.
+# Chrome-for-Testing-Builds (builds/cft/...) leitet er auf storage.googleapis.com weiter.
+# Alle drei Hosts stehen in der ZWEITEN Liste weiter unten (CDN, /24), nicht hier.
+#
 # Kein Kommentar INNERHALB der Liste: die Zeilen haengen an `\` an einer logischen Zeile,
 # ein `#` dazwischen wuerde den Rest verschlucken.
 for domain in \
@@ -127,6 +134,35 @@ for domain in \
     while read -r ip; do
         echo "Adding $ip for $domain"
         ipset add allowed-domains "$ip" 2>/dev/null || true
+    done < <(echo "$ips")
+done
+
+# CDN-Hosts, deren A-Record bei JEDER Abfrage wechseln kann (TTL 0 hinter dem
+# DNS-Resolver von Rancher Desktop): cdn.playwright.dev lieferte dem Firewall-Lauf
+# 150.171.109.100, Sekunden spaeter verband sich Node mit .106 und lief in
+# EHOSTUNREACH. Freigegeben wird deshalb das /24 der aufgeloesten Adresse statt der
+# einzelnen IP. Preis: das Netz gehoert dem CDN (Azure Front Door bzw. Fastly) und
+# bedient auch andere Kunden — ein bewusst breiteres Loch, nur fuer Downloads, die
+# sonst gar nicht funktionieren.
+#
+# storage.googleapis.com: Chromium kommt seit Playwright 1.57 als Chrome for Testing;
+# cdn.playwright.dev/builds/cft/... antwortet mit 307 auf
+# storage.googleapis.com/chrome-for-testing-public/... Achtung: ueber diesen Host ist
+# JEDER oeffentliche Google-Cloud-Storage-Bucket erreichbar, nicht nur der von Chrome.
+for domain in \
+    "cdn.playwright.dev" \
+    "playwright.download.prss.microsoft.com" \
+    "storage.googleapis.com"; do
+    echo "Resolving $domain (CDN, /24)..."
+    ips=$(dig +short A "$domain" | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' || true)
+    if [ -z "$ips" ]; then
+        echo "WARN: Failed to resolve $domain — skipping"
+        continue
+    fi
+    while read -r ip; do
+        net="${ip%.*}.0/24"
+        echo "Adding $net for $domain"
+        ipset add allowed-domains "$net" 2>/dev/null || true
     done < <(echo "$ips")
 done
 
