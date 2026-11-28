@@ -3,6 +3,8 @@ import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
 
+import { SPUR_EINLEITUNG } from "../../src/lib/programm.ts";
+
 /**
  * Prueft den Datenbestand selbst, nicht die Logik.
  *
@@ -160,6 +162,20 @@ describe("Programmdaten", () => {
 
     expect(punkt, `${id} fehlt`).toBeDefined();
     expect([punkt?.beginn, punkt?.ende, punkt?.ortId]).toEqual([beginn, ende, ortId]);
+  });
+
+  /** Entscheidung des Orga-Teams vom 28.11.2026: Die Landtagsexkursion findet statt. */
+  it("führt elf Exkursionen einschließlich des Landtags", () => {
+    const exkursionenIds = punkte.filter((p) => p.spur === "exkursion").map((p) => p.id);
+
+    expect(exkursionenIds).toHaveLength(11);
+    expect(exkursionenIds).toContain("exkursion-landtag");
+    expect(punkte.find((p) => p.id === "exkursion-landtag")?.titel).not.toMatch(/bestätigt/);
+  });
+
+  /** Der Einleitungstext nennt die Zahl in Worten - sie muss zu den Daten passen. */
+  it("nennt in der Einleitung die richtige Zahl der Exkursionen", () => {
+    expect(SPUR_EINLEITUNG.exkursion).toMatch(/\belf Exkursionen\b/);
   });
 
   it("verabschiedet ab 13:15 Uhr", () => {

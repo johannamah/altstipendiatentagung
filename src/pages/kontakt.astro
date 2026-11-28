@@ -16,6 +16,11 @@ const kontakte = eintraege
   .map((eintrag) => eintrag.data)
   .sort((a, b) => a.reihenfolge - b.reihenfolge);
 
+const abschnitte = [
+  { titel: "Ansprechpersonen", personen: kontakte.filter((p) => p.gruppe === "orga") },
+  { titel: "Geschäftsstelle", personen: kontakte.filter((p) => p.gruppe === "geschaeftsstelle") },
+].filter((abschnitt) => abschnitt.personen.length > 0);
+
 /** Platzhalter erkennen, damit sie nicht wie eine echte Angabe aussehen. */
 const istPlatzhalter = (wert?: string) => wert === undefined || wert.startsWith("[");
 
@@ -49,53 +54,59 @@ const initialen = (name: string) =>
     </p>
   </aside>
 
-  <h2>Ansprechpersonen</h2>
+  {/* Erst das Orga-Team, dann die Geschäftsstelle des Vereins - sie gehört
+      nicht zum Orga-Team, ist aber für Einzelfälle ansprechbar (FAQ). */}
+  {abschnitte.map(({ titel, personen }) => (
+    <>
+      <h2>{titel}</h2>
 
-  <ul class="personen">
-    {kontakte.map((person) => (
-      <li class="karte">
-        <div class="kopf">
-          {person.bild ? (
-            <Image
-              class="portrait"
-              src={person.bild}
-              alt={`Porträt von ${person.name}`}
-              width={72}
-              height={72}
-              densities={[1, 2]}
-            />
-          ) : (
-            /* aria-hidden: Die Initialen sind eine Platzhaltergrafik, der
-                 Name steht direkt daneben - vorgelesen waere das nur Lärm. */
-            <span class="initialen" aria-hidden="true">
-              {initialen(person.name)}
-            </span>
-          )}
+      <ul class="personen">
+        {personen.map((person) => (
+          <li class="karte">
+            <div class="kopf">
+              {person.bild ? (
+                <Image
+                  class="portrait"
+                  src={person.bild}
+                  alt={`Porträt von ${person.name}`}
+                  width={72}
+                  height={72}
+                  densities={[1, 2]}
+                />
+              ) : (
+                /* aria-hidden: Die Initialen sind eine Platzhaltergrafik, der
+                     Name steht direkt daneben - vorgelesen waere das nur Lärm. */
+                <span class="initialen" aria-hidden="true">
+                  {initialen(person.name)}
+                </span>
+              )}
 
-          <div>
-            <h3>{person.name}</h3>
-            {!istPlatzhalter(person.bereich) && <p class="bereich">{person.bereich}</p>}
-          </div>
-        </div>
+              <div>
+                <h3>{person.name}</h3>
+                {!istPlatzhalter(person.bereich) && <p class="bereich">{person.bereich}</p>}
+              </div>
+            </div>
 
-        {/* Kontaktdaten gibt es nur für die Ansprechpersonen. Bei allen anderen
-            steht nichts statt "noch nicht hinterlegt" - es kommt nichts nach. */}
-        {!istPlatzhalter(person.telefon) && (
-          <p class="zeile">
-            <Ikone name="phone" />
-            <a href={telefonVerweis(person.telefon!)}>{person.telefon}</a>
-          </p>
-        )}
+            {/* Kontaktdaten gibt es nur für die Ansprechpersonen. Bei allen anderen
+                steht nichts statt "noch nicht hinterlegt" - es kommt nichts nach. */}
+            {!istPlatzhalter(person.telefon) && (
+              <p class="zeile">
+                <Ikone name="phone" />
+                <a href={telefonVerweis(person.telefon!)}>{person.telefon}</a>
+              </p>
+            )}
 
-        {!istPlatzhalter(person.email) && (
-          <p class="zeile">
-            <Ikone name="mail" />
-            <a href={`mailto:${person.email}`}>{person.email}</a>
-          </p>
-        )}
-      </li>
-    ))}
-  </ul>
+            {!istPlatzhalter(person.email) && (
+              <p class="zeile">
+                <Ikone name="mail" />
+                <a href={`mailto:${person.email}`}>{person.email}</a>
+              </p>
+            )}
+          </li>
+        ))}
+      </ul>
+    </>
+  ))}
 
   <section class="karte">
     <h2>

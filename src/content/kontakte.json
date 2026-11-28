@@ -69,5 +69,14 @@
     "bereich": "[Zuständigkeitsbereich einfügen]",
     "telefon": "[Telefonnummer einfügen]",
     "email": "[E-Mail einfügen]"
+  },
+  {
+    "id": "sergej-gergej",
+    "name": "Sergej Gergej",
+    "reihenfolge": 9,
+    "gruppe": "geschaeftsstelle",
+    "bereich": "Leiter der Geschäftsstelle",
+    "telefon": "030 23000-322",
+    "email": "s.gergej@altstipendiaten.de"
   }
 ]

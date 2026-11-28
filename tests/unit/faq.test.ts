@@ -3,6 +3,8 @@ import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
 
+import { FOTOHINWEIS } from "../../src/daten/fotos.ts";
+
 /**
  * Die Anleitung zum Startbildschirm ist der einzige Weg, auf dem Nutzende von
  * der Installierbarkeit erfahren: iOS zeigt von sich aus KEINEN Hinweis darauf,
@@ -137,5 +139,12 @@ describe("FAQ-Inhalte vom 28.11.2026", () => {
         .join(" ");
       expect(text, eintrag.id).not.toMatch(/x{3}|\[[^\]]+\]/i);
     }
+  });
+});
+
+describe("Hinweis zur Fotografie", () => {
+  /** Derselbe Wortlaut wie auf "Anmeldung" und "Fotos" - und im Anmeldeformular. */
+  it("steht in der FAQ im selben Wortlaut wie auf den Seiten", () => {
+    expect(finde("fotografie")?.antwort).toBe(FOTOHINWEIS);
   });
 });

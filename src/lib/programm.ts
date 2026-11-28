@@ -152,10 +152,13 @@ export const STATUS_TEXT: Record<Bestaetigung, string | null> = {
   platzhalter: "Platzhalter",
 };
 
-/** Einleitung über einer Gruppe, Wortlaut laut Programm vom 25.10.2026. */
+/**
+ * Einleitung über einer Gruppe, Wortlaut laut Programm vom 25.10.2026 - mit
+ * "elf" statt "zehn", seit die Landtagsexkursion dazugehört (28.11.2026).
+ */
 export const SPUR_EINLEITUNG: Partial<Record<Spur, string>> = {
   exkursion:
-    "Am Nachmittag eröffnen zehn Exkursionen unterschiedliche Perspektiven auf das Tagungsmotto: von religiösem und kulturellem Erbe über Landwirtschaft, Industrie und Medien bis zu Kreislaufwirtschaft und Kunst.",
+    "Am Nachmittag eröffnen elf Exkursionen unterschiedliche Perspektiven auf das Tagungsmotto: von religiösem und kulturellem Erbe über Landwirtschaft, Industrie und Medien bis zu Kreislaufwirtschaft und Kunst.",
 };
 
 /**

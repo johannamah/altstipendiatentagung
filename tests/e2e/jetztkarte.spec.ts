@@ -62,7 +62,7 @@ test.describe("Karte Jetzt / Als Nächstes", () => {
   });
 
   /**
-   * Am Freitag laufen zehn Exkursionen gleichzeitig. Wer nur eine sieht,
+   * Am Freitag laufen elf Exkursionen gleichzeitig. Wer nur eine sieht,
    * hält sie für das Programm.
    */
   test("weist auf gleichzeitige Punkte hin", async ({ page }) => {
