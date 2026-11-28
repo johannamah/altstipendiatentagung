@@ -19,20 +19,15 @@
         "--name",
         "altstipendiatentagung-dev"
     ],
-    // 8080 = Port aus start-server.sh (PREVIEW_PORT). Wird er geaendert, muss er an
-    // beiden Stellen geaendert werden.
-    // 4321 = Astro-Entwicklungsserver (`npm run dev -- --host 0.0.0.0`). Ohne festen
-    // Eintrag haengt die Erreichbarkeit vom Auto-Forwarding der Extension ab, das den
-    // im Hintergrund laufenden Server nicht zuverlaessig erkennt.
+    // 4321 = Astro-Entwicklungsserver, den start-server.sh startet
+    // (`npm run dev -- --host 0.0.0.0`). Ohne festen Eintrag haengt die Erreichbarkeit
+    // vom Auto-Forwarding der Extension ab, das den im Hintergrund laufenden Server
+    // nicht zuverlaessig erkennt. Der Port steht an drei Stellen: hier, PREVIEW_PORT
+    // unten und die literale 4321 in init-firewall.sh.
     "forwardPorts": [
-        8080,
         4321
     ],
     "portsAttributes": {
-        "8080": {
-            "label": "Website-Vorschau",
-            "onAutoForward": "notify"
-        },
         "4321": {
             "label": "Astro-Entwicklungsserver",
             "onAutoForward": "notify"
@@ -44,10 +39,9 @@
     // ${devcontainerId} ist ueber Rebuilds hinweg stabil: Bash-Historie, Claude-Login
     // und die gh-Authentifizierung ueberleben ein "Rebuild Container", ohne dass etwas
     // davon im Repo landet.
-    // node_modules als Volume, obwohl das Repo heute keine Abhaengigkeiten hat: das
-    // Verzeichnis laege sonst auf dem 9p/drvfs-Bind-Mount von C:\ (jeder Dateizugriff
-    // ein Roundtrip zum Windows-Host). Kommt spaeter ein Build-Tool dazu, ist die
-    // Weiche schon gestellt; der Pfad bleibt /workspace/node_modules.
+    // node_modules als Volume: das Verzeichnis laege sonst auf dem 9p/drvfs-Bind-Mount
+    // von C:\ (jeder Dateizugriff ein Roundtrip zum Windows-Host), und Astro/Vite
+    // lesen beim Start tausende Dateien daraus.
     "mounts": [
         "source=alt-bashhistory-${devcontainerId},target=/commandhistory,type=volume",
         "source=alt-claude-${devcontainerId},target=/home/node/.claude,type=volume",
@@ -61,12 +55,15 @@
     "containerEnv": {
         "NODE_OPTIONS": "--max-old-space-size=2048",
         "CLAUDE_CONFIG_DIR": "/home/node/.claude",
-        "PREVIEW_PORT": "8080"
+        "PREVIEW_PORT": "4321",
+        // Astro meldet Telemetrie an telemetry.astro.build — der Host steht bewusst
+        // nicht in der Firewall-Allowlist, jeder Aufruf liefe sonst in ein REJECT.
+        "ASTRO_TELEMETRY_DISABLED": "1"
     },
-    // Der npm-ci-Zweig ist bewusst geguardet: das Repo hat eine package-lock.json OHNE
-    // package.json, und `npm ci` ohne package.json bricht ab. Ein von Null verschiedener
-    // Exit-Code laesst die Dev-Containers-Extension die gesamte Container-Erstellung als
-    // fehlgeschlagen melden. Der Guard auf node_modules/.bin verhindert zusaetzlich, dass
+    // Der npm-ci-Zweig ist bewusst geguardet: `npm ci` ohne package.json bricht ab, und
+    // ein von Null verschiedener Exit-Code laesst die Dev-Containers-Extension die
+    // gesamte Container-Erstellung als fehlgeschlagen melden. Der Guard auf
+    // node_modules/.bin verhindert zusaetzlich, dass
     // bei jedem Rebuild neu installiert wird (npm ci loescht das Verzeichnis immer zuerst,
     // das Volume bleibt aber bestehen). Nach Aenderungen an package.json bleibt `npm ci`
     // Handarbeit — bewusst, damit ein Rebuild nicht minutenlang blockiert.

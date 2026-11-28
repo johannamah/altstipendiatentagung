@@ -46,9 +46,8 @@ ENV DEVCONTAINER=true
 # der Passwortabfrage.
 #
 # /workspace/node_modules liegt sonst auf dem 9p/drvfs-Bind-Mount von C:\ — jeder
-# Dateizugriff waere ein Protokoll-Roundtrip zum Windows-Host. Das Repo hat heute
-# keine Abhaengigkeiten (package-lock.json ohne package.json), aber sobald doch ein
-# Build-Tool dazukommt, ist das Volume schon da und der Pfad bleibt /workspace/node_modules.
+# Dateizugriff waere ein Protokoll-Roundtrip zum Windows-Host, und Astro/Vite/Vitest
+# lesen beim Start tausende Dateien daraus.
 #
 # /home/node/.config selbst muss ebenfalls node gehoeren: `mkdir -p .config/gh` legt
 # das Elternverzeichnis als root an, und Werkzeuge wie Astro (Telemetrie-Konfiguration
@@ -67,18 +66,16 @@ USER node
 ENV NPM_CONFIG_PREFIX=/usr/local/share/npm-global
 ENV PATH=$PATH:/usr/local/share/npm-global/bin
 
-# `serve` fest ins Image, nicht per `npx` zur Laufzeit: npx laedt bei jedem Start neu
-# aus der Registry — das haengt an der Firewall und am Netz, obwohl an der Sache
-# nichts Variables ist. index.html per file:// zu oeffnen reicht nicht, das Manifest
-# und die Icon-Pfade brauchen einen echten HTTP-Origin.
-RUN npm install -g @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION} serve@14
+# Kein globaler Webserver mehr: die Vorschau ist der Astro-Entwicklungsserver aus
+# node_modules (start-server.sh).
+RUN npm install -g @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}
 
 COPY init-firewall.sh start-server.sh /usr/local/bin/
 USER root
 # Das ENV PATH oben gilt NICHT in Login-Shells: Debians /etc/profile setzt PATH
 # unbedingt neu und wirft /usr/local/share/npm-global/bin wieder heraus. Das
-# integrierte Terminal von VS Code startet genau so eine Login-Shell — `claude` und
-# `serve` waeren dort "command not found", obwohl beide im Image liegen. profile.d
+# integrierte Terminal von VS Code startet genau so eine Login-Shell — `claude`
+# waere dort "command not found", obwohl es im Image liegt. profile.d
 # wird NACH dieser Neusetzung eingelesen und haengt den Pfad wieder an.
 RUN chmod +x /usr/local/bin/init-firewall.sh /usr/local/bin/start-server.sh \
   && echo 'export PATH="$PATH:/usr/local/share/npm-global/bin"' > /etc/profile.d/npm-global.sh \
