@@ -79,7 +79,9 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
       page.getByText("„Abrufkontingent, Stichwort: Konrad-Adenauer-Stiftung“").first(),
     ).toBeVisible();
     await expect(page.getByText("77,68 € / Nacht")).toBeVisible();
-    await expect(page.getByText(/verfällt ab Mitte März 2027/)).toBeVisible();
+    // Für Teilnehmende ohne Belang: keine reservierten Zimmerzahlen, kein Verfallsdatum.
+    await expect(page.getByRole("columnheader", { name: "Reserviert" })).toHaveCount(0);
+    await expect(page.getByText(/verfällt/)).toHaveCount(0);
     await expect(
       page.getByRole("link", { name: /Buchen\s*:\s*Schlafladen Hildesheim/ }),
     ).toHaveAttribute("href", "https://schlafladen.de/");
@@ -144,21 +146,6 @@ test.describe("Inhalte aus dem ursprünglichen Entwurf", () => {
     const erstePerson = await page.locator(".personen > li").first().boundingBox();
 
     expect(faqHinweis!.y).toBeLessThan(erstePerson!.y);
-  });
-
-  test("Referenten & Gäste stellt jede Person mit Funktion und Kurzvorstellung vor", async ({
-    page,
-  }) => {
-    await page.goto("/referenten");
-
-    for (const name of ["Norbert Lammert", "Annegret Kramp-Karrenbauer", "Christian Wulff"]) {
-      const person = page.getByRole("article").filter({
-        has: page.getByRole("heading", { name }),
-      });
-      await expect(person, `${name} fehlt`).toBeVisible();
-      // Ohne Funktion bleibt offen, warum die Person auf der Tagung spricht.
-      await expect(person.locator("p").first()).not.toBeEmpty();
-    }
   });
 
   /** Porträts liegen erst für einen Teil des Orga-Teams vor; die übrigen zeigen Initialen. */

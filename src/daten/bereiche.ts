@@ -15,17 +15,7 @@
  */
 
 export type Kachelfarbe =
-  | "blau"
-  | "pink"
-  | "gruen"
-  | "teal"
-  | "lila"
-  | "rot"
-  | "braun"
-  | "gold"
-  | "orange"
-  | "schiefer"
-  | "bordeaux";
+  "blau" | "pink" | "gruen" | "teal" | "lila" | "rot" | "braun" | "gold" | "orange" | "schiefer";
 
 export interface Bereich {
   /** Adressfragment, z. B. "programm" fuer /programm. */
@@ -65,13 +55,6 @@ export const BEREICHE: readonly Bereich[] = [
     unterzeile: "Alle Programmpunkte im Überblick",
     ikone: "clipboard",
     farbe: "blau",
-  },
-  {
-    slug: "referenten",
-    titel: "Referenten & Gäste",
-    unterzeile: "Wer auf der Tagung spricht",
-    ikone: "mic",
-    farbe: "bordeaux",
   },
   {
     slug: "anmeldung",
